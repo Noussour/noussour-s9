@@ -1,6 +1,6 @@
-# noussour-s10
+# noussour-s9
 
-![class-schedule](./class-schedule-s10.png)
+![class-schedule](./class-schedule-s9.png)
 
 ## Modules
 
