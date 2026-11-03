@@ -1,0 +1,2193 @@
+CHAPITRE 1 — DIAPOSITIVE 1
+UNIVERSITY OF SCIENCE AND TECHNOLOGY HOUARI BOUMEDIENE
+FACULTY OF COMPUTER SCIENCE
+Course
+Méthodes formelles pour GL
+ING 5 en Soft.Eng
+Dr MEKAHLIA Fatma Zohra
+Associate Professor
+Laboratoire de Modélisation, Vérification et Evaluation des Performances des systèmes
+complexes (MOVEP)
+Bureau 123
+1
+,,
+Chapter 1:
+Introduction to Formal Methods
+
+CHAPITRE 1 — DIAPOSITIVE 2
+INTRODUCTION AUX MÉTHODES FORMELLES
+POUR LE GÉNIE LOGICIEL
+Partons d'un exemple simple:
+• Imaginons que nous devons développer une petite
+application permettant de réserver des billets de
+train. L'application doit permettre à un
+utilisateur de:
+- Consulter les billets disponibles,
+- Réserver un billet,
+- Annuler une réservation.
+• Avant de commencer à programmer, il faut
+penser a quoi ? 2
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 3
+INTRODUCTION AUX MÉTHODES FORMELLES
+POUR LE GÉNIE LOGICIEL
+• Que doit faire exactement l'application ?
+• Peut-on réserver deux fois le même billet ?
+• Que se passe-t-il si deux utilisateurs tentent de
+réserver simultanément le dernier billet
+disponible ?
+• Comment savoir si le programme fonctionne
+correctement ?
+• Peut-on garantir que le système ne produira
+jamais une réservation incorrecte ?
+3
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 4
+INTRODUCTION AUX MÉTHODES FORMELLES
+POUR LE GÉNIE LOGICIEL
+• Les deux premières questions concernent les
+besoins et les fonctionnalités.
+• Les dernières nous conduisent vers un problème
+plus général : comment vérifier la correction
+d'un logiciel ?
+• Supposons que le développeur programme
+l'application, puis réalise dix tests. Les dix tests
+réussissent..... Peut-on conclure que le
+logiciel est correct ?
+4
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 5
+INTRODUCTION AUX MÉTHODES FORMELLES
+POUR LE GÉNIE LOGICIEL
+• Pas nécessairement !!!!!
+• Les tests peuvent avoir oublié certaines
+situations, par exemple deux réservations
+simultanées, une annulation tardive ou une
+interruption pendant la réservation.
+• Le logiciel peut donc réussir tous les tests
+réalisés tout en présentant encore des défauts.
+• C'est le problème fondamental auquel nous
+allons nous intéresser. 5
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 6
+INTRODUCTION AUX MÉTHODES FORMELLES
+POUR LE GÉNIE LOGICIEL
+• “ Program testing can be used to show the presence of
+bugs, but never show their absence ” ... Edsger W.
+Dijkstra
+• « Beware of bugs in the above code; I have only
+proved it correct, not tried it. »...Donald E.
+Knuth
+6
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 7
+INTRODUCTION AUX MÉTHODES FORMELLES
+POUR LE GÉNIE LOGICIEL
+• Loi de Murphy: « Tout ce qui est susceptible de
+mal tourner tournera nécessairement mal. »
+« S'il existe au moins deux façons de faire quelque
+chose et qu'au moins l'une de ces façons
+peut entraîner une catastrophe, il se trouvera
+forcément quelqu'un quelque part pour emprunter
+cette voie. »
+Edward A. Murphy Jr
+7
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 8
+INTRODUCTION AUX MÉTHODES FORMELLES
+POUR LE GÉNIE LOGICIEL
+• 60 à 80% du coût total est la maintenance.
+• 20 fois plus cher de gérer un bug en production
+plutôt qu’en conception.
+• Les techniques classiques de Vérification sont :
+● La simulation
+● Le test
+• Inconvénients :
+● Ne garantissent pas l’exhaustivité de la
+vérification
+● Sont encore très manuelles, donc très
+coûteuses.
+8
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 9
+TROIS NOTIONS À DISTINGUER : TEST,
+VÉRIFICATION ET VALIDATION
+Test logiciel
+• Un test consiste généralement à exécuter un
+logiciel dans des conditions données, à observer
+son résultat et à le comparer au résultat attendu.
+• Le test permet de vérifier le comportement du
+programme pour ce scénario précis.
+• Attention : un test réussi signifie que le résultat
+observé est conforme au résultat attendu dans les
+conditions du test. Il ne prouve pas que tous les
+autres scénarios fonctionneront correctement.
+9
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 10
+TROIS NOTIONS À DISTINGUER : TEST, VÉRIFICATION
+ET VALIDATION
+La vérification
+• La vérification cherche à déterminer si le système respecte
+les exigences ou la spécification qui lui est applicable.
+• La question centrale est : « Construisons-nous
+correctement le système par rapport à ce qui a été
+spécifié ? »
+• Dans notre application de réservation, la spécification peut
+imposer la règle suivante :
+• « Un billet déjà réservé ne doit pas être attribué à un autre
+utilisateur. »
+• La vérification cherche à déterminer si le système respecte
+cette règle.
+• Elle peut s'appuyer sur des revues, des analyses statiques,
+des tests ou des méthodes formelles. Ces techniques
+n'apportent pas toutes le même type de garantie. 10,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 11
+TROIS NOTIONS À DISTINGUER : TEST,
+VÉRIFICATION ET VALIDATION
+La validation
+• La validation cherche à déterminer si le système
+développé répond réellement aux besoins de ses
+utilisateurs.
+• La question centrale est : « Construisons-nous le bon
+système ? »
+• Supposons que l'application respecte parfaitement sa
+spécification, mais que cette spécification ne prévoit pas la
+possibilité de modifier une réservation, alors que cette
+fonctionnalité est indispensable aux utilisateurs.
+• Le logiciel peut être conforme à sa spécification tout en
+étant inadapté au besoin réel.
+• La validation doit donc vérifier l'adéquation du système
+aux besoins attendus.
+11,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 12
+TABLEAU COMPARATIF
+Activité Question principale Exemple
+Test Quel résultat obtient- on pour ce scénario ?
+Réserver un billet
+disponible
+Vérification Le système respecte-t- il sa spécification ?
+Un billet réservé ne
+peut pas être attribué
+une deuxième fois
+Validation Le système répond-il
+au besoin réel ?
+Les utilisateurs
+peuvent-ils accomplir
+les opérations
+nécessaires ?
+12,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 13
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Une méthode formelle est une approche qui utilise des
+concepts mathématiques et des langages formels pour
+décrire, analyser ou vérifier un système logiciel.
+• Les méthodes formelles sont des techniques alternatives,
+fondées sur des bases mathématiques, permettant la
+spécification et le développement de systèmes, ainsi que la
+vérification automatique de propriétés.
+• Un éventail de langages et de techniques formels existe
+pour traiter différents types de propriétés à différents
+niveaux de développement des systèmes.
+• Avantage : non ambiguïté des mathématiques !
+13,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 14
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Les méthodes formelles en informatique sont des
+techniques rigoureuses basées sur la logique
+mathématique pour concevoir, spécifier, développer
+et vérifier des systèmes logiciels et matériels.
+14,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 15
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Selon la méthode utilisée, elle peut servir à :
+• préciser les exigences ;
+• décrire le comportement d'un système ;
+• exprimer des propriétés à respecter ;
+• démontrer qu'un programme satisfait certaines
+conditions ;
+• explorer automatiquement les états d'un modèle ;
+• détecter des comportements interdits.
+15,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 16
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Principe des méthodes formelles: Utiliser les outils
+mathématiques pour concevoir et si possible
+réaliser des systèmes informatiques.
+● Description formelle :
+utilisation d’un modèle mathématique pour décrire le
+comportement d’un système.
+● Spécification formelle :
+Exprimer des propriétés à l’aide d’un langage formel
+● Vérification formelle :
+Prouver formellement la satisfaction ou non d’une
+propriété
+16,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 17
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• L'idée générale est de remplacer une description trop
+ambiguë par une représentation suffisamment
+précise pour permettre un raisonnement rigoureux.
+• L'objectif des méthodes formelles est d'assurer la qualité des
+logiciels en proposant une méthode alternative aux méthodes
+de test traditionnelle. Cette méthode repose principalement
+sur un traitement symbolique des programmes et de propriétés
+logiques qui expriment ce que l'on attend de ces programmes:
+les spécifications.
+17,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 18
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Reprenons l'exemple du billet :
+• Une phrase informelle indique : « Un billet déjà
+réservé ne peut pas être réservé une deuxième
+fois. »
+• Cette phrase exprime une règle importante. Nous
+pouvons maintenant chercher à la représenter de
+manière plus précise !!
+18,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 19
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Définissons deux états : Disponible, Réservé.
+• Puis deux actions : Réserver, Annuler.
+• Le comportement attendu devient :
+19,,
+Disponible Réservé
+Réservé
+Annuler
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+Schéma : deux états « Disponible » et « Réservé ». Une flèche va de Disponible vers Réservé, avec l'étiquette « Réservé » telle qu'imprimée dans la figure. Une transition « Annuler » revient de Réservé vers Disponible.
+NOTE DE LECTURE
+Le texte de la diapositive nomme l'action « Réserver » ; la figure imprime « Réservé ». Il s'agit du nom de l'action de réservation, à distinguer du nom de l'état.
+
+CHAPITRE 1 — DIAPOSITIVE 20
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Nous pouvons alors examiner si une transition
+permettrait de réserver directement un billet
+déjà réservé. Si une telle transition existe dans le
+modèle, elle doit être justifiée ou corrigée.
+• Modéliser n'est pas encore tout vérifier: Le
+dessin précédent représente le comportement
+attendu. Il ne prouve pas automatiquement que
+le programme respecte ce comportement.
+20,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 21
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Pour vérifier la correction du système réel, il faut
+notamment préciser :
+• ce que signifie exactement chaque état ;
+• quelles actions sont autorisées ;
+• quelles propriétés doivent être respectées ;
+• comment le modèle est relié à l'implémentation ;
+• quelles hypothèses sont faites sur
+l'environnement.
+• Il est donc essentiel de distinguer le modèle du
+programme réel.
+21,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 22
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Du besoin à l'implémentation : cinq notions
+essentielles !!
+• 1-Le besoin: Le besoin décrit l'objectif de
+l'utilisateur.
+• Exemple :
+-« Je veux réserver un billet de train. »
+-Il répond principalement à la question : pourquoi
+le système est-il nécessaire ?
+22,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 23
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• 2-L'exigence: L'exigence précise un
+comportement ou une contrainte attendue.
+• Exemple :
+-« Un billet déjà réservé ne doit pas pouvoir être
+attribué à un autre utilisateur. »
+-Elle doit être suffisamment claire pour pouvoir
+être évaluée.
+23,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 24
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• 3-La spécification: La spécification décrit de
+manière structurée ce que le système doit faire et
+les contraintes qu'il doit respecter.
+• Elle peut être rédigée en langage naturel, avec
+des tableaux, des diagrammes ou à l'aide d'un
+langage formel.
+• Une spécification formelle cherche à réduire
+l'ambiguïté grâce à une notation mathématique
+définie.
+24,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 25
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Le modèle: Le modèle est une représentation
+abstraite du système.
+• Il peut décrire :
+• les états possibles ;
+• les actions ;
+• les transitions ;
+• les données ;
+• les communications ;
+• les propriétés pertinentes.
+• Le modèle est construit pour répondre à une
+question précise. Il ne doit pas nécessairement
+reproduire tous les détails de l'implémentation.
+25,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 26
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• L'implémentation: L'implémentation est le
+programme effectivement développé.
+• Par exemple, le modèle du billet peut être traduit
+en classes Java, en transactions de base de
+données et en interfaces.
+26,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 27
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Besoin →
+• Exigences ->
+• Spécification ->
+• Modèle Formel ->
+• Vérification de propriétés ->
+• Conception et implémentation ->
+• Test et autres vérifications ->
+• Validation,
+27,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 28
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Systèmes Critiques :
+•
+Un système critique est un système dont la
+panne peut avoir des conséquences
+dramatiques, des morts ou des blessés graves,
+des dégâts matériels importants,
+ou des conséquences graves pour
+l'environnement.
+28,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 29
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Domaines critiques :
+● les systèmes de transport : pilotage des avions, des
+trains, logiciels embarqués automobiles,
+● la production d'énergie : contrôle des centrales
+nucléaires,
+;
+● la santé : chaînes de production de médicaments,
+appareil médicaux (à rayonnement ou contrôle de dosages) ;
+● le système financier : paiement électronique ;
+● les applications militaires. Etc,
+29,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 30
+30,,
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+Est-ce que le système (par un modèle) satisfait la spécification (par une formule) ?
+Système (ex. : système HPC, application, etc.) — Modélisation → Modèle (ex. : modèle de transition d'états, modèle formel, etc.).
+Spécification : φ, exprimée par une formule logique, par exemple LTL ou CTL.
+Le modèle et la spécification sont les deux entrées de l'algorithme de model-checking, qui analyse le modèle par rapport à la formule.
+Oui : le système satisfait la spécification, M ⊨ φ.
+Non : le système ne satisfait pas la spécification, M ⊭ φ.
+Le symbole ⊨ représente la satisfaction.
+
+CHAPITRE 1 — DIAPOSITIVE 31
+• Qu'est-ce qu'une spécification formelle ?
+• Une spécification formelle décrit
+mathématiquement certaines exigences ou
+certains comportements attendus d'un système.
+• Son intérêt est de rendre les règles suffisamment
+précises pour permettre une analyse rigoureuse.
+• Exemple:
+• Nous souhaitons définir le comportement d'une
+fonction qui retire un montant d'un compte.
+• 31,,
+DÉCOUVRIR LES MÉTHODES FORMELLES
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 32
+• Supposons que :
+• le solde initial est (s) ;
+• le montant du retrait est (m) ;
+• un retrait valide nécessite (m>0) et ( m>= s).
+• Pour décrire ce que la fonction doit faire, on
+utilise des préconditions et des postconditions
+32,,
+DÉCOUVRIR LES MÉTHODES FORMELLES
+Dr. F. MEKAHLIA
+NOTE DE LECTURE
+Coquille confirmée visuellement dans le support : « m >= s » est imprimé ici. Pour un retrait sans découvert, il faut m <= s, comme l'indique correctement la précondition de la page 33.
+
+CHAPITRE 1 — DIAPOSITIVE 33
+• Précondition : [ s>=0 et-logique m>0 et- logique m<=s ]
+• La précondition représente les conditions qui
+doivent être satisfaites avant l'opération. càd Les
+trois conditions doivent donc être vraies pour que
+le retrait soit valide.
+33,,
+DÉCOUVRIR LES MÉTHODES FORMELLES
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 34
+• Postcondition : [ s’ =s-m ]
+• La postcondition exprime le résultat attendu
+après l'opération.
+• Ici, (s') désigne le nouveau solde.
+• Nous avons ainsi décrit une partie du contrat de
+la fonction sans imposer un algorithme
+particulier.
+• Plusieurs implémentations peuvent respecter ce
+contrat.
+34,,
+DÉCOUVRIR LES MÉTHODES FORMELLES
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 35
+• Pourquoi utilise-t-on une précondition et une
+postcondition ?
+• La précondition indique ce qui doit être vrai avant
+l'exécution de la fonction.
+• La postcondition indique ce qui doit être vrai après
+son exécution, si les conditions prévues sont
+respectées.
+• On peut résumer le contrat ainsi :
+• {si précondition est vrai donc Le retrait est
+valide} Exécution de la fonction du retrait { post
+condition corrcet: Le nouveau solde correspond
+au solde initial moins le retrait. }
+35,,
+DÉCOUVRIR LES MÉTHODES FORMELLES
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 36
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• L'idée importante en méthodes formelles : nous
+décrivons ce que la fonction doit respecter, sans
+imposer la manière de programmer cette
+fonction.
+• Par exemple, deux programmeurs peuvent
+utiliser des algorithmes différents, mais leurs
+implémentations doivent toutes les deux
+respecter le contrat.
+• Petite précision : ce contrat décrit le
+comportement d'un retrait valide. Pour couvrir
+aussi les retraits invalides, il faudrait spécifier ce
+que la fonction doit faire lorsqu'une précondition
+n'est pas satisfaite, par exemple refuser le
+retrait.
+36,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 37
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Pourquoi est-ce utile ?
+• Une description informelle comme « retirer un
+montant du compte » ne précise pas
+nécessairement :
+• si un retrait nul est accepté ;
+• si un montant négatif est interdit ;
+• si le solde peut devenir négatif ;
+• quel doit être le nouveau solde.
+• La spécification rend ces conditions explicites.
+• Elle permet ensuite de concevoir des tests et,
+avec une technique adaptée, de raisonner
+formellement sur le programme. 37,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 38
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Le rôle de l'abstraction:
+• Un modèle formel ne représente pas forcément
+tous les détails du système réel.
+• Il retient les informations nécessaires à l'analyse.
+• Prenons un feu de circulation.
+• Pour vérifier que deux directions ne sont jamais
+simultanément au vert, nous pouvons
+représenter uniquement les états des feux :
+38,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 39
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• A_VERT
+• A_orange
+• A_ROUGE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+• B_VERT
+• B_orange
+• B_ROUGE
+• Nous n'avons pas besoin de représenter la forme du boîtier,
+la couleur exacte des LED ou la température des
+composants pour étudier cette propriété logique.
+• Nous conservons les informations pertinentes et ignorons
+les détails qui n'influencent pas la propriété étudiée.
+• Cette démarche s'appelle l'abstraction.
+39,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 40
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Pourquoi l'abstraction est-elle importante ?
+• Sans abstraction, un système réel peut être trop
+complexe à analyser.
+• Avec une abstraction appropriée, on obtient un modèle
+plus simple, que l'on peut étudier.
+• Mais il existe un risque : si le modèle omet un élément
+essentiel, une propriété vérifiée sur le modèle peut ne
+pas être valable sur le système réel.
+• Il faut donc justifier les choix de modélisation et les
+hypothèses utilisées.
+40,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 41
+DÉCOUVRIR LES MÉTHODES FORMELLES
+Quelles propriétés voulons-nous vérifier ?
+• Jusqu'à présent, nous avons parlé de spécification et
+de modèle. Il reste à définir précisément ce que l'on
+veut vérifier.
+• Il ne suffit pas de construire un modèle : il faut
+formuler une question de correction.
+• Les propriétés les plus usuelles (il est montré que
+toute autre propriété peut être ramenée à une de ces
+propriétés ou à une combinaison de plusieurs d’entre
+elles)
+41,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 42
+DÉCOUVRIR LES MÉTHODES FORMELLES
+● Accessibilité : un état donné est accessible depuis
+l’état initial.
+● Invariance : tous les états du système vérifient une
+certaine propriété.
+● Les propriétés de sécurité (Sûreté ) -
+Safety: exprime qu'un événement ou un état
+indésirable ne doit jamais se produire.
+• On peut la résumer par :« Quelque chose de mauvais
+ne doit jamais arriver. »
+• Exemple : feu de circulation
+• Deux directions A et B ne doivent jamais être
+simultanément au vert.
+42,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 43
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Accessibilité (Reachability) : un état donné est
+accessible depuis l’état initial.
+• Invariance (Invariance) : tous les états du système
+vérifient une certaine propriété.
+• Sécurité (Sûreté ) «Safety»: Quelque chose de mauvais
+ne doit jamais arriver.
+• Vivacité «Liveness»: Quelque chose de bon finira par
+arriver.
+• Équité (Fairness): Quelque chose se produira infiniment
+souvent
+43,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 44
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Accessibilité (Reachability) : une propriété
+d'accessibilité indique qu'un état particulier du système
+peut être atteint à partir de l'état initial en suivant une
+suite de transitions.
+• Question à se poser : Est-il possible d'atteindre cet état ?
+• Exemple : feu de circulation
+• Un feu de circulation possède trois états : Rouge, Vert et
+Orange.
+• Si le système démarre à l'état Rouge, l'état Vert est
+accessible, car une transition permet de l'atteindre. En
+revanche, si un état « Panne » n'est relié à aucune
+transition accessible depuis l'état initial, cet état n'est pas
+accessible.
+À retenir : l'accessibilité concerne la possibilité d'atteindre
+un état. 44,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 45
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Invariance (Invariance) : une propriété d'invariance est une
+propriété qui doit rester vraie dans tous les états atteignables du
+système, depuis l'état initial.
+• Question à se poser : Cette propriété reste-t-elle toujours vraie
+?
+• Exemple : compte bancaire
+• Supposons qu'un compte bancaire ne doit jamais avoir un solde
+négatif. La propriété d'invariance est : s>=0
+• Cette propriété doit être vraie à chaque étape de l'exécution.
+• Solde initial : 1000 DA → propriété respectée.
+• Après un retrait de 300 DA : 700 DA → propriété respectée.
+• Après un retrait incorrect de 1200 DA : −200 DA → propriété
+violée.
+• Dans ce dernier cas, le système ne respecte pas l'invariance.
+• À retenir : l'invariance est une propriété qui doit toujours rester
+vraie. Elle constitue souvent une propriété de sûreté (Safety). 45,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 46
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Sécurité (Safety ): exprime qu'un événement ou
+un état indésirable ne doit jamais se produire.
+Exemple : feu de circulation ::: Deux directions A et B
+ne doivent jamais être simultanément au vert.
+Autres exemples
+• un compte bancaire ne doit pas accepter des retraits
+qui violent les règles de solde ;
+• deux processus ne doivent pas entrer simultanément
+dans une section critique exclusive ;
+• un billet ne doit pas être attribué à deux utilisateurs ;
+• un système ne doit pas autoriser une opération
+interdite. 46,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 47
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Vivacité «Liveness»: Une propriété de vivacité exprime
+qu'un événement souhaité finit par se produire.
+• Exemple : traitement d'une demande
+• Supposons qu'un utilisateur demande un service. Il ne
+suffit pas que le système évite les erreurs. Il faut aussi que
+la demande ne soit pas ignorée indéfiniment. Nous
+souhaitons donc garantir que toute demande persistante
+sera finalement traitée.
+Autres exemples :
+• une réservation valide finit par recevoir une réponse ;
+• un processus qui attend son tour finit par accéder à la
+ressource, sous les hypothèses de progression nécessaires ;
+• un feu finit par autoriser le passage d'une direction qui
+attend.
+47,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 48
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Attention : une propriété de vivacité nécessite souvent
+des hypothèses sur l'environnement ou
+l'ordonnancement. Si un processus peut être
+systématiquement privé de temps d'exécution, la
+progression n'est pas automatiquement garantie.
+48,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 49
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Équité (Fairness): l'équité est une condition qui
+empêche certaines exécutions du système de négliger
+indéfiniment une action ou un processus qui devrait
+pouvoir progresser.
+• Elle est particulièrement importante dans les
+systèmes concurrents et les systèmes répartis.
+• Question à se poser : Un processus risque-t-il
+d'attendre indéfiniment alors qu'il devrait pouvoir
+s'exécuter ?
+• Exemple : accès à une imprimante partagée
+49,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 50
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Deux processus, P_1 et P_2, souhaitent utiliser la
+même imprimante.
+• Si le système donne toujours la priorité à P_1, alors
+P_2 peut attendre indéfiniment, même s'il demande
+régulièrement l'accès à l'imprimante.
+• Un mécanisme équitable peut garantir que P_2
+obtiendra finalement son tour, sous les hypothèses
+nécessaires sur le fonctionnement du système.
+• À retenir : l'équité vise à éviter qu'un processus soit
+continuellement défavorisé. Elle contribue à garantir
+la progression des processus, mais ne garantit pas à
+elle seule que toutes les opérations terminent.
+50,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 51
+DÉCOUVRIR LES MÉTHODES FORMELLES
+• Synthèse des propriétés
+51,,
+Propriété Question principale Exemple
+Safety (Sûreté) Quelque chose de mauvais peut-il arriver ? Deux utilisateurs ne réservent pas la
+même place.
+Liveness (Vivacité) Quelque chose de bon finit-il par arriver ? Une demande finit par être traitée.
+Accessibilité Un état donné peut-il être atteint ? Le feu peut-il passer au vert ?
+Invariance Une propriété reste-t-elle toujours vraie ? Le solde du compte reste positif ou
+nul.
+Équité (Fairness) Un processus risque-t-il d'être
+indéfiniment négligé ?
+Chaque processus obtient
+éventuellement l'accès à
+l'imprimante.
+Dr. F. MEKAHLIA
+
+CHAPITRE 1 — DIAPOSITIVE 52
+Merci ☺
+52,,
+
+CHAPITRE 2 — DIAPOSITIVE 1
+UNIVERSITY OF SCIENCE AND TECHNOLOGY HOUARI BOUMEDIENE
+FACULTY OF COMPUTER SCIENCE
+Course
+Méthodes formelles pour GL
+ING 5 en Soft.Eng
+Dr MEKAHLIA Fatma Zohra
+Associate Professor
+Laboratoire de Modélisation, Vérification et Evaluation des Performances des systèmes
+complexes (MOVEP)
+Bureau 123
+1
+,,
+Chapter 2:
+Les principales familles de
+méthodes formelles
+
+CHAPITRE 2 — DIAPOSITIVE 2
+INTRODUCTION
+• Il existe plusieurs méthodes formelles parce que
+les problèmes à étudier sont différents.
+• Un programme séquentiel, un protocole réseau,
+un système embarqué, un système de contrôle,
+un système IOT et une application probabiliste
+ne se décrivent pas nécessairement de la même
+manière.
+• L'objectif n'est donc pas d'appliquer toutes les
+méthodes à tous les problèmes, mais de choisir
+celle qui correspond à la nature du système et à
+la propriété recherchée.
+2
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 3
+AUTOMATES ET SYSTÈMES DE TRANSITIONS
+• Un système de transitions représente :
+• les états possibles du système ;
+• les transitions entre ces états ;
+• les actions qui provoquent les changements.
+Exemple : réservation
+DISPONIBLE ── réserver ──→ RÉSERVÉ
+RÉSERVÉ ───── annuler ───→ DISPONIBLE
+• Ce modèle permet de comprendre les changements
+d'état autorisés.
+3
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 4
+AUTOMATES ET SYSTÈMES DE TRANSITIONS
+Quand l'utiliser ?
+• système de contrôle ;
+• protocole à états ;
+• interface réactive ;
+• système dont le comportement dépend d'un état
+courant.
+Limite : si le système contient beaucoup de
+variables et de composants, le nombre d'états peut
+devenir très élevé.
+4
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 5
+AUTOMATES COMMUNICANTS
+• Les automates communicants représentent
+plusieurs composants possédants chacun leurs
+états et interagissant par des communications ou
+des synchronisations.
+Exemple :
+• Client ←── requête / réponse ──→ Serveur
+• On peut étudier si le client attend correctement
+une réponse, si le serveur peut recevoir les
+requêtes et si certaines interactions conduisent à
+un blocage.
+5
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 6
+AUTOMATES COMMUNICANTS
+Quand les utiliser ?
+• protocoles de communication ;
+• systèmes distribués ;
+• composants concurrents ;
+• systèmes client-serveur.
+6
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 7
+RÉSEAUX DE PETRI
+• Les réseaux de Petri permettent de représenter la
+concurrence, la synchronisation et le partage de
+ressources.
+• Ils utilisent notamment des places, des transitions
+et des jetons.
+• Dans un modèle de réservation, un jeton peut
+représenter la disponibilité d'un billet. Une
+réservation consomme cette disponibilité et
+empêche une seconde réservation tant que le billet
+n'a pas été libéré.
+7
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 8
+RÉSEAUX DE PETRI
+Quand les utiliser ?
+• gestion de ressources ;
+• synchronisation ;
+• systèmes concurrents ;
+• workflows ;
+• processus industriels.
+8
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 9
+ALGÈBRES DE PROCESSUS
+• Les algèbres de processus offrent des notations
+mathématiques pour décrire et composer les
+comportements de processus concurrents.
+• Elles permettent notamment de raisonner sur la
+manière dont les processus interagissent et sur les
+différences ou similitudes entre leurs
+comportements.
+9
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 10
+ALGÈBRES DE PROCESSUS
+Quand les utiliser ?
+•description de systèmes concurrents ;
+•composition de composants ;
+•communication et synchronisation ;
+•comparaison de comportements.
+10,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 11
+LOGIQUE DE HOARE
+•La logique de Hoare permet de raisonner sur
+les programmes à partir de préconditions et de
+postconditions.
+• Sa notation fondamentale est :
+• [ {P}\ programme\ {Q} ]
+• où :
+•(P) est la précondition ;
+•(C) est une commande ou un programme ;
+•(Q) est la postcondition.
+11,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 12
+LOGIQUE DE HOARE
+Exemple :
+• [ {x=5} x:=x+1 {x=6} ]
+Lecture :
+• Si (x=5) avant l'exécution de l'instruction, alors
+(x=6) après cette instruction.
+• Cette logique sera particulièrement utile pour
+vérifier des programmes séquentiels.
+• Elle ne suffit toutefois pas, à elle seule, à traiter
+toutes les propriétés de concurrence et de
+comportement temporel.
+12,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 13
+LOGIQUES TEMPORELLES : LTL ET CTL
+• Les logiques temporelles permettent d'exprimer
+des propriétés qui portent sur l'évolution du
+système.
+Par exemple :
+• une situation dangereuse ne se produit jamais ;
+• une demande finit par être satisfaite ;
+• une ressource n'est jamais attribuée simultanément à
+deux processus.
+• cette logique permet d’exprimer propriétés sur
+séquences d’observations
+13,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 14
+LOGIQUES TEMPORELLES : LTL ET CTL
+• Utilisation de connecteurs temporels et de
+quantificateurs sur les chemins
+• Pas de variable (instants implicites), mais
+modalités.
+• Temporel ≠ temporisé : logiques temporelles ne
+quantifient pas écoulement du temps.
+• les deux logiques (approches) importantes sont :
+• LTL (Linear Temporal Logic) : propriétés des séquences
+d’exécutions (futur déterminé)
+• CTL (Computation Tree Logic): propriétés de l’arbre
+d’exécutions (tous les futurs possibles)
+14,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 15
+MODEL CHECKING
+• Le model checking est une technique de vérification
+automatique d'un modèle par rapport à une propriété
+formelle.
+Le principe général est :
+• Modèle du système
++
+• Propriété à vérifier
+↓
+• Model checker
+↓
+• La propriété est-elle satisfaite ?
+↓
+• Résultat et, si possible, contre-exemple
+15,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 16
+MODEL CHECKING
+• Un contre-exemple est une séquence de
+transitions montrant comment la propriété est
+violée.
+• Le model checking permet de vérifier
+systématiquement les comportements
+représentés par le modèle, dans les limites de la
+technique et de l'outil employés.
+• Il ne signifie pas que l'on peut automatiquement
+vérifier n'importe quel programme réel sans
+abstraction ni hypothèses.
+16,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 17
+MODEL CHECKING
+• Un contre-exemple est une séquence de
+transitions montrant comment la propriété est
+violée.
+• Le model checking permet de vérifier
+systématiquement les comportements
+représentés par le modèle, dans les limites de la
+technique et de l'outil employés.
+• Il ne signifie pas que l'on peut automatiquement
+vérifier n'importe quel programme réel sans
+abstraction ni hypothèses.
+17,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 18
+TYPES ABSTRAITS DE DONNÉES ET LANGAGE Z
+• Les types abstraits de données permettent de décrire
+les opérations d'une structure de données et les
+propriétés qu'elles doivent respecter,
+indépendamment de leur implémentation.
+• Le langage Z permet de spécifier formellement des
+états, des opérations et des invariants à l'aide de la
+théorie des ensembles et de la logique des prédicats.
+• Exemple : pour un compte bancaire, on peut définir
+un état représentant le solde et un invariant exigeant
+que ce solde reste non négatif.
+• Ces approches sont particulièrement utiles pour
+préciser les données et les contraintes structurelles.
+18,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 19
+MODÈLES PROBABILISTES
+• Certaines propriétés portent non seulement sur les
+comportements possibles, mais aussi sur leurs
+probabilités.
+Par exemple :
+• quelle est la probabilité qu'une requête soit traitée en moins
+d'un certain délai ?
+• quelle est la probabilité qu'un système subisse une défaillance ?
+• quelle est la probabilité d'atteindre un état indésirable ?
+• Les chaînes de Markov et le model checking
+probabiliste permettent d'étudier certains de ces
+problèmes.
+• Ces méthodes sont utiles lorsque les probabilités, la
+fiabilité ou l'évaluation des performances font partie
+des objectifs. 19,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 20
+COMMENT CHOISIR UNE MÉTHODE FORMELLE ?
+Partir du problème, et non du formalisme
+• ON ne doit pas choisir une méthode simplement parce
+qu'il nous la connaît. Main plutôt, on doit d'abord
+identifier ce qu'il faut représenter et vérifier.
+• Une démarche simple comporte quatre étapes.
+• Étape 1 : Identifier la nature du système
+• Est-ce un programme séquentiel, un système à états,
+un système concurrent, un protocole distribué ou un
+système probabiliste ?
+20,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 21
+COMMENT CHOISIR UNE MÉTHODE FORMELLE ?
+Étape 2 : Identifier la propriété
+• Veut-on vérifier une précondition et une postcondition,
+un invariant, une propriété temporelle, une absence de
+blocage ou une probabilité ?
+Étape 3 : Choisir un modèle adapté
+• Par exemple, un automate peut convenir pour décrire
+les états d'un feu de circulation, alors qu'un réseau de
+Petri peut mieux représenter des processus
+concurrents qui se partagent des ressources.
+Étape 4 : Choisir une technique de vérification
+• Une propriété peut être étudiée par raisonnement
+logique, preuve, analyse d'un modèle ou model
+checking.
+21,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 22
+COMMENT CHOISIR UNE MÉTHODE FORMELLE ?
+22,,
+Dr. F. MEKAHLIA
+Si le problème porte principalement sur... On peut envisager...
+Préconditions et postconditions d'un programme Logique de Hoare
+États et transitions Automates / systèmes de transitions
+Communication entre composants Automates communicants
+Concurrence et synchronisation Réseaux de Petri
+Composition de processus Algèbres de processus
+Propriétés sur l'évolution dans le temps LTL / CTL
+Vérification automatique d'un modèle Model checking
+Données et invariants Types abstraits / Z
+Probabilités et fiabilité Chaînes de Markov et méthodes probabilistes
+
+CHAPITRE 2 — DIAPOSITIVE 23
+COMMENT INTÉGRER LES MÉTHODES FORMELLES
+DANS LE CYCLE DE VIE ?
+Le cycle classique reste présent
+• Il serait incorrect de présenter les méthodes formelles
+comme un nouveau cycle qui supprimerait les tests.
+• Le cycle de développement conserve ses activités
+habituelles : besoins, exigences, conception,
+implémentation, tests, validation, déploiement et
+maintenance.
+• Ce qui change, c'est que certaines activités de
+spécification et de vérification peuvent être réalisées
+de manière plus rigoureuse, à différents moments du
+développement. 23,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 24
+COMMENT INTÉGRER LES MÉTHODES FORMELLES
+DANS LE CYCLE DE VIE ?
+• Besoins
+↓
+• Exigences
+↓
+• Spécification
+↓
+• Modélisation formelle
+↓
+• Vérification du modèle
+↓
+• Conception et implémentation
+↓
+• Vérification de l'implémentation + Tests
+↓
+• Validation
+↓
+• Déploiement
+↓
+• Maintenance 24,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 2 — DIAPOSITIVE 25
+QUE VÉRIFIE-T-ON À CHAQUE NIVEAU ?
+• Au niveau des exigences : cherche-t-on à
+éliminer les ambiguïtés et les contradictions ?
+• Au niveau de la spécification : les règles sont- elles cohérentes et suffisamment précises ?
+• Au niveau du modèle : le comportement
+représenté respecte-t-il les propriétés attendues ?
+25,,
+
+CHAPITRE 2 — DIAPOSITIVE 26
+QUE VÉRIFIE-T-ON À CHAQUE NIVEAU ?
+• Au niveau du programme : l'implémentation
+respecte-t-elle la spécification ou les propriétés
+établies ?
+• Au niveau des tests : le système réel se
+comporte-t-il comme prévu sur les scénarios
+sélectionnés ?
+• Ces activités se complètent, mais elles ne
+donnent pas automatiquement les mêmes
+garanties.
+26,,
+
+CHAPITRE 2 — DIAPOSITIVE 27
+QUE VÉRIFIE-T-ON À CHAQUE NIVEAU ?
+Exemple complet : feu de circulation
+• Le besoin est de contrôler deux directions
+routières.
+• Une exigence est : « Les deux directions ne
+doivent jamais être simultanément au vert. »
+• On construit ensuite un modèle avec des états et
+des transitions.
+• On exprime la propriété de sécurité.
+• On vérifie le modèle.
+27,,
+
+CHAPITRE 2 — DIAPOSITIVE 28
+QUE VÉRIFIE-T-ON À CHAQUE NIVEAU ?
+• On implémente le contrôleur.
+• On réalise des tests sur le logiciel et, selon le
+contexte, sur le système matériel.
+• Enfin, on valide que le système répond au besoin
+opérationnel.
+• La méthode formelle apporte une analyse
+rigoureuse du modèle. Les tests permettent
+également d'observer l'implémentation et son
+comportement dans son environnement.
+28,,
+
+CHAPITRE 2 — DIAPOSITIVE 29
+AVANTAGES ET LIMITES DES MÉTHODES FORMELLES
+• Réduire les ambiguïtés
+Une spécification formelle oblige à préciser les règles.
+• Détecter les erreurs plus tôt
+Une contradiction dans une spécification ou une
+transition incorrecte peut être identifiée avant que le
+logiciel soit complètement développé.
+• Raisonner sur les propriétés
+On peut exprimer des invariants, des propriétés de
+sécurité, des propriétés de vivacité et d'autres
+contraintes.
+29,,
+
+CHAPITRE 2 — DIAPOSITIVE 30
+AVANTAGES ET LIMITES DES MÉTHODES
+FORMELLES
+• Étudier les systèmes concurrents
+Les automates communicants, les réseaux de Petri
+et d'autres modèles permettent d'étudier les
+interactions entre processus.
+• Renforcer la confiance
+Les méthodes formelles peuvent fournir des
+garanties précises sur le modèle ou le programme
+étudié.
+30,,
+
+CHAPITRE 2 — DIAPOSITIVE 31
+AVANTAGES ET LIMITES DES MÉTHODES
+FORMELLES
+Les méthodes formelles présentent aussi des
+difficultés.
+• Elles demandent un effort de modélisation.
+• Certains formalismes nécessitent des connaissances
+mathématiques.
+• Un modèle incorrect peut conduire à une conclusion
+inadaptée au système réel.
+• Le nombre d'états peut devenir trop grand.
+• Certaines preuves demandent du temps et des
+compétences spécialisées.
+31,,
+
+CHAPITRE 2 — DIAPOSITIVE 32
+Merci ☺
+32,,
+
+CHAPITRE 3 — DIAPOSITIVE 1
+UNIVERSITY OF SCIENCE AND TECHNOLOGY HOUARI BOUMEDIENE
+FACULTY OF COMPUTER SCIENCE
+Course
+Méthodes formelles pour GL
+ING 5 en Soft.Eng
+Dr MEKAHLIA Fatma Zohra
+Associate Professor
+Laboratoire de Modélisation, Vérification et Evaluation des Performances des systèmes
+complexes (MOVEP)
+Bureau 123
+1
+,,
+Chapter 3:
+Logique de Hoare: spécification et vérification de programme
+
+CHAPITRE 3 — DIAPOSITIVE 2
+INTRODUCTION
+• En génie logiciel, le développement d’un
+programme ne consiste pas uniquement à écrire
+du code qui semble fonctionner. Il faut également
+s’assurer que le programme respecte les
+exigences qui lui sont imposées.
+2
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 3 — DIAPOSITIVE 3
+SYSTÈME DE RÉSERVATION DE PLACES POUR
+UN ÉVÉNEMENT.
+3
+,,
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+Le problème : système de réservation de places.
+Événement : 10 places au total. Un utilisateur fait une demande de réservation.
+Ce que doit faire le système :
+1. Vérifier qu'une place est disponible.
+2. Attribuer une place à l'utilisateur si possible.
+3. Diminuer le nombre de places disponibles.
+4. Confirmer la réservation.
+5. Rejeter la demande si aucune place n'est disponible.
+Organigramme : demande de réservation → une place disponible ?
+Oui → attribuer la place + diminuer le compteur + confirmer.
+Non → rejeter la demande.
+
+CHAPITRE 3 — DIAPOSITIVE 4
+SYSTÈME DE RÉSERVATION DE PLACES POUR
+UN ÉVÉNEMENT
+4
+,,
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+La diapositive reprend le système de réservation et ajoute quatre erreurs possibles :
+1. Le nombre de places devient négatif : places disponibles = -1.
+2. Le système confirme une réservation alors qu'il n'y a plus de place.
+3. Le compteur n'est pas correctement mis à jour : il affiche 10 places disponibles alors qu'une place a été prise.
+4. Une réservation est confirmée sans que la place ait réellement été attribuée.
+
+CHAPITRE 3 — DIAPOSITIVE 5
+SYSTÈME DE RÉSERVATION DE PLACES POUR
+UN ÉVÉNEMENT
+• La question fondamentale est donc la suivante :
+• Comment démontrer que le programme
+respecte les règles de réservation, et pas
+seulement vérifier qu’il fonctionne pour
+quelques exemples ?
+5
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 3 — DIAPOSITIVE 6
+6
+,,
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+Comment Hoare aide à spécifier et à garantir la correction ?
+La logique de Hoare permet de décrire, pour chaque étape, ce qui doit être vrai avant et après l'exécution d'une action.
+Exemple de spécification avec Hoare :
+1. Vérification de la disponibilité : {places >= 0} if places > 0 then ... {places >= 0}.
+2. Attribution de la place : {places > 0 ∧ user ∉ reservations} attribuer_place(user) {user ∈ reservations}.
+3. Mise à jour du compteur : {places > 0} places := places - 1 {places >= 0}.
+4. Confirmation : {user ∈ reservations ∧ places >= 0} confirmer() {reservation_confirmée(user)}.
+5. Rejet si aucune place : {places = 0} rejeter() {aucune réservation confirmée}.
+Que garantit Hoare ? Le nombre de places ne devient jamais négatif ; une réservation n'est confirmée que si une place a réellement été attribuée ; le compteur est correctement mis à jour ; les branches succès/échec sont séparées et vérifiées.
+En résumé : passer d'un programme qui « semble correct » à une spécification formelle prouvant le respect des règles, même dans les situations particulières.
+NOTE DE LECTURE
+Il s'agit des contrats schématiques affichés dans l'infographie. Leur preuve exige aussi de préciser les effets des opérations comme attribuer_place et confirmer.
+
+CHAPITRE 3 — DIAPOSITIVE 7
+DÉFINITION DE LA LOGIQUE DE HOARE
+• La logique de Hoare est une méthode de
+raisonnement formel permettant de spécifier et de
+vérifier la correction d’un programme. Elle permet de
+raisonner sur les effets des instructions à partir de
+propriétés exprimées sous forme logique.
+• Elle repose sur trois éléments :
+• une précondition : ce qui doit être vrai avant
+l’exécution ;
+• une instruction ou un programme : ce qui est exécuté ;
+• une postcondition : ce qui doit être vrai après
+l’exécution.
+• Ces trois éléments forment un triplet de Hoare. 7
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 3 — DIAPOSITIVE 8
+DÉFINITION DE LA LOGIQUE DE HOARE
+8
+,,
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+Le triplet de Hoare : une façon de spécifier et de garantir la correction d'un programme.
+Un triplet {P} C {Q} exprime que, si la précondition P est vraie avant l'exécution du code C, alors la postcondition Q sera vraie après son exécution.
+Exemple : réservation de places. Le système dispose de 10 places ; un utilisateur effectue une réservation.
+Précondition P : 0 <= nbPlaces <= 10 ; utilisateur valide ; aucune réservation en cours pour cet utilisateur.
+Code C :
+if nbPlaces > 0 then
+    attribuerPlace();
+    nbPlaces := nbPlaces - 1;
+    confirmer();
+else
+    rejeter();
+end if
+Postcondition Q : 0 <= nbPlaces <= 10. Si la réservation est confirmée : nbPlaces = nbPlaces_0 - 1 et une place est attribuée à l'utilisateur. Sinon : nbPlaces = nbPlaces_0 et aucune place n'est attribuée.
+Pourquoi cela aide ? Raisonner sur la correction sans exécuter le programme ; vérifier que les propriétés importantes sont conservées ; détecter les erreurs possibles ; prouver le respect des règles de réservation.
+Erreurs possibles sans spécification correcte : nombre de places négatif ; confirmation sans place disponible ; compteur mal mis à jour ; réservation confirmée sans attribution.
+Le triplet relie une précondition (ce que l'on suppose avant), un programme (le code à vérifier) et une postcondition (ce que l'on garantit après).
+NOTE DE LECTURE
+La lecture « après l'exécution » doit être précisée : en correction partielle, Q est garanti si l'exécution termine normalement. La terminaison demande une preuve supplémentaire.
+
+CHAPITRE 3 — DIAPOSITIVE 9
+LE PROGRAMME ET SON ÉTAT
+• Pour raisonner formellement sur un programme,
+il faut préciser les variables qui décrivent son
+état.
+• Un état peut être représenté par une affectation
+de valeurs à ces variables,
+• L'état décrit donc les valeurs des variables à un
+instant donné de l'exécution.
+• Une instruction transforme généralement un état
+en un autre état.
+• Par exemple : x := x + 2
+• À partir de l'état x=3, l'exécution produit
+l'état x=5.
+9
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 3 — DIAPOSITIVE 10
+LES ASSERTIONS
+10,,
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+Les assertions peuvent utiliser :
+1. Les comparaisons =, ≠, <, ≤, >, ≥. Exemples : nbPlaces = 0 ; nbPlaces ≠ 10 ; nbPlaces < 5 ; nbPlaces ≤ 10 ; nbPlaces > 0 ; nbPlaces ≥ 0.
+2. Les connecteurs logiques ∧, ∨, ¬, qui combinent ou inversent des propositions. Exemples : nbPlaces > 0 ∧ utilisateurValide ; nbPlaces = 0 ∨ nbPlaces < 0 ; ¬(nbPlaces = 0).
+3. L'implication logique ⇒, qui exprime qu'une condition en entraîne une autre. Exemples affichés : nbPlaces > 0 ⇒ réservationPossible ; (nbPlaces = 0 ∧ réservationConfirmée) ⇒ rejetDemande.
+4. Les quantificateurs : ∀, « pour tout » ; ∃, « il existe ».
+Exemples universels : ∀u ∈ utilisateurs, u.valide = vrai ; ∀p ∈ places, 0 ≤ p ≤ 10.
+Exemples existentiels : ∃u ∈ utilisateurs, u.reservationActive = vrai ; ∃p ∈ places, p.disponible = vrai.
+En résumé : les assertions combinent comparaisons, connecteurs, implication et éventuellement quantificateurs pour exprimer précisément les conditions et propriétés à vérifier.
+NOTE DE LECTURE
+Ces exemples sont reproduits comme illustrations syntaxiques du support ; ils ne constituent pas à eux seuls une spécification complète et cohérente du système.
+
+CHAPITRE 3 — DIAPOSITIVE 11
+LOGIQUE PROPOSITIONNELLE ET PRÉDICATS
+11,,
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+Connecteurs logiques : combiner des propositions pour former de nouvelles assertions.
+Négation : ¬P, négation de P. Exemple : x ≤ 0 si P est x > 0.
+Conjonction : P ∧ Q, P et Q. Exemple : x > 0 ∧ y > 0.
+Disjonction : P ∨ Q, P ou Q. Exemple : x = 0 ∨ x = 1.
+Implication : P ⇒ Q, si P alors Q. Exemple : x > 1 ⇒ x > 0.
+Équivalence : P ⇔ Q ; P et Q ont la même valeur logique.
+À retenir : construire des assertions plus complexes à partir de propositions simples ; exprimer des conditions, relations et règles dans les spécifications ; utiliser ces connecteurs dans les préconditions, postconditions et invariants.
+
+CHAPITRE 3 — DIAPOSITIVE 12
+PRÉDICATS ET VARIABLES
+• Un prédicat est une expression logique dont la
+valeur de vérité dépend des valeurs des variables.
+• Les préconditions et postconditions sont
+généralement des prédicats sur l'état du
+programme.
+12,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 3 — DIAPOSITIVE 13
+LES RÈGLES FONDAMENTALES DE LA LOGIQUE DE
+HOARE
+• Règle de l’affectation: La règle de l’affectation
+permet de déterminer la condition qui doit être
+vraie avant l’exécution pour obtenir le résultat
+souhaité après l’exécution.
+• Exemple :
+• On considère l’instruction x:=x+2 et on souhaite
+obtenir x=10 à la fin.
+• Avant l’exécution : x=8.
+• Instruction exécutée : x:=x+2
+• Après l’exécution : x=10
+• On obtient le triplet de Hoare :
+13,,
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+Triplet affiché : {x = 8} x := x + 2 {x = 10}.
+
+CHAPITRE 3 — DIAPOSITIVE 14
+LES RÈGLES FONDAMENTALES DE LA
+LOGIQUE DE HOARE
+• La règle de la séquence permet de vérifier un
+programme composé de plusieurs instructions
+exécutées l’une après l’autre. Le résultat de la
+première instruction devient le point de départ de
+la deuxième.
+• Exemple :
+• On considère le programme :
+x := x + 1;
+y := x * 2;
+14,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 3 — DIAPOSITIVE 15
+LES RÈGLES FONDAMENTALES DE LA LOGIQUE DE
+HOARE
+• On suppose initialement que x=2.
+Première instruction (C1) : x:=x+1, donc x=3.
+Deuxième instruction (C2): y:=x*2, donc y=6.
+• On obtient le triplet de Hoare :
+15,,
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+Triplet affiché : {x = 2} C1 ; C2 {x = 3 ∧ y = 6}, avec C1 : x := x + 1 et C2 : y := x * 2.
+
+CHAPITRE 3 — DIAPOSITIVE 16
+LES RÈGLES FONDAMENTALES DE LA
+LOGIQUE DE HOARE
+• La règle de la condition permet de vérifier un
+programme qui contient un choix entre deux
+branches. Il faut vérifier que chaque branche
+garantit le résultat souhaité.
+• Exemple : On considère le programme :
+• si x >= 0 alors
+• y := x
+• sinon
+• y := -x
+• On veut garantir que y >=0.
+• Première branche : si x >= 0, alors y:=x, donc y>0.
+• Deuxième branche : si x<0, alors y:=-x, donc y>0. 16,,
+Dr. F. MEKAHLIA
+NOTE DE LECTURE
+Le support écrit « donc y > 0 » dans la première branche. Si x = 0, y = 0 ; la conclusion correcte est y >= 0. Le résultat global annoncé aux pages 16–17 est bien y >= 0.
+
+CHAPITRE 3 — DIAPOSITIVE 17
+LES RÈGLES FONDAMENTALES DE LA
+LOGIQUE DE HOARE
+• Les deux branches garantissent que y >= 0. On
+obtient donc :
+17,,
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+Triplet affiché : {true} C {y ≥ 0}, où C est la conditionnelle calculant y := x si x ≥ 0, sinon y := -x.
+
+CHAPITRE 3 — DIAPOSITIVE 18
+LES RÈGLES FONDAMENTALES DE LA
+LOGIQUE DE HOARE
+• La règle de conséquence permet d’adapter une
+preuve existante en imposant une condition
+initiale plus stricte ou en acceptant un résultat
+final moins exigeant.
+• Exemple : On considère l’instruction :
+x:=x+1
+• On sait que :
+• Or, si x=6, alors x >= 0. On peut donc remplacer
+la postcondition x=6 par une condition moins
+stricte, x >= 0. 18,,
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+Triplet connu affiché : {x = 5} x := x + 1 {x = 6}.
+
+CHAPITRE 3 — DIAPOSITIVE 19
+LES RÈGLES FONDAMENTALES DE LA
+LOGIQUE DE HOARE
+• On obtient :
+19,,
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+Triplet obtenu : {x = 5} x := x + 1 {x ≥ 0}.
+
+CHAPITRE 3 — DIAPOSITIVE 20
+PRÉCONDITION LA PLUS FAIBLE
+• La précondition la plus faible permet de
+déterminer la condition minimale qui doit être
+vraie avant l’exécution d’un programme pour
+garantir le résultat souhaité après son exécution.
+• La précondition la plus faible d’un programme C,
+pour une postcondition Q, est notée :
+20,,
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+Notation affichée : wp(C, Q).
+
+CHAPITRE 3 — DIAPOSITIVE 21
+PRÉCONDITION LA PLUS FAIBLE
+• Elle représente la condition la moins restrictive
+qui garantit que, si le programme termine, le
+résultat obtenu satisfait la postcondition Q.
+• On parle de précondition la plus faible parce
+qu’elle impose le moins de contraintes possible.
+Toute autre précondition suffisante pour garantir
+Q doit impliquer cette précondition.
+• Exemple: Considérons le programme :
+x := x + 3
+• On souhaite obtenir après l’exécution :
+21,,
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+Postcondition de l'exemple : Q : x > 7, pour le programme x := x + 3.
+NOTE DE LECTURE
+Cette page décrit une garantie « si le programme termine », donc une lecture de correction partielle. Dans une convention fréquente, wlp désigne la plus faible précondition libérale (correction partielle) et wp inclut la terminaison. Les exemples d'affectations et de compositions sans boucle du support ne posent pas ce problème de terminaison.
+
+CHAPITRE 3 — DIAPOSITIVE 22
+PRÉCONDITION LA PLUS FAIBLE
+• Pour trouver la précondition la plus faible, on
+remplace x par x+3 dans la postcondition :
+• On obtient :
+• Donc :
+22,,
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+wp(x := x + 3, x > 7)
+On obtient : x + 3 > 7.
+Donc : wp(x := x + 3, x > 7) = x > 4.
+
+CHAPITRE 3 — DIAPOSITIVE 23
+PRÉCONDITION LA PLUS FAIBLE
+• La précondition la plus faible se calcule selon la
+structure du programme.
+- Affectation : on remplace la variable modifiée par
+son expression dans la postcondition.
+*Séquence : on calcule d’abord la précondition de
+la deuxième instruction, puis celle de la première.
+23,,
+TRANSCRIPTION DES ELEMENTS VISUELS
+Affectation : wp(x := E, Q) = Q[E/x].
+Séquence : wp(C1 ; C2, Q) = wp(C1, wp(C2, Q)).
+
+CHAPITRE 3 — DIAPOSITIVE 24
+PRÉCONDITION LA PLUS FAIBLE
+• Condition : on vérifie les deux branches en tenant
+compte de la condition qui déclenche chacune
+d’elles.
+24,,
+Dr. F. MEKAHLIA
+TRANSCRIPTION DES ELEMENTS VISUELS
+Conditionnelle :
+wp(if B then C1 else C2, Q)
+  = (B ⇒ wp(C1, Q)) ∧ (¬B ⇒ wp(C2, Q)).
+
+CHAPITRE 3 — DIAPOSITIVE 25
+LES NOTIONS ESSENTIELLES SONT LES SUIVANTES :
+Notion Rôle
+Assertion Exprimer une propriété logique de l'état du programme.
+Précondition Définir les conditions initiales nécessaires.
+Postcondition Décrire le résultat attendu.
+Triplet de Hoare Relier une précondition, un programme et une
+postcondition.
+Règle d'affectation Déterminer les conditions nécessaires avant une
+affectation.
+Règle de séquence Composer les preuves de plusieurs instructions.
+Règle de condition Vérifier les différentes branches d'une structure
+conditionnelle.
+Règle de conséquence Renforcer une précondition ou affaiblir une
+postcondition.
+Précondition la plus faible Calculer la condition minimale suffisante pour obtenir
+un résultat.
+Invariant de boucle Démontrer une propriété préservée au cours des
+itérations.
+Variante de boucle Justifier la terminaison.
+Correction partielle Garantir le résultat si le programme termine
+normalement.
+Correction totale Garantir le résultat et la terminaison.
+25,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 3 — DIAPOSITIVE 26
+Merci ☺
+26,,
+
+CHAPITRE 3 — DIAPOSITIVE 27
+Merci ☺
+27,,
+
+CHAPITRE 3 — DIAPOSITIVE 28
+Merci ☺
+28,,
+
+CHAPITRE 3 — DIAPOSITIVE 29
+Merci ☺
+29,,
+
+CHAPITRE 4 — DIAPOSITIVE 1
+UNIVERSITY OF SCIENCE AND TECHNOLOGY HOUARI BOUMEDIENE
+FACULTY OF COMPUTER SCIENCE
+Course
+Méthodes formelles pour GL
+ING 5 en Soft.Eng
+Dr MEKAHLIA Fatma Zohra
+Associate Professor
+Laboratoire de Modélisation, Vérification et Evaluation des Performances des systèmes
+complexes (MOVEP)
+Bureau 123
+1
+,,
+Chapter 4:
+Automates et systèmes de transitions
+
+CHAPITRE 4 — DIAPOSITIVE 2
+INTRODUCTION
+Lors du développement d’un logiciel, il ne suffit
+pas de définir les données qu’il manipule et les
+opérations qu’il réalise. Il faut également
+comprendre comment son comportement évolue
+au cours du temps, quelles actions sont
+autorisées, dans quelles conditions un état peut
+être atteint et quels comportements doivent être
+interdits.
+2
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 4 — DIAPOSITIVE 3
+INTRODUCTION
+Prenons l’exemple d’un système de réservation
+de places en ligne.
+➔ Une demande de réservation peut être en
+attente, confirmée ou rejetée.
+➔ Une demande confirmée ne devrait pas être
+confirmée une seconde fois
+➔ et une demande rejetée ne devrait pas devenir
+confirmée sans une nouvelle opération
+explicitement prévue.
+3
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 4 — DIAPOSITIVE 4
+INTRODUCTION
+Comment représenter ces comportements de
+manière précise ? Comment vérifier qu’une
+transition est autorisée ? Comment détecter un
+état qui ne devrait jamais être atteint ?
+Les automates finis et les systèmes de
+transitions permettent de répondre à ces
+questions en représentant le système à travers
+ses états et les transitions qui les relient.
+4
+,,
+Dr. F. MEKAHLIA
+
+CHAPITRE 4 — DIAPOSITIVE 5
+Modèles Formels à Base
+d’automates
+5
+
+CHAPITRE 4 — DIAPOSITIVE 6
+AUTOMATE
+Un automate est une machine abstraite utilisée
+dans l’étude des langages formels. Le Terme
+automate est un terme générique qui désigne de
+nombreuses variantes :
+1- Systèmes de transitions (étiquetées)
+2- Structures de Kripke (étiquetés), ....
+● Le comportement d’un automate est dirigé par
+un mot fourni en entrée.
+● un mot est une séquence ou suite de symboles
+appelés alphabet.
+6
+
+CHAPITRE 4 — DIAPOSITIVE 7
+AUTOMATE
+Le comportement d’un automate est dirigé par un
+mot fourni en entrée.
+un mot est une séquence ou suite de symboles
+appelés alphabet.
+L’automate prend un mot en entrée et démarre de
+son état initial. Il parcourt le mot en utilisant les
+transitions afin de déterminer, pour chaque lettre,
+le prochain état à visiter.
+Si, à la fin de la lecture, la machine est dans un
+état accepteur ou final, on dit qu’elle accepte
+l’entrée. Autrement, on dit qu’elle la rejette.
+L’ensemble des entrées acceptées forme un
+langage L, qui est le langage accepté par
+l’automate.
+7
+
+CHAPITRE 4 — DIAPOSITIVE 8
+AUTOMATE
+Un automate peut être déterministes ou non
+déterministes.
+Dans un automate déterministe, pour chaque état
+et chaque symbole d'entrée, il existe au maximum
+un seul état suivant (exactement un si l'automate
+est complet). Autrement dit, il n'y a aucun choix à
+faire : le comportement est déterminé.
+8
+
+CHAPITRE 4 — DIAPOSITIVE 9
+AUTOMATE
+Dans un automate non déterministe, pour un
+même état et un même symbole d'entrée, plusieurs
+transitions peuvent être possibles. L'automate
+peut donc avoir plusieurs états suivants possibles.
+L’automate est dit fini s’il possède un nombre fini
+d’états distincts.
+9
+
+CHAPITRE 4 — DIAPOSITIVE 10
+QU’EST-CE QU’UN ÉTAT ?
+Un état décrit une situation possible d’un système
+à un instant donné. Il caractérise les informations
+pertinentes pour comprendre le comportement du
+système et déterminer quelles actions peuvent être
+exécutées.
+Un état n’est donc pas nécessairement une seule
+variable : il peut représenter une combinaison de
+plusieurs valeurs.
+10
+
+CHAPITRE 4 — DIAPOSITIVE 11
+UN ÉTAT
+Exemple : système de réservation
+Considérons une demande de réservation. Son état peut
+être représenté par une variable statut :
+● EnAttente : la demande a été reçue, mais elle n’a
+pas encore été traitée ;
+● Confirmee : une place a été attribuée à la demande ;
+● Rejetee : la demande n’a pas pu être acceptée
+Ces états constituent une abstraction : on ne représente
+pas ici tous les détails techniques du système, comme
+l’identifiant de l’utilisateur, l’heure de la demande ou les
+informations de paiement. 11
+
+CHAPITRE 4 — DIAPOSITIVE 12
+ÉVÉNEMENT
+Un événement est une occurrence qui peut déclencher une évolution du
+système.
+Dans notre application, les événements peuvent être :
+● soumettre : l’utilisateur envoie une demande ;
+● verifierDisponibilite : le système vérifie les places disponibles ;
+● confirmer : le système confirme la réservation ;
+● rejeter : le système refuse la demande ;
+● annuler : une réservation confirmée est annulée, si cette fonctionnalité est
+prévue.
+Il faut distinguer l’état de l’événement : l’état décrit une situation, tandis que l’
+événement correspond à une action ou à une occurrence susceptible de
+provoquer un changement.
+Par exemple, EnAttente est un état, alors que confirmer est un événement
+12
+
+CHAPITRE 4 — DIAPOSITIVE 13
+TRANSITION
+Une transition représente le passage d’un état à un
+autre, éventuellement à la suite d’un événement et
+sous certaines conditions.
+On peut la représenter ainsi :
+Exemple :
+Cette transition n’est autorisée que si une place est
+disponible.
+Une autre transition est possible lorsque toutes les
+places sont déjà attribuées :
+13
+TRANSCRIPTION DES ELEMENTS VISUELS
+Notation : État courant — événement → Nouvel état.
+Exemple : EnAttente — place disponible → Confirmee.
+La transition de rejet est explicitée à la page 28.
+
+CHAPITRE 4 — DIAPOSITIVE 14
+TRANSITION
+Ainsi, une transition peut être associée à une
+condition, appelée aussi garde, qui doit être
+satisfaite pour que le changement d’état puisse
+avoir lieu
+14
+
+CHAPITRE 4 — DIAPOSITIVE 15
+ÉTAT, ÉVÉNEMENT ET TRANSITION
+15
+Notion Signification Exemple
+État Situation du système EnAttente
+Événement Action ou occurrence confirmer
+Condition (garde) Condition à satisfaire placesDisponibles > 0
+Transition Changement d’état autorisé EnAttente → Confirmee
+
+CHAPITRE 4 — DIAPOSITIVE 16
+SYSTÈME DE TRANSITIONS ÉTIQUETÉS (STE)
+Un système de transitions étiquetées A est un
+quadruplet A = <S; S0; E; R> où :
+- S est un ensemble fini d’états,
+- S0 S est l’ensemble des états initiaux,
+- E est un ensemble fini d’étiquettes (noms
+d’actions ou d’événements),
+- R S x E x S est l’ensemble de transitions
+étiquetées,
+16
+TRANSCRIPTION DES ELEMENTS VISUELS
+A = ⟨S, S0, E, R⟩
+S0 ⊂ S.
+R ⊂ S × E × S.
+NOTE DE LECTURE
+Le support utilise le signe ⊂ pour exprimer l'inclusion. On rencontre aussi la convention ⊆ ; l'idée essentielle est que les états initiaux sont des états du système et que les transitions sont des triplets état/action/état.
+
+CHAPITRE 4 — DIAPOSITIVE 17
+AUTOMATES FINIS : DÉFINITION ET REPRÉSENTATION
+Un automate fini est un modèle mathématique qui
+représente un système possédant un nombre fini d’
+états et des transitions entre ces états.
+Dans sa forme classique, un automate fini
+déterministe est défini par le tuple :
+17
+TRANSCRIPTION DES ELEMENTS VISUELS
+Tuple affiché : A = (Q, Σ, δ, q0, F).
+
+CHAPITRE 4 — DIAPOSITIVE 18
+AUTOMATES FINIS : DÉFINITION ET REPRÉSENTATION
+où :
+● Q : ensemble fini des états ;
+● Σ: alphabet des événements ou symboles
+d’entrée ;
+● δ: fonction de transition ;
+● q_0 : état initial ;
+● F : ensemble des états finaux.
+Pour un automate déterministe classique, la
+fonction de transition est :
+18
+TRANSCRIPTION DES ELEMENTS VISUELS
+Fonction de transition affichée : δ : Q × Σ → Q.
+NOTE DE LECTURE
+Cette fonction totale correspond au cas déterministe complet. La page 8 distingue justement l'automate déterministe éventuellement incomplet, où au plus une transition est définie par couple état/symbole.
+
+CHAPITRE 4 — DIAPOSITIVE 19
+AUTOMATES FINIS : DÉFINITION ET REPRÉSENTATION
+Elle associe à chaque état et à chaque symbole
+d’entrée un état suivant.
+Cette définition classique est utile pour
+comprendre les automates finis. Pour la
+modélisation de logiciels, on utilise également des
+automates d’états avec des transitions
+conditionnelles et des systèmes de transitions plus
+généraux.
+19
+
+CHAPITRE 4 — DIAPOSITIVE 20
+REPRÉSENTATION GRAPHIQUE
+Un automate est généralement représenté par un
+graphe orienté :
+● les sommets représentent les états ;
+● les flèches représentent les transitions ;
+● les étiquettes des flèches indiquent les
+événements ou conditions ;
+● une flèche entrante sans origine visible désigne
+l’état initial ;
+● les états finaux sont généralement représentés
+par un double cercle dans les automates
+classiques.
+20
+
+CHAPITRE 4 — DIAPOSITIVE 21
+REPRÉSENTATION GRAPHIQUE
+●
+21
+TRANSCRIPTION DES ELEMENTS VISUELS
+Schéma : une flèche Début entre dans l'état En attente.
+En attente — Place disponible → Confirmée.
+En attente — Aucune place → Rejetée.
+Confirmée et Rejetée sont représentées par des doubles cercles.
+
+CHAPITRE 4 — DIAPOSITIVE 22
+AUTOMATE DÉTERMINISTE ET NON DÉTERMINISTE
+Dans un automate déterministe, pour un état donné et un
+événement donné, il existe au plus une transition possible
+vers un état suivant.
+Dans un automate non déterministe, plusieurs transitions
+peuvent être possibles pour un même état et un même
+événement. Le modèle peut alors représenter plusieurs
+évolutions possibles.
+Il est important de noter que le non-déterminisme ne
+signifie pas automatiquement qu’il existe des probabilités. Il
+indique seulement que plusieurs évolutions sont possibles.
+Pour représenter la probabilité de chaque évolution, il faut
+utiliser un modèle probabiliste.
+22
+
+CHAPITRE 4 — DIAPOSITIVE 23
+QUAND UTILISER UN AUTOMATE FINI ?
+Les automates sont particulièrement utiles pour
+modéliser :
+● le cycle de vie d’une demande ;
+● les états d’une commande dans un commerce
+électronique ;
+● l’authentification d’un utilisateur ;
+● les états d’un protocole de communication ;
+● les phases d’une tâche dans un système logiciel.
+Ils sont faciles à visualiser et à simuler. Cependant,
+lorsque le comportement dépend de plusieurs
+composants qui évoluent simultanément, un modèle
+plus général peut être nécessaire.
+23
+
+CHAPITRE 4 — DIAPOSITIVE 24
+ÉTATS INITIAUX, ÉTATS TERMINAUX ET TRANSITIONS
+L’état initial est l’état dans lequel le système se trouve au début de son
+exécution.
+Dans le système de réservation, on peut distinguer deux niveaux :
+● l’état initial du système global : aucune demande n’a encore été traitée ;
+● l’état initial d’une demande : la demande n’a pas encore été soumise.
+Pour notre modèle du cycle de vie d’une demande, nous choisissons
+EnAttente comme état initial, en considérant que la demande vient d’être
+soumise et enregistrée.
+Le choix de l’état initial dépend donc de la frontière du système étudié. Si l’on
+veut modéliser le processus depuis l’action de l’utilisateur, on peut ajouter un état
+NonSoumise et une transition vers EnAttente.
+24
+
+CHAPITRE 4 — DIAPOSITIVE 25
+ÉTATS INITIAUX, ÉTATS TERMINAUX ET TRANSITIONS
+Un état intermédiaire est un état par lequel le système peut passer
+sans que le processus soit terminé.
+Par exemple, une demande peut passer par les états suivants :
+Soumise → EnAttente → EnCoursDeTraitement →
+Confirmee
+L’état EnCoursDeTraitement permet de représenter une étape
+supplémentaire entre la réception de la demande et la décision
+finale.
+Les états intermédiaires sont utiles lorsque le processus contient
+plusieurs étapes, des validations ou des interactions avec d’autres
+composants.
+25
+
+CHAPITRE 4 — DIAPOSITIVE 26
+ÉTATS INITIAUX, ÉTATS TERMINAUX ET TRANSITIONS
+Un état terminal représente un état dans lequel le processus étudié est
+considéré comme terminé.
+Dans notre exemple, on peut considérer que les états terminaux sont :
+● Confirmee ;
+● Rejetee.
+Une fois la demande confirmée ou rejetée, le processus de traitement initial
+est terminé.
+Attention : un état terminal n’est pas nécessairement un état sans transition
+dans tous les types de systèmes. Dans notre modèle simplifié, il n’a pas de
+transition sortante. Dans un système plus complet, une réservation
+confirmée pourrait ensuite être annulée, ce qui nécessiterait de représenter
+un nouveau comportement.
+26
+
+CHAPITRE 4 — DIAPOSITIVE 27
+Proposition atomique
+Proposition atomique est Une proposition atomique
+est une variable qui prend l’une des valeurs vrai ou
+faux.
+27
+
+CHAPITRE 4 — DIAPOSITIVE 28
+CONDITIONS DE TRANSITION
+Une transition peut être soumise à une condition
+logique, appelée garde.
+Exemple :
+La transition est autorisée si le nombre de places
+disponibles est strictement positif.
+À l’inverse :
+28
+TRANSCRIPTION DES ELEMENTS VISUELS
+Une transition peut être soumise à une condition logique, appelée garde.
+EnAttente — [placesDisponibles > 0] → Confirmee.
+La transition est autorisée si le nombre de places disponibles est strictement positif.
+À l'inverse : EnAttente — [placesDisponibles = 0] → Rejetee.
+
+CHAPITRE 4 — DIAPOSITIVE 29
+CONDITIONS DE TRANSITION
+Dans ce modèle, la disponibilité détermine la
+décision.
+Ces deux conditions sont complémentaires si le
+nombre de places disponibles est toujours un entier
+positif ou nul. Il faut néanmoins veiller à ce que le
+modèle soit complet : toute situation pertinente doit
+avoir une évolution définie, sauf si le blocage est
+intentionnel.
+29
+
+CHAPITRE 4 — DIAPOSITIVE 30
+INVARIANTS ASSOCIÉS AUX ÉTATS
+Un invariant est une propriété qui doit rester vraie
+dans tous les états considérés comme valides du
+système.
+Pour la réservation, nous pouvons définir :
+30
+TRANSCRIPTION DES ELEMENTS VISUELS
+Invariant affiché : 0 ≤ placesDisponibles ≤ capacite.
+
+CHAPITRE 4 — DIAPOSITIVE 31
+CONDITIONS DE TRANSITION
+Si chaque réservation confirmée consomme
+exactement une place et qu’aucune place n’est
+réservée autrement, nous pouvons également écrire
+:
+Cette propriété doit être adaptée si le système
+comporte des annulations, des réservations
+temporaires ou des places bloquées.
+31
+TRANSCRIPTION DES ELEMENTS VISUELS
+Invariant de conservation affiché : placesDisponibles + reservationsConfirmees = capacite.
+
+CHAPITRE 4 — DIAPOSITIVE 32
+Systèmes de Transitions
+32
+
+CHAPITRE 4 — DIAPOSITIVE 33
+SYSTÈMES DE TRANSITIONS ET TRACES D’EXÉCUTION
+Les automates classiques sont utiles pour
+représenter le cycle de vie d’un processus. Les
+systèmes de transitions offrent un cadre plus
+général pour décrire les évolutions possibles d’un
+système logiciel.
+Définition formelle: Un système de transitions peut être défini par
+le triplet :
+33
+TRANSCRIPTION DES ELEMENTS VISUELS
+Triplet affiché : T = (S, →, S0).
+
+CHAPITRE 4 — DIAPOSITIVE 34
+SYSTÈMES DE TRANSITIONS ET TRACES D’EXÉCUTION
+où :
+● S: est l’ensemble des états possibles ;
+● : est la relation de transition entre les états ;
+● S_0: est l’ensemble des états initiaux.
+La relation de transition peut être écrite:
+Cette notation signifie que le système peut passer de l’état s à l’état s'.
+Contrairement à la définition classique d’un automate fini, un système de
+transitions n’exige pas nécessairement un alphabet d’entrée explicite ni une
+fonction de transition déterministe. Les transitions peuvent être décrites
+par des actions, des événements ou des conditions.
+34
+TRANSCRIPTION DES ELEMENTS VISUELS
+→ est la relation de transition entre les états.
+Une transition s'écrit s → s'.
+
+CHAPITRE 4 — DIAPOSITIVE 35
+trace d’exécution
+Qu’est-ce qu’une trace d’exécution ?
+Une trace d’exécution est une séquence d’états successifs reliés par des transitions autorisées.
+Par exemple :
+E A C
+Cette trace représente une demande qui est en attente, entre en traitement, puis est confirmée.
+Une autre trace possible est :
+E A R
+Elle représente une demande rejetée.
+35
+TRANSCRIPTION DES ELEMENTS VISUELS
+Traces illustrées : E → A → C et E → A → R.
+E : demande en attente ; A : demande en traitement ; C : confirmée ; R : rejetée.
+
+CHAPITRE 4 — DIAPOSITIVE 36
+trace d’exécution
+En revanche, la séquence :
+E C
+1. n’est pas une trace valide du modèle précédent,
+car aucune transition directe entre E et C n’a
+été définie.
+2. Une trace peut être finie ou infinie. Dans les
+systèmes qui modélisent un logiciel en
+fonctionnement continu, il est souvent utile d’
+étudier les traces infinies afin de vérifier des
+propriétés portant sur toute l’exécution.
+36
+TRANSCRIPTION DES ELEMENTS VISUELS
+Séquence illustrée comme non valide dans ce modèle : E → C.
+NOTE DE LECTURE
+Cette invalidité dépend du modèle avec l'étape intermédiaire A. Elle ne doit pas être appliquée au modèle simplifié de la page 21, qui comporte justement une transition directe de l'attente vers la confirmation.
+
+CHAPITRE 4 — DIAPOSITIVE 37
+Pourquoi les traces sont-elles importantes ?
+Les traces permettent de :
+1. comprendre les scénarios d’exécution possibles ;
+2. identifier les transitions manquantes ;
+3. repérer les séquences d’événements interdites ;
+4. analyser le comportement d’un système avant son
+implémentation ;
+5. comprendre un contre-exemple produit par un outil de
+vérification.
+Par exemple, si une réservation est confirmée alors
+qu’aucune place n’est disponible, la trace qui mène à cette
+confirmation peut révéler une erreur dans les règles de
+transition ou dans la gestion de la disponibilité.
+37
+
+CHAPITRE 4 — DIAPOSITIVE 38
+ACCESSIBILITÉ DES ÉTATS
+Un état s est dit accessible depuis un état initial si
+le système peut atteindre (s) en exécutant zéro, une
+ou plusieurs transitions autorisées.
+Autrement dit, un état est accessible s’il existe une
+trace qui relie un état initial à cet état.
+Si s_0 est l’état initial, on peut écrire :
+Le symbole * désigne une séquence de zéro ou
+plusieurs transitions. 38
+TRANSCRIPTION DES ELEMENTS VISUELS
+Notation affichée : s0 →* s.
+→* représente zéro, une ou plusieurs transitions.
+
+CHAPITRE 4 — DIAPOSITIVE 39
+ACCESSIBILITÉ DES ÉTATS
+Un état initial est donc accessible depuis lui-même,
+même si aucune transition n’a encore été exécutée.
+Pourquoi rechercher les états inaccessibles ?
+Un état inaccessible peut révéler :
+● une erreur dans la définition des transitions ;
+● une condition de garde impossible à satisfaire ;
+● un état inutile dans le modèle ;
+● un comportement qui a été prévu mais qui ne peut jamais
+se produire.
+39
+
+CHAPITRE 4 — DIAPOSITIVE 40
+ACCESSIBILITÉ ET ÉTATS INTERDITS
+L’analyse d’accessibilité permet de vérifier qu’un
+état interdit ne peut pas être atteint.
+Par exemple, définissons un état D qui représente
+une double attribution de la même place.
+L’objectif est de vérifier :
+40
+TRANSCRIPTION DES ELEMENTS VISUELS
+Propriété affichée : ∀s ∈ Reach(S0), s ≠ D.
+Forme équivalente : D ∉ Reach(S0).
+
+CHAPITRE 4 — DIAPOSITIVE 41
+ACCESSIBILITÉ ET ÉTATS INTERDITS
+où désigne l’ensemble des états
+accessibles depuis les états initiaux.
+Si D est accessible, le modèle admet au moins une
+exécution conduisant à une double attribution. Il
+faut alors analyser le chemin qui y mène et corriger
+le modèle ou les règles du système.
+41
+TRANSCRIPTION DES ELEMENTS VISUELS
+Notation affichée : Reach(S0), ensemble des états accessibles depuis les états initiaux.
+
+CHAPITRE 4 — DIAPOSITIVE 42
+Merci ☺
+42,,

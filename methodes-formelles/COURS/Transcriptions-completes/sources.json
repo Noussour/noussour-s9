@@ -1,0 +1,38 @@
+[
+  {
+    "chapter": 1,
+    "title": "Introduction aux méthodes formelles",
+    "page_count": 52,
+    "transcript": "../Chapitre-01/cours.md",
+    "source_url": "https://drive.google.com/file/d/1iWXYgF6gB52RN5QQfW-Qs4SzJJMboIfo/view?usp=classroom_web&authuser=0",
+    "source_text_file": "../Chapitre-01/texte-source.json",
+    "source_text_sha256": "6378626df7b03cb47f7d7489f2cee8b1df297bb0238d4780c8d01e04ad87f55b"
+  },
+  {
+    "chapter": 2,
+    "title": "Les principales familles de méthodes formelles",
+    "page_count": 32,
+    "transcript": "../Chapitre-02/cours.md",
+    "source_url": "https://drive.google.com/file/d/1CZ2R4IcFA3w60MJCRLiodZXp-LTr7snz/view?usp=classroom_web&authuser=0",
+    "source_text_file": "../Chapitre-02/texte-source.json",
+    "source_text_sha256": "c17beec087e45773d4cec7ad10866e3ebf111ea4fa919bdaff7b074e9c414c9b"
+  },
+  {
+    "chapter": 3,
+    "title": "Logique de Hoare : spécification et vérification de programmes",
+    "page_count": 29,
+    "transcript": "../Chapitre-03/cours.md",
+    "source_url": "https://drive.google.com/file/d/1xhBbrrmuE7iUviFPHgyiGwUahMoIBhAi/view?usp=classroom_web&authuser=0",
+    "source_text_file": "../Chapitre-03/texte-source.json",
+    "source_text_sha256": "2d21089af81277f3823364dea38c887ac24ce67b47e9897e0417cda548945ce2"
+  },
+  {
+    "chapter": 4,
+    "title": "Automates et systèmes de transitions",
+    "page_count": 42,
+    "transcript": "../Chapitre-04/cours.md",
+    "source_url": "https://drive.google.com/file/d/1eDuuUoHNey9UokR1LVwAaAjRLksolvmT/view?usp=classroom_web&authuser=0",
+    "source_text_file": "../Chapitre-04/texte-source.json",
+    "source_text_sha256": "f3aeade3e41b4d12a56ee88812afd63d3f53de1f58f52e1f51236ce5170afaf7"
+  }
+]

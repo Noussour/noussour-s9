@@ -1,0 +1,115 @@
+{
+  "1:19": {
+    "text": "Schéma : deux états « Disponible » et « Réservé ». Une flèche va de Disponible vers Réservé, avec l'étiquette « Réservé » telle qu'imprimée dans la figure. Une transition « Annuler » revient de Réservé vers Disponible.",
+    "note": "Le texte de la diapositive nomme l'action « Réserver » ; la figure imprime « Réservé ». Il s'agit du nom de l'action de réservation, à distinguer du nom de l'état."
+  },
+  "1:30": {
+    "text": "Est-ce que le système (par un modèle) satisfait la spécification (par une formule) ?\nSystème (ex. : système HPC, application, etc.) — Modélisation → Modèle (ex. : modèle de transition d'états, modèle formel, etc.).\nSpécification : φ, exprimée par une formule logique, par exemple LTL ou CTL.\nLe modèle et la spécification sont les deux entrées de l'algorithme de model-checking, qui analyse le modèle par rapport à la formule.\nOui : le système satisfait la spécification, M ⊨ φ.\nNon : le système ne satisfait pas la spécification, M ⊭ φ.\nLe symbole ⊨ représente la satisfaction."
+  },
+  "1:32": {
+    "note": "Coquille confirmée visuellement dans le support : « m >= s » est imprimé ici. Pour un retrait sans découvert, il faut m <= s, comme l'indique correctement la précondition de la page 33."
+  },
+  "3:3": {
+    "text": "Le problème : système de réservation de places.\nÉvénement : 10 places au total. Un utilisateur fait une demande de réservation.\nCe que doit faire le système :\n1. Vérifier qu'une place est disponible.\n2. Attribuer une place à l'utilisateur si possible.\n3. Diminuer le nombre de places disponibles.\n4. Confirmer la réservation.\n5. Rejeter la demande si aucune place n'est disponible.\nOrganigramme : demande de réservation → une place disponible ?\nOui → attribuer la place + diminuer le compteur + confirmer.\nNon → rejeter la demande."
+  },
+  "3:4": {
+    "text": "La diapositive reprend le système de réservation et ajoute quatre erreurs possibles :\n1. Le nombre de places devient négatif : places disponibles = -1.\n2. Le système confirme une réservation alors qu'il n'y a plus de place.\n3. Le compteur n'est pas correctement mis à jour : il affiche 10 places disponibles alors qu'une place a été prise.\n4. Une réservation est confirmée sans que la place ait réellement été attribuée."
+  },
+  "3:6": {
+    "text": "Comment Hoare aide à spécifier et à garantir la correction ?\nLa logique de Hoare permet de décrire, pour chaque étape, ce qui doit être vrai avant et après l'exécution d'une action.\nExemple de spécification avec Hoare :\n1. Vérification de la disponibilité : {places >= 0} if places > 0 then ... {places >= 0}.\n2. Attribution de la place : {places > 0 ∧ user ∉ reservations} attribuer_place(user) {user ∈ reservations}.\n3. Mise à jour du compteur : {places > 0} places := places - 1 {places >= 0}.\n4. Confirmation : {user ∈ reservations ∧ places >= 0} confirmer() {reservation_confirmée(user)}.\n5. Rejet si aucune place : {places = 0} rejeter() {aucune réservation confirmée}.\nQue garantit Hoare ? Le nombre de places ne devient jamais négatif ; une réservation n'est confirmée que si une place a réellement été attribuée ; le compteur est correctement mis à jour ; les branches succès/échec sont séparées et vérifiées.\nEn résumé : passer d'un programme qui « semble correct » à une spécification formelle prouvant le respect des règles, même dans les situations particulières.",
+    "note": "Il s'agit des contrats schématiques affichés dans l'infographie. Leur preuve exige aussi de préciser les effets des opérations comme attribuer_place et confirmer."
+  },
+  "3:8": {
+    "text": "Le triplet de Hoare : une façon de spécifier et de garantir la correction d'un programme.\nUn triplet {P} C {Q} exprime que, si la précondition P est vraie avant l'exécution du code C, alors la postcondition Q sera vraie après son exécution.\nExemple : réservation de places. Le système dispose de 10 places ; un utilisateur effectue une réservation.\nPrécondition P : 0 <= nbPlaces <= 10 ; utilisateur valide ; aucune réservation en cours pour cet utilisateur.\nCode C :\nif nbPlaces > 0 then\n    attribuerPlace();\n    nbPlaces := nbPlaces - 1;\n    confirmer();\nelse\n    rejeter();\nend if\nPostcondition Q : 0 <= nbPlaces <= 10. Si la réservation est confirmée : nbPlaces = nbPlaces_0 - 1 et une place est attribuée à l'utilisateur. Sinon : nbPlaces = nbPlaces_0 et aucune place n'est attribuée.\nPourquoi cela aide ? Raisonner sur la correction sans exécuter le programme ; vérifier que les propriétés importantes sont conservées ; détecter les erreurs possibles ; prouver le respect des règles de réservation.\nErreurs possibles sans spécification correcte : nombre de places négatif ; confirmation sans place disponible ; compteur mal mis à jour ; réservation confirmée sans attribution.\nLe triplet relie une précondition (ce que l'on suppose avant), un programme (le code à vérifier) et une postcondition (ce que l'on garantit après).",
+    "note": "La lecture « après l'exécution » doit être précisée : en correction partielle, Q est garanti si l'exécution termine normalement. La terminaison demande une preuve supplémentaire."
+  },
+  "3:10": {
+    "text": "Les assertions peuvent utiliser :\n1. Les comparaisons =, ≠, <, ≤, >, ≥. Exemples : nbPlaces = 0 ; nbPlaces ≠ 10 ; nbPlaces < 5 ; nbPlaces ≤ 10 ; nbPlaces > 0 ; nbPlaces ≥ 0.\n2. Les connecteurs logiques ∧, ∨, ¬, qui combinent ou inversent des propositions. Exemples : nbPlaces > 0 ∧ utilisateurValide ; nbPlaces = 0 ∨ nbPlaces < 0 ; ¬(nbPlaces = 0).\n3. L'implication logique ⇒, qui exprime qu'une condition en entraîne une autre. Exemples affichés : nbPlaces > 0 ⇒ réservationPossible ; (nbPlaces = 0 ∧ réservationConfirmée) ⇒ rejetDemande.\n4. Les quantificateurs : ∀, « pour tout » ; ∃, « il existe ».\nExemples universels : ∀u ∈ utilisateurs, u.valide = vrai ; ∀p ∈ places, 0 ≤ p ≤ 10.\nExemples existentiels : ∃u ∈ utilisateurs, u.reservationActive = vrai ; ∃p ∈ places, p.disponible = vrai.\nEn résumé : les assertions combinent comparaisons, connecteurs, implication et éventuellement quantificateurs pour exprimer précisément les conditions et propriétés à vérifier.",
+    "note": "Ces exemples sont reproduits comme illustrations syntaxiques du support ; ils ne constituent pas à eux seuls une spécification complète et cohérente du système."
+  },
+  "3:11": {
+    "text": "Connecteurs logiques : combiner des propositions pour former de nouvelles assertions.\nNégation : ¬P, négation de P. Exemple : x ≤ 0 si P est x > 0.\nConjonction : P ∧ Q, P et Q. Exemple : x > 0 ∧ y > 0.\nDisjonction : P ∨ Q, P ou Q. Exemple : x = 0 ∨ x = 1.\nImplication : P ⇒ Q, si P alors Q. Exemple : x > 1 ⇒ x > 0.\nÉquivalence : P ⇔ Q ; P et Q ont la même valeur logique.\nÀ retenir : construire des assertions plus complexes à partir de propositions simples ; exprimer des conditions, relations et règles dans les spécifications ; utiliser ces connecteurs dans les préconditions, postconditions et invariants."
+  },
+  "3:13": {
+    "text": "Triplet affiché : {x = 8} x := x + 2 {x = 10}."
+  },
+  "3:15": {
+    "text": "Triplet affiché : {x = 2} C1 ; C2 {x = 3 ∧ y = 6}, avec C1 : x := x + 1 et C2 : y := x * 2."
+  },
+  "3:16": {
+    "note": "Le support écrit « donc y > 0 » dans la première branche. Si x = 0, y = 0 ; la conclusion correcte est y >= 0. Le résultat global annoncé aux pages 16–17 est bien y >= 0."
+  },
+  "3:17": {
+    "text": "Triplet affiché : {true} C {y ≥ 0}, où C est la conditionnelle calculant y := x si x ≥ 0, sinon y := -x."
+  },
+  "3:18": {
+    "text": "Triplet connu affiché : {x = 5} x := x + 1 {x = 6}."
+  },
+  "3:19": {
+    "text": "Triplet obtenu : {x = 5} x := x + 1 {x ≥ 0}."
+  },
+  "3:20": {
+    "text": "Notation affichée : wp(C, Q)."
+  },
+  "3:21": {
+    "text": "Postcondition de l'exemple : Q : x > 7, pour le programme x := x + 3.",
+    "note": "Cette page décrit une garantie « si le programme termine », donc une lecture de correction partielle. Dans une convention fréquente, wlp désigne la plus faible précondition libérale (correction partielle) et wp inclut la terminaison. Les exemples d'affectations et de compositions sans boucle du support ne posent pas ce problème de terminaison."
+  },
+  "3:22": {
+    "text": "wp(x := x + 3, x > 7)\nOn obtient : x + 3 > 7.\nDonc : wp(x := x + 3, x > 7) = x > 4."
+  },
+  "3:23": {
+    "text": "Affectation : wp(x := E, Q) = Q[E/x].\nSéquence : wp(C1 ; C2, Q) = wp(C1, wp(C2, Q))."
+  },
+  "3:24": {
+    "text": "Conditionnelle :\nwp(if B then C1 else C2, Q)\n  = (B ⇒ wp(C1, Q)) ∧ (¬B ⇒ wp(C2, Q))."
+  },
+  "4:13": {
+    "text": "Notation : État courant — événement → Nouvel état.\nExemple : EnAttente — place disponible → Confirmee.\nLa transition de rejet est explicitée à la page 28."
+  },
+  "4:16": {
+    "text": "A = ⟨S, S0, E, R⟩\nS0 ⊂ S.\nR ⊂ S × E × S.",
+    "note": "Le support utilise le signe ⊂ pour exprimer l'inclusion. On rencontre aussi la convention ⊆ ; l'idée essentielle est que les états initiaux sont des états du système et que les transitions sont des triplets état/action/état."
+  },
+  "4:17": {
+    "text": "Tuple affiché : A = (Q, Σ, δ, q0, F)."
+  },
+  "4:18": {
+    "text": "Fonction de transition affichée : δ : Q × Σ → Q.",
+    "note": "Cette fonction totale correspond au cas déterministe complet. La page 8 distingue justement l'automate déterministe éventuellement incomplet, où au plus une transition est définie par couple état/symbole."
+  },
+  "4:21": {
+    "text": "Schéma : une flèche Début entre dans l'état En attente.\nEn attente — Place disponible → Confirmée.\nEn attente — Aucune place → Rejetée.\nConfirmée et Rejetée sont représentées par des doubles cercles."
+  },
+  "4:28": {
+    "text": "Une transition peut être soumise à une condition logique, appelée garde.\nEnAttente — [placesDisponibles > 0] → Confirmee.\nLa transition est autorisée si le nombre de places disponibles est strictement positif.\nÀ l'inverse : EnAttente — [placesDisponibles = 0] → Rejetee."
+  },
+  "4:30": {
+    "text": "Invariant affiché : 0 ≤ placesDisponibles ≤ capacite."
+  },
+  "4:31": {
+    "text": "Invariant de conservation affiché : placesDisponibles + reservationsConfirmees = capacite."
+  },
+  "4:33": {
+    "text": "Triplet affiché : T = (S, →, S0)."
+  },
+  "4:34": {
+    "text": "→ est la relation de transition entre les états.\nUne transition s'écrit s → s'."
+  },
+  "4:35": {
+    "text": "Traces illustrées : E → A → C et E → A → R.\nE : demande en attente ; A : demande en traitement ; C : confirmée ; R : rejetée."
+  },
+  "4:36": {
+    "text": "Séquence illustrée comme non valide dans ce modèle : E → C.",
+    "note": "Cette invalidité dépend du modèle avec l'étape intermédiaire A. Elle ne doit pas être appliquée au modèle simplifié de la page 21, qui comporte justement une transition directe de l'attente vers la confirmation."
+  },
+  "4:38": {
+    "text": "Notation affichée : s0 →* s.\n→* représente zéro, une ou plusieurs transitions."
+  },
+  "4:40": {
+    "text": "Propriété affichée : ∀s ∈ Reach(S0), s ≠ D.\nForme équivalente : D ∉ Reach(S0)."
+  },
+  "4:41": {
+    "text": "Notation affichée : Reach(S0), ensemble des états accessibles depuis les états initiaux."
+  }
+}

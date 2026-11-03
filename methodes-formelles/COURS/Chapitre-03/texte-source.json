@@ -1,0 +1,318 @@
+{
+  "title": "Chapitre 3: Logique de Hoare",
+  "source_url": "https://drive.google.com/file/d/1xhBbrrmuE7iUviFPHgyiGwUahMoIBhAi/view?usp=classroom_web&authuser=0",
+  "attachment": "Pièce jointe : PDF : Chapitre 03 Logique de Hoare.pdf",
+  "page_count": 29,
+  "pages": {
+    "1": [
+      "UNIVERSITY OF SCIENCE AND TECHNOLOGY HOUARI BOUMEDIENE",
+      "FACULTY OF COMPUTER SCIENCE",
+      "Course",
+      "Méthodes formelles pour GL",
+      "ING 5 en Soft.Eng",
+      "Dr MEKAHLIA Fatma Zohra",
+      "Associate Professor",
+      "Laboratoire de Modélisation, Vérification et Evaluation des Performances des systèmes",
+      "complexes (MOVEP)",
+      "Bureau 123",
+      "1",
+      ",,",
+      "Chapter 3:",
+      "Logique de Hoare: spécification et vérification de programme"
+    ],
+    "2": [
+      "INTRODUCTION",
+      " En génie logiciel, le développement d’un",
+      "programme ne consiste pas uniquement à écrire",
+      "du code qui semble fonctionner. Il faut également",
+      "s’assurer que le programme respecte les",
+      "exigences qui lui sont imposées.",
+      "2",
+      ",,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "3": [
+      "SYSTÈME DE RÉSERVATION DE PLACES POUR",
+      "UN ÉVÉNEMENT.",
+      "3",
+      ",,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "4": [
+      "SYSTÈME DE RÉSERVATION DE PLACES POUR",
+      "UN ÉVÉNEMENT",
+      "4",
+      ",,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "5": [
+      "SYSTÈME DE RÉSERVATION DE PLACES POUR",
+      "UN ÉVÉNEMENT",
+      " La question fondamentale est donc la suivante :",
+      " Comment démontrer que le programme",
+      "respecte les règles de réservation, et pas",
+      "seulement vérifier qu’il fonctionne pour",
+      "quelques exemples ?",
+      "5",
+      ",,",
+      "Dr. F. MEKAHLIA",
+      ""
+    ],
+    "6": [
+      "6",
+      ",,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "7": [
+      "DÉFINITION DE LA LOGIQUE DE HOARE",
+      " La logique de Hoare est une méthode de",
+      "raisonnement formel permettant de spécifier et de",
+      "vérifier la correction d’un programme. Elle permet de",
+      "raisonner sur les effets des instructions à partir de",
+      "propriétés exprimées sous forme logique.",
+      " Elle repose sur trois éléments :",
+      " une précondition : ce qui doit être vrai avant",
+      "l’exécution ;",
+      " une instruction ou un programme : ce qui est exécuté ;",
+      " une postcondition : ce qui doit être vrai après",
+      "l’exécution.",
+      " Ces trois éléments forment un triplet de Hoare. 7",
+      ",,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "8": [
+      "DÉFINITION DE LA LOGIQUE DE HOARE",
+      "8",
+      ",,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "9": [
+      "LE PROGRAMME ET SON ÉTAT",
+      " Pour raisonner formellement sur un programme,",
+      "il faut préciser les variables qui décrivent son",
+      "état.",
+      " Un état peut être représenté par une affectation",
+      "de valeurs à ces variables,",
+      " L'état décrit donc les valeurs des variables à un",
+      "instant donné de l'exécution.",
+      " Une instruction transforme généralement un état",
+      "en un autre état.",
+      " Par exemple : x := x + 2",
+      " À partir de l'état x=3, l'exécution produit",
+      "l'état x=5.",
+      "9",
+      ",,",
+      "Dr. F. MEKAHLIA",
+      ""
+    ],
+    "10": [
+      "LES ASSERTIONS",
+      "10,,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "11": [
+      "LOGIQUE PROPOSITIONNELLE ET PRÉDICATS",
+      "11,,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "12": [
+      "PRÉDICATS ET VARIABLES",
+      " Un prédicat est une expression logique dont la",
+      "valeur de vérité dépend des valeurs des variables.",
+      " Les préconditions et postconditions sont",
+      "généralement des prédicats sur l'état du",
+      "programme.",
+      "12,,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "13": [
+      "LES RÈGLES FONDAMENTALES DE LA LOGIQUE DE",
+      "HOARE",
+      " Règle de l’affectation: La règle de l’affectation",
+      "permet de déterminer la condition qui doit être",
+      "vraie avant l’exécution pour obtenir le résultat",
+      "souhaité après l’exécution.",
+      " Exemple :",
+      " On considère l’instruction x:=x+2 et on souhaite",
+      "obtenir x=10 à la fin.",
+      " Avant l’exécution : x=8.",
+      " Instruction exécutée : x:=x+2",
+      " Après l’exécution : x=10",
+      " On obtient le triplet de Hoare :",
+      "13,,",
+      "Dr. F. MEKAHLIA",
+      ""
+    ],
+    "14": [
+      "LES RÈGLES FONDAMENTALES DE LA",
+      "LOGIQUE DE HOARE",
+      " La règle de la séquence permet de vérifier un",
+      "programme composé de plusieurs instructions",
+      "exécutées l’une après l’autre. Le résultat de la",
+      "première instruction devient le point de départ de",
+      "la deuxième.",
+      " Exemple :",
+      " On considère le programme :",
+      "x := x + 1;",
+      "y := x * 2;",
+      "14,,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "15": [
+      "LES RÈGLES FONDAMENTALES DE LA LOGIQUE DE",
+      "HOARE",
+      " On suppose initialement que x=2.",
+      "Première instruction (C1) : x:=x+1, donc x=3.",
+      "Deuxième instruction (C2): y:=x*2, donc y=6.",
+      " On obtient le triplet de Hoare :",
+      "15,,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "16": [
+      "LES RÈGLES FONDAMENTALES DE LA",
+      "LOGIQUE DE HOARE",
+      " La règle de la condition permet de vérifier un",
+      "programme qui contient un choix entre deux",
+      "branches. Il faut vérifier que chaque branche",
+      "garantit le résultat souhaité.",
+      " Exemple : On considère le programme :",
+      " si x >= 0 alors",
+      " y := x",
+      " sinon",
+      " y := -x",
+      " On veut garantir que y >=0.",
+      " Première branche : si x >= 0, alors y:=x, donc y>0.",
+      " Deuxième branche : si x<0, alors y:=-x, donc y>0. 16,,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "17": [
+      "LES RÈGLES FONDAMENTALES DE LA",
+      "LOGIQUE DE HOARE",
+      " Les deux branches garantissent que y >= 0. On",
+      "obtient donc :",
+      "17,,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "18": [
+      "LES RÈGLES FONDAMENTALES DE LA",
+      "LOGIQUE DE HOARE",
+      " La règle de conséquence permet d’adapter une",
+      "preuve existante en imposant une condition",
+      "initiale plus stricte ou en acceptant un résultat",
+      "final moins exigeant.",
+      " Exemple : On considère l’instruction :",
+      "x:=x+1",
+      " On sait que :",
+      " Or, si x=6, alors x >= 0. On peut donc remplacer",
+      "la postcondition x=6 par une condition moins",
+      "stricte, x >= 0. 18,,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "19": [
+      "LES RÈGLES FONDAMENTALES DE LA",
+      "LOGIQUE DE HOARE",
+      " On obtient :",
+      "19,,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "20": [
+      "PRÉCONDITION LA PLUS FAIBLE",
+      " La précondition la plus faible permet de",
+      "déterminer la condition minimale qui doit être",
+      "vraie avant l’exécution d’un programme pour",
+      "garantir le résultat souhaité après son exécution.",
+      " La précondition la plus faible d’un programme C,",
+      "pour une postcondition Q, est notée :",
+      "20,,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "21": [
+      "PRÉCONDITION LA PLUS FAIBLE",
+      " Elle représente la condition la moins restrictive",
+      "qui garantit que, si le programme termine, le",
+      "résultat obtenu satisfait la postcondition Q.",
+      " On parle de précondition la plus faible parce",
+      "qu’elle impose le moins de contraintes possible.",
+      "Toute autre précondition suffisante pour garantir",
+      "Q doit impliquer cette précondition.",
+      " Exemple: Considérons le programme :",
+      "x := x + 3",
+      " On souhaite obtenir après l’exécution :",
+      "21,,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "22": [
+      "PRÉCONDITION LA PLUS FAIBLE",
+      " Pour trouver la précondition la plus faible, on",
+      "remplace x par x+3 dans la postcondition :",
+      " On obtient :",
+      " Donc :",
+      "22,,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "23": [
+      "PRÉCONDITION LA PLUS FAIBLE",
+      " La précondition la plus faible se calcule selon la",
+      "structure du programme.",
+      "- Affectation : on remplace la variable modifiée par",
+      "son expression dans la postcondition.",
+      "*Séquence : on calcule d’abord la précondition de",
+      "la deuxième instruction, puis celle de la première.",
+      "23,,"
+    ],
+    "24": [
+      "PRÉCONDITION LA PLUS FAIBLE",
+      " Condition : on vérifie les deux branches en tenant",
+      "compte de la condition qui déclenche chacune",
+      "d’elles.",
+      "24,,",
+      "Dr. F. MEKAHLIA"
+    ],
+    "25": [
+      "LES NOTIONS ESSENTIELLES SONT LES SUIVANTES :",
+      "Notion Rôle",
+      "Assertion Exprimer une propriété logique de l'état du programme.",
+      "Précondition Définir les conditions initiales nécessaires.",
+      "Postcondition Décrire le résultat attendu.",
+      "Triplet de Hoare Relier une précondition, un programme et une",
+      "postcondition.",
+      "Règle d'affectation Déterminer les conditions nécessaires avant une",
+      "affectation.",
+      "Règle de séquence Composer les preuves de plusieurs instructions.",
+      "Règle de condition Vérifier les différentes branches d'une structure",
+      "conditionnelle.",
+      "Règle de conséquence Renforcer une précondition ou affaiblir une",
+      "postcondition.",
+      "Précondition la plus faible Calculer la condition minimale suffisante pour obtenir",
+      "un résultat.",
+      "Invariant de boucle Démontrer une propriété préservée au cours des",
+      "itérations.",
+      "Variante de boucle Justifier la terminaison.",
+      "Correction partielle Garantir le résultat si le programme termine",
+      "normalement.",
+      "Correction totale Garantir le résultat et la terminaison.",
+      "25,,",
+      "Dr. F. MEKAHLIA",
+      ""
+    ],
+    "26": [
+      "Merci ☺",
+      "26,,"
+    ],
+    "27": [
+      "Merci ☺",
+      "27,,"
+    ],
+    "28": [
+      "Merci ☺",
+      "28,,"
+    ],
+    "29": [
+      "Merci ☺",
+      "29,,",
+      "",
+      "Suivi de \"Chapitre 03 Logique de Hoare.pdf\" activé.",
+      ""
+    ]
+  }
+}
