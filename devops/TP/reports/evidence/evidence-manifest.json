@@ -1,0 +1,110 @@
+[
+  {
+    "file": "01-repository.png",
+    "source": "User-authorized Windows clipboard history",
+    "clipboard_timestamp_utc": "2026-11-03T12:30:05.021843+00:00",
+    "original_clipboard_bytes_sha256": "9e5955ece3cc8ceb34c5221012827f1f4f21c16080e8fcb697a3793a71f608c1",
+    "png_sha256": "4823a878cbb3277cda56fd1e723f4ed4921d687333fe5ac4150b473d875c1eae",
+    "rgb_pixels_sha256": "cb86e5e1b77fbcd1db39f9b0ec61ebecfe1c96c4d04dd15cec92d6918764ce56",
+    "width": 1864,
+    "height": 817,
+    "processing": "Original clipboard bitmap bytes preserved; PNG is a lossless convenience copy",
+    "bitmap_file": "01-repository.bmp"
+  },
+  {
+    "file": "02-codespace-editor.png",
+    "source": "User-authorized Windows clipboard history",
+    "clipboard_timestamp_utc": "2026-11-03T12:28:19.952377+00:00",
+    "original_clipboard_bytes_sha256": "0c24a9391e36fc48213462bd4d561b87525a8aa0bf2e1f485b71a343abb98617",
+    "png_sha256": "6b3032d9cad3301a65fa88450397caa3daaffba1f8ec50ade8d37d3f2b213692",
+    "rgb_pixels_sha256": "656b80bd05faab37d19c1f10d9a88af27e7d55b95f7e38515bac01a5b9ade86a",
+    "width": 1473,
+    "height": 820,
+    "processing": "Original clipboard bitmap bytes preserved; PNG is a lossless convenience copy",
+    "bitmap_file": "02-codespace-editor.bmp"
+  },
+  {
+    "file": "03-machine-configuration.png",
+    "source": "User-authorized Windows clipboard history",
+    "clipboard_timestamp_utc": "2026-11-03T12:34:03.674728+00:00",
+    "original_clipboard_bytes_sha256": "4ce7009790e30a4df6fb689529cf222f63018be854a94efea5efb82feaf5ecec",
+    "png_sha256": "2f77179f1f24ddef4ce482d2126703b9d250402e26639eafa252e24ca3aeb0a6",
+    "rgb_pixels_sha256": "e007c40a3e9bfdf84712e674124d35f20d9ef3af2f117fe1e830fa64f68dbf1c",
+    "width": 1414,
+    "height": 283,
+    "processing": "Original clipboard bitmap bytes preserved; PNG is a lossless convenience copy",
+    "bitmap_file": "03-machine-configuration.bmp"
+  },
+  {
+    "file": "04-linux-inspection.png",
+    "source": "User-authorized Windows clipboard history",
+    "clipboard_timestamp_utc": "2026-11-03T12:31:56.311367+00:00",
+    "original_clipboard_bytes_sha256": "ca0363d551c719d5ecde326f7276f4ac15ec5e0f5cfee5e205dac26f8c51cc8d",
+    "png_sha256": "b4f6503d2e971755982c7af3a9d640e7b324ffdc674129fc320070fc3799073e",
+    "rgb_pixels_sha256": "35f9c8c9b89b7836eb5f2168d9867074a3cf5e8cfd4681773ab666aa5a714b0c",
+    "width": 1018,
+    "height": 619,
+    "processing": "Original clipboard bitmap bytes preserved; PNG is a lossless convenience copy",
+    "bitmap_file": "04-linux-inspection.bmp"
+  },
+  {
+    "file": "05-nginx-http.png",
+    "source": "User-authorized Windows clipboard history",
+    "clipboard_timestamp_utc": "2026-11-03T12:32:29.753020+00:00",
+    "original_clipboard_bytes_sha256": "fac8ab063a26451eb3e05a9ed1943b09c7bfbabbcde88cb4df328683adc08573",
+    "png_sha256": "8b0b982aa2e925aa503be186ccf122562b759e7314e082df32632f1a6192391d",
+    "rgb_pixels_sha256": "1f7fd4cca1ff827afb685e7a12fc8fa32ac8fdb5b483fa835d7734b7ffc87546",
+    "width": 1005,
+    "height": 406,
+    "processing": "Original clipboard bitmap bytes preserved; PNG is a lossless convenience copy",
+    "bitmap_file": "05-nginx-http.bmp"
+  },
+  {
+    "file": "06-browser-page.png",
+    "source": "User-authorized Windows clipboard history",
+    "clipboard_timestamp_utc": "2026-11-03T12:32:46.411746+00:00",
+    "original_clipboard_bytes_sha256": "1a10002e56b6a81a207c63aa8984f75df788377962b79d053b514de5fd1c9d47",
+    "png_sha256": "7bd7c044bd37fb7d778d385e4a1af4a5b72fc3d2f53ed3e56eabef1c2b3a8d94",
+    "rgb_pixels_sha256": "5ca417af1b782bf1539e33b02d201dfed341dcd12bfd7f6138b79df0588b9eac",
+    "width": 1915,
+    "height": 945,
+    "processing": "Original clipboard bitmap bytes preserved; PNG is a lossless convenience copy",
+    "bitmap_file": "06-browser-page.bmp"
+  },
+  {
+    "file": "07-delete-menu.png",
+    "source": "User-authorized Windows clipboard history",
+    "clipboard_timestamp_utc": "2026-11-03T12:38:18.621611+00:00",
+    "original_clipboard_bytes_sha256": "49166f1d578c6b850de41a2242e6faa659c022ff63ce0fba02c0ec77bb2779b1",
+    "png_sha256": "2e2a08aaf6f6113e47e2bfccbacc2cd84c396eaab52e1a4f7c57690fad68ce21",
+    "rgb_pixels_sha256": "a266a4807ae9a6ea74077d16f61110df5b18b417f6ce929bb68ffefe9e56f225",
+    "width": 1500,
+    "height": 736,
+    "processing": "Original clipboard bitmap bytes preserved; PNG is a lossless convenience copy",
+    "bitmap_file": "07-delete-menu.bmp"
+  },
+  {
+    "file": "08-delete-confirmation.png",
+    "source": "User-authorized Windows clipboard history",
+    "clipboard_timestamp_utc": "2026-11-03T12:38:25.766617+00:00",
+    "original_clipboard_bytes_sha256": "bfa010d50a9308678fc48820cc935931282838e7db8ee1bd4675fb18345eb491",
+    "png_sha256": "04b995141951cc2f9249004ba2fa52ece4398db642eb6d5be530e5a7c9864122",
+    "rgb_pixels_sha256": "8b3750efc88631b28de778749f37d9214203faecec20d0031b345fb57b5bcf83",
+    "width": 759,
+    "height": 222,
+    "processing": "Original clipboard bitmap bytes preserved; PNG is a lossless convenience copy",
+    "bitmap_file": "08-delete-confirmation.bmp"
+  },
+  {
+    "file": "09-deletion-complete.png",
+    "source": "User-authorized Windows clipboard history",
+    "clipboard_timestamp_utc": "2026-11-03T12:38:36.798351+00:00",
+    "original_clipboard_bytes_sha256": "374a65105a06dc87452b24304f453e1b8a4fb465c1d4477e8d6e02c00cbccb31",
+    "png_sha256": "c3de752ce35a9332b13f823c3d02e3ed67060bab5108b9c06e6bd387fb250f7a",
+    "rgb_pixels_sha256": "4fc08d5bb8f990b79e294b2764bc5c43c3db292341dbdcf1ac904224fd6bc43f",
+    "width": 1872,
+    "height": 436,
+    "processing": "Original clipboard bitmap bytes preserved; PNG is a lossless convenience copy",
+    "bitmap_file": "09-deletion-complete.bmp"
+  }
+]

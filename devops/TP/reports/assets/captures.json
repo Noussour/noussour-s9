@@ -1,0 +1,212 @@
+[
+  {
+    "file": "tp1-01-resources.png",
+    "title": "TP1 / LinuxLite-01 / resource inspection",
+    "lines": [
+      "student@LinuxLite-01:~$ hostname",
+      "LinuxLite-01",
+      "student@LinuxLite-01:~$ nproc",
+      "2",
+      "student@LinuxLite-01:~$ free -h",
+      "               total       used       free",
+      "Mem:           1.9Gi      680Mi      1.0Gi",
+      "student@LinuxLite-01:~$ lsblk -o NAME,SIZE,TYPE,MOUNTPOINTS",
+      "NAME    SIZE TYPE MOUNTPOINTS",
+      "sda      20G disk",
+      "|-sda1  512M part /boot/efi",
+      "`-sda2 19.5G part /",
+      "Boot-to-login example: 34 s (not measured)"
+    ]
+  },
+  {
+    "file": "tp1-02-nat-ssh.png",
+    "title": "TP1 / NAT connectivity and local SSH",
+    "lines": [
+      "student@LinuxLite-01:~$ ip -br address",
+      "lo       UNKNOWN  127.0.0.1/8 ::1/128",
+      "ens33    UP       192.168.174.128/24",
+      "student@LinuxLite-01:~$ ip route",
+      "default via 192.168.174.2 dev ens33 proto dhcp",
+      "student@LinuxLite-01:~$ ping -c 4 8.8.8.8",
+      "[four replies omitted in this abbreviated example]",
+      "4 packets transmitted, 4 received, 0% packet loss",
+      "student@LinuxLite-01:~$ systemctl status ssh --no-pager",
+      "Active: active (running)",
+      "student@LinuxLite-01:~$ ssh localhost",
+      "[Host key compared against guest console before acceptance]",
+      "[Successful local authentication; example only]",
+      "student@LinuxLite-01:~$ exit"
+    ]
+  },
+  {
+    "file": "tp1-03-network.png",
+    "title": "TP1 / final private and bridged networks",
+    "lines": [
+      "student@LinuxLite-01:~$ ip -br address",
+      "lo       UNKNOWN  127.0.0.1/8",
+      "ens33    UP       192.168.56.101/24  # host-only",
+      "ens37    UP       192.168.1.50/24    # bridged",
+      "student@LinuxLite-01:~$ ip route",
+      "default via 192.168.1.1 dev ens37",
+      "192.168.56.0/24 dev ens33 src 192.168.56.101",
+      "192.168.1.0/24 dev ens37 src 192.168.1.50",
+      "",
+      "student@LinuxLite-02:~$ ip -br address",
+      "ens33    UP       192.168.56.102/24  # same private network",
+      "student@LinuxLite-02:~$ ip route",
+      "192.168.56.0/24 dev ens33 src 192.168.56.102",
+      "# No default route is configured on VM2 in this topology."
+    ]
+  },
+  {
+    "file": "tp1-04-remote.png",
+    "title": "TP1 / host to VM1, then VM1 to VM2",
+    "lines": [
+      "PS C:\\Lab> ping -n 4 192.168.1.50",
+      "Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)",
+      "PS C:\\Lab> ssh student@192.168.1.50",
+      "[Verified host key and authenticated; example only]",
+      "student@LinuxLite-01:~$ hostname",
+      "LinuxLite-01",
+      "student@LinuxLite-01:~$ whoami",
+      "student",
+      "student@LinuxLite-01:~$ ssh student@192.168.56.102",
+      "[VM2 host key independently verified; example only]",
+      "student@LinuxLite-02:~$ hostname",
+      "LinuxLite-02",
+      "student@LinuxLite-02:~$ whoami",
+      "student"
+    ]
+  },
+  {
+    "file": "tp1-05-recovery.png",
+    "title": "TP1 / Apache lifecycle and baseline recovery",
+    "lines": [
+      "# baseline snapshot: SSH configured, Apache absent",
+      "student@LinuxLite-01:~$ sudo apt install -y apache2",
+      "[Installation output omitted; simulated example]",
+      "student@LinuxLite-01:~$ systemctl is-active apache2",
+      "active",
+      "student@LinuxLite-01:~$ curl -I http://127.0.0.1",
+      "HTTP/1.1 200 OK",
+      "student@LinuxLite-01:~$ sudo systemctl stop apache2",
+      "student@LinuxLite-01:~$ systemctl is-active apache2",
+      "inactive",
+      "# Power off, restore baseline in hypervisor, then boot.",
+      "student@LinuxLite-01:~$ systemctl status apache2 --no-pager",
+      "Unit apache2.service could not be found.",
+      "student@LinuxLite-01:~$ systemctl is-active ssh",
+      "active"
+    ]
+  },
+  {
+    "file": "tp1-06-azure.png",
+    "title": "TP1 / Azure adaptation / private SSH and disk snapshot",
+    "lines": [
+      "$ az vm list -g rg-devops-tp1 -d -o table",
+      "Name          PowerState   PrivateIps  PublicIps",
+      "LinuxLite-01  VM running   10.10.1.4   203.0.113.11",
+      "LinuxLite-02  VM running   10.10.1.5   [none]",
+      "$ ssh tp1-vm2",
+      "[ProxyJump through VM1; private key stays on workstation]",
+      "azureuser@LinuxLite-02:~$ hostname",
+      "LinuxLite-02",
+      "azureuser@LinuxLite-02:~$ ip -br address",
+      "eth0 UP 10.10.1.5/24",
+      "$ az snapshot show -g rg-devops-tp1 -n baseline \\",
+      "    --query '{Name:name,State:provisioningState}' -o table",
+      "Name      State",
+      "baseline  Succeeded",
+      "# Abbreviated model output; no Azure deployment was run."
+    ]
+  },
+  {
+    "file": "tp2-01-provision.png",
+    "title": "TP2 / Azure CLI / VM configuration and state",
+    "lines": [
+      "$ az vm show -g rg-devops-tp2 -n tp2-student \\",
+      "    --query '{VM:name,Region:location,Size:hardwareProfile.vmSize}' -o table",
+      "VM           Region         Size",
+      "tp2-student  francecentral  Standard_B1s",
+      "$ az vm get-instance-view -g rg-devops-tp2 -n tp2-student \\",
+      "    --query 'instanceView.statuses[].displayStatus' -o tsv",
+      "Provisioning succeeded",
+      "VM running",
+      "$ az network public-ip show -g rg-devops-tp2 -n pip-tp2 \\",
+      "    --query ipAddress -o tsv",
+      "203.0.113.10",
+      "# Documentation IP only; this is not an actual allocated address."
+    ]
+  },
+  {
+    "file": "tp2-02-nsg.png",
+    "title": "TP2 / source-restricted SSH and HTTP",
+    "lines": [
+      "$ az network nsg rule list -g rg-devops-tp2 --nsg-name nsg-tp2 \\",
+      "    --query '[].{Rule:name,Priority:priority,Source:sourceAddressPrefix,Port:destinationPortRange}' -o table",
+      "Rule                 Priority  Source             Port",
+      "Allow-SSH-Student    100       198.51.100.20/32    22",
+      "Allow-HTTP-Student   110       198.51.100.20/32    80",
+      "",
+      "# Example workstation source only. Replace with real public IPv4.",
+      "# Custom rules shown; Azure default rules still exist.",
+      "# No SSH rule allows 0.0.0.0/0."
+    ]
+  },
+  {
+    "file": "tp2-03-ssh.png",
+    "title": "TP2 / SSH / guest identity",
+    "lines": [
+      "$ ssh -i ~/.ssh/devops-tp2 azureuser@203.0.113.10",
+      "[Host fingerprint verified using Azure Run Command]",
+      "[Successful authentication: illustrative, not an actual session]",
+      "azureuser@tp2-student:~$ hostname",
+      "tp2-student",
+      "azureuser@tp2-student:~$ whoami",
+      "azureuser",
+      "azureuser@tp2-student:~$ ip -br address",
+      "lo       UNKNOWN  127.0.0.1/8 ::1/128",
+      "eth0     UP       10.20.1.4/24",
+      "azureuser@tp2-student:~$ uptime",
+      " 14:08:00 up 8 min, 1 user, load average: 0.02, 0.03, 0.01",
+      "# Uptime above is a teaching example, not a measurement."
+    ]
+  },
+  {
+    "file": "tp2-04-nginx.png",
+    "title": "TP2 / Nginx / guest and workstation checks",
+    "lines": [
+      "azureuser@tp2-student:~$ sudo systemctl enable --now nginx",
+      "azureuser@tp2-student:~$ systemctl status nginx --no-pager",
+      "Active: active (running)",
+      "azureuser@tp2-student:~$ sudo nginx -t",
+      "nginx: configuration file /etc/nginx/nginx.conf test is successful",
+      "azureuser@tp2-student:~$ curl -I http://127.0.0.1",
+      "HTTP/1.1 200 OK",
+      "Server: nginx",
+      "Content-Type: text/html",
+      "azureuser@tp2-student:~$ exit",
+      "$ curl -I http://203.0.113.10",
+      "HTTP/1.1 200 OK",
+      "# The second request models a workstation test of the public endpoint."
+    ]
+  },
+  {
+    "file": "tp2-06-cleanup.png",
+    "title": "TP2 / deletion / independent absence checks",
+    "lines": [
+      "$ export RG=rg-devops-tp2",
+      "$ bash scripts/cleanup.sh",
+      "[Inventory reviewed: VM, OS disk, NIC, IP, NSG, VNet]",
+      "Delete ALL resources above? Type rg-devops-tp2 to confirm: rg-devops-tp2",
+      "[Deletion completes; illustrative sequence]",
+      "Group exists after deletion: false",
+      "$ az group exists -n rg-devops-tp2",
+      "false",
+      "$ az resource list \\",
+      "    --query \"[?resourceGroup=='rg-devops-tp2'].{Name:name,Type:type}\" -o json",
+      "[]",
+      "# Example only. No actual cloud resources were created or deleted."
+    ]
+  }
+]
