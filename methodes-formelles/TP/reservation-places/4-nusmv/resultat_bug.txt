@@ -1,0 +1,53 @@
+-- specification AG (libres >= 0 & libres <= N)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: CTL Counterexample 
+Trace Type: Counterexample 
+  -> State: 1.1 <-
+    u1 = attente
+    u2 = attente
+    libres = 1
+    qui = 1
+    nb_confirmees = 0
+    N = 1
+  -> State: 1.2 <-
+    u1 = verifiee
+    qui = 2
+  -> State: 1.3 <-
+    u2 = verifiee
+  -> State: 1.4 <-
+    u2 = confirmee
+    libres = 0
+    qui = 1
+    nb_confirmees = 1
+  -> State: 1.5 <-
+    u1 = confirmee
+    libres = -1
+    nb_confirmees = 2
+-- specification AG libres + nb_confirmees = N  is true
+-- specification AG !(u1 = confirmee & u2 = confirmee)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: CTL Counterexample 
+Trace Type: Counterexample 
+  -> State: 2.1 <-
+    u1 = attente
+    u2 = attente
+    libres = 1
+    qui = 1
+    nb_confirmees = 0
+    N = 1
+  -> State: 2.2 <-
+    u1 = verifiee
+    qui = 2
+  -> State: 2.3 <-
+    u2 = verifiee
+  -> State: 2.4 <-
+    u2 = confirmee
+    libres = 0
+    qui = 1
+    nb_confirmees = 1
+  -> State: 2.5 <-
+    u1 = confirmee
+    libres = -1
+    nb_confirmees = 2
+-- specification AG (u1 = attente -> AF u1 != attente)  is true
+-- specification  F (u1 != attente & u2 != attente)  is true

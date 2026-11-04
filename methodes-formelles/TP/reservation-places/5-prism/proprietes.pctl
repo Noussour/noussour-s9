@@ -1,0 +1,14 @@
+// T : echeance en nombre de pas (passee avec -const T=...)
+const int T;
+
+// P1 : probabilite que la reservation soit confirmee avant l'echeance T
+P=? [ F<=T "confirmee" ]
+
+// P2 : probabilite que la reservation soit finalement confirmee (sans echeance)
+P=? [ F "confirmee" ]
+
+// P3 : probabilite que la reservation soit refusee
+P=? [ F "refusee" ]
+
+// P4 : la demande est traitee (confirmee ou refusee) avec probabilite 1
+P>=1 [ F ("confirmee" | "refusee") ]

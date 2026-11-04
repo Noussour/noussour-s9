@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Automate des etats d'une demande (JFLAP, automate fini).
+     Alphabet : c = reserver avec place libre (confirmer)
+                r = reserver sans place libre (refuser)
+                a = annuler
+     Exemples a simuler (Input > Multiple Run) :
+       c, r, a, ca  -> acceptes (sequences autorisees)
+       cc, rc, ac, rr, aa -> rejetes (transitions interdites) -->
+<structure>
+  <type>fa</type>
+  <automaton>
+    <state id="0" name="EnAttente">
+      <x>100.0</x><y>200.0</y>
+      <initial/>
+    </state>
+    <state id="1" name="Confirmee">
+      <x>300.0</x><y>100.0</y>
+      <final/>
+    </state>
+    <state id="2" name="Refusee">
+      <x>300.0</x><y>300.0</y>
+      <final/>
+    </state>
+    <state id="3" name="Annulee">
+      <x>500.0</x><y>200.0</y>
+      <final/>
+    </state>
+    <transition><from>0</from><to>1</to><read>c</read></transition>
+    <transition><from>0</from><to>2</to><read>r</read></transition>
+    <transition><from>0</from><to>3</to><read>a</read></transition>
+    <transition><from>1</from><to>3</to><read>a</read></transition>
+  </automaton>
+</structure>

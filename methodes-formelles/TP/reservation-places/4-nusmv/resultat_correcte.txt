@@ -1,0 +1,12 @@
+-- specification AG (libres >= 0 & libres <= N)  is true
+-- specification AG libres + nb_confirmees = N  is true
+-- specification AG !(u1 = confirmee & u2 = confirmee)  is true
+-- specification AG (u1 = refusee -> AG u1 = refusee)  is true
+-- specification AG (u1 = annulee -> AG u1 = annulee)  is true
+-- specification AG ((u1 = attente & libres > 0) -> AX u1 != refusee)  is true
+-- specification AG (u1 = attente -> AF u1 != attente)  is true
+-- specification AG (u2 = attente -> AF u2 != attente)  is true
+-- specification EF u1 = confirmee  is true
+-- specification EF u2 = confirmee  is true
+-- specification AG ((u1 = annulee & u2 = attente) -> EF u2 = confirmee)  is true
+-- specification  F (u1 != attente & u2 != attente)  is true
