@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-04",
+  "module": "dev-mobile",
+  "pending": [
+    "chapitre 1 : lien Prezi non accessible"
+  ],
+  "documents": [
+    {
+      "module": "dev-mobile",
+      "source": "dev-mobile/COURS/Chapter-2.pdf",
+      "sha256": "f0f508e50bfe5f97c96a10b9339661c88a89566ab3a6000a3e17408f041ac68f",
+      "pages": 35
+    },
+    {
+      "module": "dev-mobile",
+      "source": "dev-mobile/COURS/Chatper1.txt",
+      "sha256": "1e9eb0ec5dc84a110c10d5fd6c53183e710223f9db834a35460b8db3c590576e"
+    },
+    {
+      "module": "dev-mobile",
+      "source": "dev-mobile/TD/TD1-sol.pdf",
+      "sha256": "16dd4ade8fadf90d73aeccaeac654d0328874fe75332cbb08e599aace3c05cc4",
+      "pages": 6
+    },
+    {
+      "module": "dev-mobile",
+      "source": "dev-mobile/TD/TD1.pdf",
+      "sha256": "2c4b140cdeb1af27cf42784b536e478f20f1cdd9f65804139158c6c1c15ea733",
+      "pages": 3
+    },
+    {
+      "module": "dev-mobile",
+      "source": "dev-mobile/TP/TP1.pdf",
+      "sha256": "8039ce1b9e7d4198a89f0edc3aec83e7429c91ddc53406057103ce06339a526e",
+      "pages": 6
+    }
+  ]
+}

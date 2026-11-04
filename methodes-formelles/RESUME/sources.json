@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-04",
+  "module": "methodes-formelles",
+  "pending": [],
+  "documents": [
+    {
+      "module": "methodes-formelles",
+      "source": "methodes-formelles/COURS/Chapitre-01/cours.md",
+      "sha256": "91007a7530d4fdc1be552f5cb84a6d0c2efadcb026d415de9132d0c53e8a8037"
+    },
+    {
+      "module": "methodes-formelles",
+      "source": "methodes-formelles/COURS/Chapitre-02/cours.md",
+      "sha256": "63cc34eb1b4b15f84c64c48f71fcf0e9e865beff1f2cd41d0ee9e5a4039bd289"
+    },
+    {
+      "module": "methodes-formelles",
+      "source": "methodes-formelles/COURS/Chapitre-03/cours.md",
+      "sha256": "ccb1bc610b49ac651075900239d7343444ee053fd8193744f6fdd95d3c09e704"
+    },
+    {
+      "module": "methodes-formelles",
+      "source": "methodes-formelles/COURS/Chapitre-04/cours.md",
+      "sha256": "37c5753241212f44e37d5eb2d1b4470737ac339b2f8c86a29a5691915996a4e6"
+    },
+    {
+      "module": "methodes-formelles",
+      "source": "methodes-formelles/TD_TP_MFGL_Dr Mekahlia.pdf",
+      "sha256": "69b998e2b06b96630dc0ed065ab77ab7905d046deebe8ddd3c7c97c6f50480b8",
+      "pages": 1
+    },
+    {
+      "module": "methodes-formelles",
+      "source": "methodes-formelles/COURS/resumer.md",
+      "sha256": "f596d25fe890218f638006e8ed7f9486b4eedc12b66f37a70ce58add95723fc7"
+    }
+  ]
+}

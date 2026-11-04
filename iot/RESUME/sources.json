@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-04",
+  "module": "iot",
+  "pending": [],
+  "documents": [
+    {
+      "module": "iot",
+      "source": "iot/COURS/IOT Course 1.pdf",
+      "sha256": "e81628ed188701b03d5212ce366932aa97e8eecb4b9e62561c8506e4269a7363",
+      "pages": 86
+    },
+    {
+      "module": "iot",
+      "source": "iot/TD/TD1_IoT.pdf",
+      "sha256": "9ceaf1f4b2eb973adecedb519f9d49e5abb78c1380f52a08a78df3df1bd8f0cb",
+      "pages": 2
+    }
+  ]
+}

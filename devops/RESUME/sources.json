@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-04",
+  "module": "devops",
+  "pending": [],
+  "documents": [
+    {
+      "module": "devops",
+      "source": "devops/COURS/01-Virtualization.pdf",
+      "sha256": "6fe22ebfc8e2d21636c76252ef228ec02abb566f365ebd81075a39f75e510af9",
+      "pages": 49
+    },
+    {
+      "module": "devops",
+      "source": "devops/COURS/2-CloudCompute.pdf",
+      "sha256": "3b7a02beda48f9f94a7f22bf9fb150b76680787c797214d3cf28ad5810f34284",
+      "pages": 117
+    },
+    {
+      "module": "devops",
+      "source": "devops/TP/Lab1.pdf",
+      "sha256": "81594a6613fb7523e0ef46bb8eb7d35f97b1bfa59d6337768e7b947069976ad8",
+      "pages": 6
+    },
+    {
+      "module": "devops",
+      "source": "devops/TP/TP1-supportpdf.pdf",
+      "sha256": "9c6438d362384e0f764dcd75deb9e55233c433488454d57fbbdfc84d59157ce9",
+      "pages": 21
+    },
+    {
+      "module": "devops",
+      "source": "devops/TP/TP2_Lab Cloud Environment.pdf",
+      "sha256": "c1b5a7a94dc45cc2111387b8b30e43b09db05ff99e937ff33bf8f3bb4631e456",
+      "pages": 4
+    }
+  ]
+}
