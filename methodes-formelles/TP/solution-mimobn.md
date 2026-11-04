@@ -169,7 +169,7 @@ La suite réalise également 100 compétitions pour une dernière place et 100 c
 
 Refusée et Annulée sont terminales pour une demande donnée. Confirmée ne signifie pas que toute évolution est impossible : l'annulation reste autorisée. Refaire une réservation après annulation crée une nouvelle demande avec un nouvel identifiant.
 
-![Automate généré réellement à partir de reservation.puml](solution-tdtp/figures/reservation.png)
+![Automate généré réellement à partir de reservation.puml](solution-mimobn/figures/reservation.png)
 
 ### 4.2 Source PlantUML
 
@@ -258,7 +258,7 @@ Toutes les autres places sont vides.
 
 Un jeton dans Libre représente la dernière place disponible. Un jeton dans ConfA ou ConfB représente une réservation active. Occupee permet d'exprimer le refus lorsque l'unique place est occupée, sans arc inhibiteur.
 
-![Noyau du conflit Petri : les deux confirmations consomment le même jeton Libre](solution-tdtp/figures/conflit-petri.png)
+![Noyau du conflit Petri : les deux confirmations consomment le même jeton Libre](solution-mimobn/figures/conflit-petri.png)
 
 La figure isole le noyau du conflit. Le réseau complet ajoute l'occupation, les refus et les annulations détaillés dans le tableau suivant.
 
@@ -488,7 +488,7 @@ La limite de confirmation vaut p/(p+f) = 14/15, soit environ 93,3333 %. La proba
 
 Le premier horizon entier qui dépasse 90 % est D = 3. La propriété P>=0.90 [F<=5 "confirmee"] est vraie.
 
-![Probabilité de confirmation en fonction de l'échéance](solution-tdtp/figures/probabilite-confirmation.png)
+![Probabilité de confirmation en fonction de l'échéance](solution-mimobn/figures/probabilite-confirmation.png)
 
 PRISM **4.11**, moteur explicit, a été exécuté pour D = 5 sur les quatre propriétés, puis pour toutes les valeurs D = 0,...,10 sur la propriété bornée. ProbabilityAnalysis.java calcule indépendamment la récurrence des masses avec BigDecimal et la compare à la formule fermée. Les onze résultats PRISM et Java concordent à 10^−14 près. Les valeurs affichées par PRISM restent des calculs en virgule flottante ; elles ne sont pas assimilées à une preuve numérique exacte pour tous les paramètres.
 
@@ -498,7 +498,7 @@ Le code Java du calcul est en annexe D. Les sorties complètes sont dans resulta
 
 ### 13.1 Compilation et exécution Java
 
-Depuis le dossier solution-tdtp, avec un JDK 17 ou supérieur :
+Depuis le dossier solution-mimobn, avec un JDK 17 ou supérieur :
 
 ```text
 javac --release 17 -encoding UTF-8 -d out java/*.java

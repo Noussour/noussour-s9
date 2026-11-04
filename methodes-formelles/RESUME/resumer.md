@@ -337,7 +337,7 @@ Ces remarques sont des notes pédagogiques séparées. La transcription conserve
 
 Le sujet pratique associe contrats, programme Java, automate, concurrence,
 réseau de Petri, logique temporelle et modèle probabiliste. Le corrigé complet
-se trouve dans `methodes-formelles/TP/solution tdtp.pdf` ; cette section en
+se trouve dans `methodes-formelles/TP/solution-mimobn.pdf` ; cette section en
 rappelle les liens avec le cours.
 
 | Question | Modèle ou raisonnement | Propriété recherchée |

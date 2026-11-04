@@ -452,7 +452,7 @@ Le code Java du calcul est en annexe D. Les sorties complètes sont dans resulta
 
 ### 13.1 Compilation et exécution Java
 
-Depuis le dossier solution-tdtp, avec un JDK 17 ou supérieur :
+Depuis le dossier solution-mimobn, avec un JDK 17 ou supérieur :
 
 ```text
 javac --release 17 -encoding UTF-8 -d out java/*.java
