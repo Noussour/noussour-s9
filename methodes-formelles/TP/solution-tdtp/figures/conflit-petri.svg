@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="620" height="350" preserveAspectRatio="xMinYMin meet" viewBox="0 0 620 350" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="620" height="350"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-350)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="42" y="325" style="font-family: Helvetica-Bold; font-size: 14px;fill: rgb(9%,21%,30%); stroke:none;" transform="translate(0,650) scale(1,-1)">Reseau de Petri : conflit sur une derniere place</text>
+			<circle cx="90" cy="250" r="24" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1.4; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="70.82" y="207" style="font-family: Helvetica; font-size: 10px;fill: rgb(9%,21%,30%); stroke:none;" transform="translate(0,414) scale(1,-1)">AttenteA</text>
+			<circle cx="90" cy="250" r="4" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,21%,30%); fill-rule: evenodd;"/>
+			<circle cx="310" cy="250" r="24" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1.4; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="298.885" y="207" style="font-family: Helvetica; font-size: 10px;fill: rgb(9%,21%,30%); stroke:none;" transform="translate(0,414) scale(1,-1)">Libre</text>
+			<circle cx="310" cy="250" r="4" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,21%,30%); fill-rule: evenodd;"/>
+			<circle cx="530" cy="250" r="24" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1.4; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="510.82" y="207" style="font-family: Helvetica; font-size: 10px;fill: rgb(9%,21%,30%); stroke:none;" transform="translate(0,414) scale(1,-1)">AttenteB</text>
+			<circle cx="530" cy="250" r="4" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,21%,30%); fill-rule: evenodd;"/>
+			<circle cx="205" cy="70" r="24" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1.4; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="191.105" y="27" style="font-family: Helvetica; font-size: 10px;fill: rgb(9%,21%,30%); stroke:none;" transform="translate(0,54) scale(1,-1)">ConfA</text>
+			<circle cx="415" cy="70" r="24" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1.4; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="401.105" y="27" style="font-family: Helvetica; font-size: 10px;fill: rgb(9%,21%,30%); stroke:none;" transform="translate(0,54) scale(1,-1)">ConfB</text>
+			<rect x="200" y="142" width="10" height="48" style="stroke: rgb(3%,49%,54%); stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,54%); fill-rule: evenodd;"/>
+			<text x="221" y="163" style="font-family: Helvetica; font-size: 9px;fill: rgb(9%,21%,30%); stroke:none;" transform="translate(0,326) scale(1,-1)">ConfirmerA</text>
+			<rect x="410" y="142" width="10" height="48" style="stroke: rgb(3%,49%,54%); stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,54%); fill-rule: evenodd;"/>
+			<text x="431" y="163" style="font-family: Helvetica; font-size: 9px;fill: rgb(9%,21%,30%); stroke:none;" transform="translate(0,326) scale(1,-1)">ConfirmerB</text>
+			<path d="M 110,235 L 200,190 Z" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="200 190, 192.3974 190.4472, 195.0807 195.8138" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,21%,30%); fill-rule: evenodd;"/>
+			<path d="M 290,235 L 210,190 Z" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="210 190, 214.6302 196.0466, 217.5718 190.8171" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,21%,30%); fill-rule: evenodd;"/>
+			<path d="M 330,235 L 410,190 Z" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="410 190, 402.4282 190.8171, 405.3698 196.0466" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,21%,30%); fill-rule: evenodd;"/>
+			<path d="M 510,235 L 420,190 Z" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="420 190, 424.9193 195.8138, 427.6026 190.4472" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,21%,30%); fill-rule: evenodd;"/>
+			<path d="M 205,142 L 205,94 Z" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="205 94, 202 101, 208 101" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,21%,30%); fill-rule: evenodd;"/>
+			<path d="M 415,142 L 415,94 Z" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="415 94, 412 101, 418 101" style="stroke: rgb(9%,21%,30%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,21%,30%); fill-rule: evenodd;"/>
+			<text x="139.924" y="16" style="font-family: Helvetica; font-size: 8px;fill: rgb(9%,21%,30%); stroke:none;" transform="translate(0,32) scale(1,-1)">Noyau du conflit. Refus, occupation et annulations : voir le tableau complet et les fichiers PNML.</text>
+		</g>
+	</g>
+</svg>

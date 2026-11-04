@@ -1,0 +1,361 @@
+<?xml version='1.0' encoding='utf-8'?>
+<pnml xmlns="http://www.pnml.org/version-2009/grammar/pnml">
+  <net id="Reservation" type="http://www.pnml.org/version-2009/grammar/ptnet">
+    <page id="page0">
+      <place id="Libre">
+        <graphics>
+          <position x="450" y="70" />
+        </graphics>
+        <name>
+          <text>Libre</text>
+        </name>
+        <initialMarking>
+          <text>1</text>
+        </initialMarking>
+      </place>
+      <place id="Occupee">
+        <graphics>
+          <position x="450" y="390" />
+        </graphics>
+        <name>
+          <text>Occupee</text>
+        </name>
+        <initialMarking>
+          <text>0</text>
+        </initialMarking>
+      </place>
+      <place id="AttenteA">
+        <graphics>
+          <position x="140" y="140" />
+        </graphics>
+        <name>
+          <text>AttenteA</text>
+        </name>
+        <initialMarking>
+          <text>1</text>
+        </initialMarking>
+      </place>
+      <place id="ConfA">
+        <graphics>
+          <position x="140" y="350" />
+        </graphics>
+        <name>
+          <text>ConfA</text>
+        </name>
+        <initialMarking>
+          <text>0</text>
+        </initialMarking>
+      </place>
+      <place id="RefusA">
+        <graphics>
+          <position x="40" y="350" />
+        </graphics>
+        <name>
+          <text>RefusA</text>
+        </name>
+        <initialMarking>
+          <text>0</text>
+        </initialMarking>
+      </place>
+      <place id="AnnuleeA">
+        <graphics>
+          <position x="140" y="570" />
+        </graphics>
+        <name>
+          <text>AnnuleeA</text>
+        </name>
+        <initialMarking>
+          <text>0</text>
+        </initialMarking>
+      </place>
+      <place id="AttenteB">
+        <graphics>
+          <position x="760" y="140" />
+        </graphics>
+        <name>
+          <text>AttenteB</text>
+        </name>
+        <initialMarking>
+          <text>1</text>
+        </initialMarking>
+      </place>
+      <place id="ConfB">
+        <graphics>
+          <position x="760" y="350" />
+        </graphics>
+        <name>
+          <text>ConfB</text>
+        </name>
+        <initialMarking>
+          <text>0</text>
+        </initialMarking>
+      </place>
+      <place id="RefusB">
+        <graphics>
+          <position x="860" y="350" />
+        </graphics>
+        <name>
+          <text>RefusB</text>
+        </name>
+        <initialMarking>
+          <text>0</text>
+        </initialMarking>
+      </place>
+      <place id="AnnuleeB">
+        <graphics>
+          <position x="760" y="570" />
+        </graphics>
+        <name>
+          <text>AnnuleeB</text>
+        </name>
+        <initialMarking>
+          <text>0</text>
+        </initialMarking>
+      </place>
+      <transition id="ConfirmerA">
+        <graphics>
+          <position x="260" y="245" />
+        </graphics>
+        <name>
+          <text>ConfirmerA</text>
+        </name>
+      </transition>
+      <transition id="RefuserA">
+        <graphics>
+          <position x="40" y="245" />
+        </graphics>
+        <name>
+          <text>RefuserA</text>
+        </name>
+      </transition>
+      <transition id="AnnulerA">
+        <graphics>
+          <position x="260" y="460" />
+        </graphics>
+        <name>
+          <text>AnnulerA</text>
+        </name>
+      </transition>
+      <transition id="AnnulerAttenteA">
+        <graphics>
+          <position x="40" y="460" />
+        </graphics>
+        <name>
+          <text>AnnulerAttenteA</text>
+        </name>
+      </transition>
+      <transition id="ConfirmerB">
+        <graphics>
+          <position x="640" y="245" />
+        </graphics>
+        <name>
+          <text>ConfirmerB</text>
+        </name>
+      </transition>
+      <transition id="RefuserB">
+        <graphics>
+          <position x="860" y="245" />
+        </graphics>
+        <name>
+          <text>RefuserB</text>
+        </name>
+      </transition>
+      <transition id="AnnulerB">
+        <graphics>
+          <position x="640" y="460" />
+        </graphics>
+        <name>
+          <text>AnnulerB</text>
+        </name>
+      </transition>
+      <transition id="AnnulerAttenteB">
+        <graphics>
+          <position x="860" y="460" />
+        </graphics>
+        <name>
+          <text>AnnulerAttenteB</text>
+        </name>
+      </transition>
+      <arc id="arc0" source="Libre" target="ConfirmerA">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc1" source="AttenteA" target="ConfirmerA">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc2" source="ConfirmerA" target="ConfA">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc3" source="ConfirmerA" target="Occupee">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc4" source="ConfirmerA" target="Libre">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc5" source="AttenteA" target="RefuserA">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc6" source="Occupee" target="RefuserA">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc7" source="RefuserA" target="RefusA">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc8" source="RefuserA" target="Occupee">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc9" source="ConfA" target="AnnulerA">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc10" source="Occupee" target="AnnulerA">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc11" source="AnnulerA" target="AnnuleeA">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc12" source="AnnulerA" target="Libre">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc13" source="AttenteA" target="AnnulerAttenteA">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc14" source="AnnulerAttenteA" target="AnnuleeA">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc15" source="Libre" target="ConfirmerB">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc16" source="AttenteB" target="ConfirmerB">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc17" source="ConfirmerB" target="ConfB">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc18" source="ConfirmerB" target="Occupee">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc19" source="ConfirmerB" target="Libre">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc20" source="AttenteB" target="RefuserB">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc21" source="Occupee" target="RefuserB">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc22" source="RefuserB" target="RefusB">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc23" source="RefuserB" target="Occupee">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc24" source="ConfB" target="AnnulerB">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc25" source="Occupee" target="AnnulerB">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc26" source="AnnulerB" target="AnnuleeB">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc27" source="AnnulerB" target="Libre">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc28" source="AttenteB" target="AnnulerAttenteB">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+      <arc id="arc29" source="AnnulerAttenteB" target="AnnuleeB">
+        <graphics />
+        <inscription>
+          <text>1</text>
+        </inscription>
+      </arc>
+    </page>
+  </net>
+</pnml>

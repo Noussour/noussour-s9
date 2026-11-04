@@ -1,0 +1,4 @@
+SEQUENTIEL : les quatre etats, refus, doublons et annulations verifies.
+CONCURRENCE : 100 courses derniere place + 100 courses meme utilisateur reussies.
+CONTRE-EXEMPLE : available=0, confirmations=2, distinctSeats=1
+TOTAL : 830 verifications explicites reussies (sans option -ea).

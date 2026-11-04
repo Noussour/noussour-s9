@@ -1,0 +1,46 @@
+MODULE main
+VAR
+  a : {attente, confirmee, refusee, annulee};
+  b : {attente, confirmee, refusee, annulee};
+  libre : 0..1;
+  action : {decider_a, decider_b, annuler_a, annuler_b, repos};
+DEFINE
+  actifs := (case a = confirmee : 1; TRUE : 0; esac)
+          + (case b = confirmee : 1; TRUE : 0; esac);
+ASSIGN
+  init(a) := attente;
+  init(b) := attente;
+  init(libre) := 1;
+  init(action) := repos;
+  next(action) := {decider_a, decider_b, annuler_a, annuler_b, repos};
+  next(a) := case
+    action = annuler_a & (a = attente | a = confirmee) : annulee;
+    action = decider_a & a = attente & libre = 1 : confirmee;
+    action = decider_a & a = attente & libre = 0 : refusee;
+    TRUE : a;
+  esac;
+  next(b) := case
+    action = annuler_b & (b = attente | b = confirmee) : annulee;
+    action = decider_b & b = attente & libre = 1 : confirmee;
+    action = decider_b & b = attente & libre = 0 : refusee;
+    TRUE : b;
+  esac;
+  next(libre) := case
+    action = decider_a & a = attente & libre = 1 : 0;
+    action = decider_b & b = attente & libre = 1 : 0;
+    action = annuler_a & a = confirmee : 1;
+    action = annuler_b & b = confirmee : 1;
+    TRUE : libre;
+  esac;
+
+-- Hypotheses d'ordonnancement pour les proprietes de vivacite.
+JUSTICE action = decider_a
+JUSTICE action = decider_b
+
+INVARSPEC NAME bornes := libre >= 0 & libre <= 1;
+INVARSPEC NAME conservation := libre + actifs = 1;
+INVARSPEC NAME exclusion := !(a = confirmee & b = confirmee);
+CTLSPEC NAME issue_possible := EF (a = confirmee & b = refusee);
+LTLSPEC NAME traitement_a := G (a = attente -> F (a != attente));
+LTLSPEC NAME traitement_b := G (b = attente -> F (b != attente));
+LTLSPEC NAME annulation_terminale := G (a = annulee -> X (a = annulee));

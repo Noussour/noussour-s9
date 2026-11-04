@@ -1,1 +1,4 @@
 .DS_Store
+.formal-tools/
+methodes-formelles/TP/solution-tdtp/out/
+__pycache__/

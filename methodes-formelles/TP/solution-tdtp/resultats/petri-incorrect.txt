@@ -1,0 +1,5 @@
+Fichier : reservation-incorrecte.pnml
+Places=10, transitions=8, marquages accessibles=19
+Maximum de jetons par place=3, marquages sans transition=5
+Conservation=false, exclusion=false
+Contre-exemple : ConfirmerA -> ConfirmerB

@@ -1,0 +1,83 @@
+{
+  "verified_at_utc": "2026-11-04T01:10:26.387830+00:00",
+  "java_checks": 830,
+  "concurrent_trials": 200,
+  "nusmv_version": "2.7.1",
+  "nusmv_correct_true": 7,
+  "nusmv_incorrect_false": 2,
+  "nusmv_unfair_liveness_false": 2,
+  "petri_correct_reachable_markings": 12,
+  "petri_incorrect_reachable_markings": 19,
+  "prism_version": "4.11",
+  "prism_engine": "explicit",
+  "p": 0.7,
+  "f": 0.05,
+  "delay_probability": 0.25,
+  "bounded_confirmation": [
+    {
+      "D": 0,
+      "probability": 0.0
+    },
+    {
+      "D": 1,
+      "probability": 0.7
+    },
+    {
+      "D": 2,
+      "probability": 0.875
+    },
+    {
+      "D": 3,
+      "probability": 0.91875
+    },
+    {
+      "D": 4,
+      "probability": 0.9296875
+    },
+    {
+      "D": 5,
+      "probability": 0.932421875
+    },
+    {
+      "D": 6,
+      "probability": 0.93310546875
+    },
+    {
+      "D": 7,
+      "probability": 0.9332763671875
+    },
+    {
+      "D": 8,
+      "probability": 0.933319091796875
+    },
+    {
+      "D": 9,
+      "probability": 0.9333297729492187
+    },
+    {
+      "D": 10,
+      "probability": 0.9333324432373047
+    }
+  ],
+  "probability_before_D5": 0.932421875,
+  "eventual_confirmation": 0.9333333333333332,
+  "eventual_failure": 0.06666666666666667,
+  "threshold_90_percent_D5": true,
+  "java_prism_agreement_tolerance": 1e-14,
+  "source_sha256": {
+    "java/BrokenReservationRace.java": "36bd6505ad4b9bfcafe9bc472ff346fde8e971a4e4f7696ba9584d20c9579b0a",
+    "java/PetriExplorer.java": "a4449ba3426bc00b19a1bf2b77825e426bb0d555946ef97c44710bebeb462b7c",
+    "java/ProbabilityAnalysis.java": "4f2fcb6788f5d3e706720b5a1f25d5b6f7dff24e94f278ca31e09b07b7c4fae9",
+    "java/ReservationSystem.java": "a2456ba924ef4bcb774d3297b60f1d148f3bf5d7d9b5c252e34ae9f6fda9832d",
+    "java/ReservationTests.java": "ea427f2a56147033d24bdd184f0e1a7e10278ac69d4d872d923e2b7d7c28b789",
+    "modeles/reservation-correcte.smv": "89c657b98d848759264f4a55cc528ec0fc6b1683c9258f2c7fb458eadeba0d19",
+    "modeles/reservation-incorrecte.pnml": "636233504cf6cbea0ab912eca4c3f60a8329bc46845ce58923fbc56b1acdceb3",
+    "modeles/reservation-incorrecte.smv": "20b852f8b08106bd441b59827c6bc66e6ff702759205d98dbe0dfba0352aa31f",
+    "modeles/reservation-pipe.xml": "94c1f3bee0186f3ea72bd78ee83b06a0d9ce6d8f496b91f208f4224a9b5ada46",
+    "modeles/reservation-probabiliste.pctl": "f08a004336214a4994a55bc4fce6386f93199046f9687276e76deac1b7d3b910",
+    "modeles/reservation-probabiliste.pm": "d797006ddf15533fe7ed4ba3e8453140d051ebb13db08ec05475917a96ad4f44",
+    "modeles/reservation-sans-equite.smv": "0d3f24caa6b93e9f3f83bbdf1868d90f34f4663ee87d370fc56e32777470dbee",
+    "modeles/reservation.pnml": "44bf7c259e16b25d8b34230b293453caf9040e64b43b4bc7859988959a01bb1b",
+    "modeles/reservation.puml": "b59da05308fbd1456df3b5c237dde76f7fced2d7cadc3e3dfaee0ee20288e6b5"
+  }
+}
