@@ -2,3 +2,4 @@
 .formal-tools/
 methodes-formelles/TP/solution-tdtp/out/
 __pycache__/
+*.class
