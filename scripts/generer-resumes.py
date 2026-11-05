@@ -227,7 +227,7 @@ def sources_manifest():
             for path in candidates:
                 if not path.is_file() or path.suffix.lower() not in ['.pdf','.txt','.md']:
                     continue
-                if path.name.startswith(('resumer','solution tdtp','fiche-revision','README')):
+                if path.name.startswith(('resumer','solution-','fiche-revision','README')):
                     continue
                 entry={'module':module,'source':path.relative_to(ROOT).as_posix(),
                        'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}

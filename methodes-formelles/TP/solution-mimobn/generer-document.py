@@ -1,4 +1,4 @@
-"""Build ../solution tdtp.pdf and its editable Markdown from verified sources.
+"""Build ../solution-mimobn.pdf and its editable Markdown from verified sources.
 
 Requires Python 3, ReportLab, Pillow and DejaVu or Windows Arial/Consolas fonts.
 This script formats the report; the exercise implementation and checks use Java.
@@ -113,15 +113,15 @@ def expand_source():
                     '.puml':'plantuml'}.get(path.suffix, 'text')
         return '```'+language+'\n'+path.read_text(encoding='utf-8').rstrip()+'\n```'
     source = re.sub(r'\{\{include:([^}]+)\}\}', include, source)
-    editable = source.replace('](figures/', '](solution-tdtp/figures/')
-    (ROOT.parent/'solution tdtp.md').write_text(editable, encoding='utf-8')
+    editable = source.replace('](figures/', '](solution-mimobn/figures/')
+    (ROOT.parent/'solution-mimobn.md').write_text(editable, encoding='utf-8')
     return source
 
 
 def build():
     register_fonts()
     source = expand_source()
-    document = Document(ROOT.parent/'solution tdtp.pdf')
+    document = Document(ROOT.parent/'solution-mimobn.pdf')
     styles = {
         'body': ParagraphStyle('Body', fontName='TDPSans', fontSize=9.2, leading=13.5,
                               textColor=NAVY, spaceAfter=7),
@@ -232,7 +232,7 @@ def build():
         index += 1
     document.multiBuild(story)
     print('Generated:', document.filename)
-    print('Editable:', ROOT.parent/'solution tdtp.md')
+    print('Editable:', ROOT.parent/'solution-mimobn.md')
 
 
 if __name__ == '__main__':

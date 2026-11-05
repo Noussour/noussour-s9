@@ -1,0 +1,73 @@
+-- Reservation de la derniere place par deux utilisateurs : VERSION CORRECTE.
+-- La verification "place libre ?" et la decrementation se font en une seule
+-- etape atomique (comme sous un verrou).
+-- Execution : NuSMV reservation_correcte.smv
+
+MODULE main
+VAR
+  u1     : {attente, confirmee, refusee, annulee};
+  u2     : {attente, confirmee, refusee, annulee};
+  libres : -1..1;        -- capacite N = 1. La valeur -1 signalerait une sur-reservation.
+  qui    : {1, 2};       -- ordonnanceur : l'utilisateur qui agit a ce pas
+
+DEFINE
+  N := 1;
+  nb_confirmees := toint(u1 = confirmee) + toint(u2 = confirmee);
+
+ASSIGN
+  init(u1)     := attente;
+  init(u2)     := attente;
+  init(libres) := N;
+
+  next(u1) := case
+    qui = 1 & u1 = attente & libres > 0 : {confirmee, annulee};
+    qui = 1 & u1 = attente              : {refusee, annulee};
+    qui = 1 & u1 = confirmee            : {confirmee, annulee};  -- peut annuler
+    TRUE                                : u1;
+  esac;
+
+  next(u2) := case
+    qui = 2 & u2 = attente & libres > 0 : {confirmee, annulee};
+    qui = 2 & u2 = attente              : {refusee, annulee};
+    qui = 2 & u2 = confirmee            : {confirmee, annulee};
+    TRUE                                : u2;
+  esac;
+
+  -- Les gardes "libres > 0" et "libres < N" restent toujours vraies dans les etats
+  -- accessibles. Elles servent seulement a NuSMV pour verifier le domaine de libres.
+  next(libres) := case
+    u1 = attente   & next(u1) = confirmee & libres > 0 : libres - 1;   -- reservation atomique
+    u2 = attente   & next(u2) = confirmee & libres > 0 : libres - 1;
+    u1 = confirmee & next(u1) = annulee   & libres < N : libres + 1;   -- annulation : place liberee
+    u2 = confirmee & next(u2) = annulee   & libres < N : libres + 1;
+    TRUE                                               : libres;
+  esac;
+
+-- Ordonnanceur equitable : chaque utilisateur agit infiniment souvent.
+FAIRNESS qui = 1;
+FAIRNESS qui = 2;
+
+-- ===== Proprietes de surete (rien de mauvais n'arrive) =====
+-- S1 : le nombre de places libres reste dans [0, N]
+SPEC AG (libres >= 0 & libres <= N)
+-- S2 : coherence, places libres + places confirmees = capacite
+SPEC AG (libres + nb_confirmees = N)
+-- S3 : pas de double reservation de la derniere place
+SPEC AG !(u1 = confirmee & u2 = confirmee)
+-- S4 : une demande refusee ou annulee le reste (etats finaux)
+SPEC AG (u1 = refusee -> AG u1 = refusee)
+SPEC AG (u1 = annulee -> AG u1 = annulee)
+-- S5 : une demande n'est refusee que s'il n'y a plus de place
+SPEC AG ((u1 = attente & libres > 0) -> AX u1 != refusee)
+
+-- ===== Proprietes de vivacite (quelque chose de bon finit par arriver) =====
+-- V1 : toute demande en attente recoit une reponse
+SPEC AG (u1 = attente -> AF u1 != attente)
+SPEC AG (u2 = attente -> AF u2 != attente)
+-- V2 : chaque utilisateur peut obtenir la place (atteignabilite)
+SPEC EF (u1 = confirmee)
+SPEC EF (u2 = confirmee)
+-- V3 : en LTL, les deux demandes finissent par etre traitees
+LTLSPEC F (u1 != attente & u2 != attente)
+-- V4 : une place liberee peut toujours etre reprise par l'autre utilisateur
+SPEC AG ((u1 = annulee & u2 = attente) -> EF u2 = confirmee)

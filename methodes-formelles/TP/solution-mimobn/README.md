@@ -2,8 +2,8 @@
 
 Le corrigé répond aux douze points du sujet `../../TD_TP_MFGL_Dr Mekahlia.pdf`.
 
-- [Document PDF](../solution%20tdtp.pdf)
-- [Version Markdown complète](../solution%20tdtp.md)
+- [Document PDF](../solution-mimobn.pdf)
+- [Version Markdown complète](../solution-mimobn.md)
 - `java/` : implémentation Java 17, tests, course incorrecte, explorateur Petri et calcul probabiliste.
 - `modeles/` : automate PlantUML, PNML et XML PIPE, modèles NuSMV, DTMC et propriétés PRISM.
 - `figures/` : automate, conflit Petri et courbe de probabilité.
@@ -76,6 +76,6 @@ python generer-document.py
 ```
 
 Le générateur lit `rapport-source.md`, inclut les sources Java et les modèles,
-puis écrit `../solution tdtp.md` et `../solution tdtp.pdf`. Il utilise les polices
+puis écrit `../solution-mimobn.md` et `../solution-mimobn.pdf`. Il utilise les polices
 DejaVu (installées sur le système ou fournies avec matplotlib), ou Arial/Consolas
 sous Windows. Les journaux de vérification ne sont pas réécrits par ce script.

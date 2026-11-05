@@ -1,0 +1,44 @@
+@startuml concurrence
+skinparam backgroundColor transparent
+skinparam defaultFontName Helvetica
+skinparam defaultFontColor #141413
+skinparam ArrowColor #141413
+skinparam sequence {
+  LifeLineBorderColor #87867f
+  ParticipantBackgroundColor #F0EEE6
+  ParticipantBorderColor #141413
+  DividerBackgroundColor #F0EEE6
+  DividerBorderColor #87867f
+}
+skinparam note {
+  BorderColor #87867f
+}
+
+participant "Utilisateur 1" as U1
+participant "Systeme" as S
+participant "Utilisateur 2" as U2
+
+== Version incorrecte : verification puis decrementation en deux etapes ==
+U1 -> S : reserver()
+S -> S : lire placesLibres = 1 (place libre)
+U2 -> S : reserver()
+S -> S : lire placesLibres = 1 (place libre)
+S -> S : placesLibres := 0
+S --> U2 : Confirmee
+S -> S : placesLibres := -1 (sans reverifier)
+S --> U1 : Confirmee
+note over S #F5D9CF : Double reservation de la derniere place\nplacesLibres = -1
+
+== Version correcte : verification et decrementation atomiques ==
+U1 -> S : reserver()
+activate S
+S -> S : [verrou] placesLibres = 1 > 0 alors placesLibres := 0
+S --> U1 : Confirmee
+deactivate S
+U2 -> S : reserver()
+activate S
+S -> S : [verrou] placesLibres = 0
+S --> U2 : Refusee
+deactivate S
+note over S #E3EBD9 : Une seule confirmation, placesLibres = 0
+@enduml

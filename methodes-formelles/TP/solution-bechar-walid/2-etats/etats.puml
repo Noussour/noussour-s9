@@ -1,0 +1,29 @@
+@startuml etats
+!pragma layout smetana
+skinparam backgroundColor transparent
+skinparam defaultFontName Helvetica
+skinparam defaultFontColor #141413
+skinparam ArrowColor #141413
+skinparam state {
+  BackgroundColor #FFFFFF
+  BorderColor #141413
+  FontSize 13
+}
+skinparam StartColor #141413
+skinparam EndColor #141413
+
+[*] --> EnAttente : demander
+
+EnAttente --> Confirmee : reserver [placesLibres > 0]\n/ placesLibres--
+EnAttente --> Refusee   : reserver [placesLibres = 0]
+EnAttente --> Annulee   : annuler
+Confirmee --> Annulee   : annuler\n/ placesLibres++
+
+Refusee --> [*]
+Annulee --> [*]
+
+state "En attente" as EnAttente
+state "Confirmee" as Confirmee
+state "Refusee" as Refusee
+state "Annulee" as Annulee
+@enduml
