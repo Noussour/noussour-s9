@@ -25,4 +25,4 @@ Le test leve `AssertionError` si le resultat est incorrect, meme sans `-ea`.
 
 Cette version simplifiee traite la reservation et le conflit sur la derniere
 place. Le corrige complet avec annulation, automates et modeles formels reste
-dans `../solution-tdtp/`.
+dans `../solution-mimobn/`.
