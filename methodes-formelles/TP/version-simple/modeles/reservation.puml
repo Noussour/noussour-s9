@@ -1,0 +1,19 @@
+@startuml
+!pragma layout smetana
+title Cycle de vie d'une demande de reservation
+hide empty description
+state "En attente" as Attente
+state "Confirmee" as Confirmee
+state "Refusee" as Refusee
+state "Annulee" as Annulee
+[*] --> Attente : soumettre(user)
+Attente --> Confirmee : traiter [siege choisi libre et aucun doublon]\nallouer une place
+Attente --> Refusee : traiter [siege choisi occupe ou doublon]\naucune allocation
+Confirmee --> Annulee : annuler\nliberer exactement une place
+Refusee --> [*]
+Annulee --> [*]
+note right of Confirmee
+ Une place appartient a une seule
+ reservation active a la fois.
+end note
+@enduml

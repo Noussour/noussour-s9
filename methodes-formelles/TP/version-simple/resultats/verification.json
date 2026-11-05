@@ -1,0 +1,33 @@
+{
+  "verified_at_utc": "2026-11-05T13:00:15.237604+00:00",
+  "java_source_files": 2,
+  "cli_scenarios": [
+    "sieges-et-doublons",
+    "annulation-et-reutilisation",
+    "salle-complete-puis-annulation",
+    "entrees-invalides",
+    "fin-entree-vide",
+    "fin-entree-au-choix-siege"
+  ],
+  "concurrency_runs": 30,
+  "nusmv_correct_properties_true": 7,
+  "nusmv_bug_invariants_false": 2,
+  "nusmv_without_fairness_liveness_false": 2,
+  "prism_D": 5,
+  "prism_confirmation_probability": 0.932421875,
+  "petri_reachable_markings": 12,
+  "petri_verifier": "Existing Java PetriExplorer",
+  "pipe_gui_verified": false,
+  "source_sha256": {
+    "modeles/reservation-correcte.smv": "87b7b62d4f62ff2a62a32f928d9f597fc5e0061a8c83f3ee34bb58c58c8fd2ff",
+    "modeles/reservation-incorrecte.smv": "c35ff192d4c71f594c105a11f0e44bc8699bf6c75730aa6b7dcebb61b7b5a543",
+    "modeles/reservation-pipe.xml": "7f3e6c9d5572f135428a582ceebba74c202634411e901c6f79335ab4db696109",
+    "modeles/reservation-probabiliste.pctl": "aaa80b4592174476bc448f5f2775acce75e612186eee1d4d6aa2affb7a0fe45d",
+    "modeles/reservation-probabiliste.pm": "a9736aaf33d10b632c50f38a96367e91a4d37905834d3844a532aeae0407c2c0",
+    "modeles/reservation-sans-equite.smv": "621657b4f2309abe93834e0af455b49d362c00169eb56dadca8c4ebc907dc600",
+    "modeles/reservation.pnml": "e5f6053bd19cfde33b768ad8da75fc39d2dea949fef06ff496238a44d012abb6",
+    "modeles/reservation.puml": "f81438a8f9dccd37ebb857270c13178d44e7b22f1505638a93479dafdf490c79",
+    "Reservation.java": "98546e10ba4dedefda90b6f04d6110bdf0bbbac92a5a869c44633fe176961f3f",
+    "TestReservation.java": "e608da215b9c88d120f68bf00a7068a8e288e28e0697ec1d1e930c159883c5ca"
+  }
+}

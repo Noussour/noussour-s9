@@ -1,0 +1,7 @@
+Il reste une seule place : la place 3.
+Reservant 3 : confirme
+Reservant 4 : refuse
+Place 1 : reservant 1
+Place 2 : reservant 2
+Place 3 : reservant 3
+TEST REUSSI : une confirmation et un refus.

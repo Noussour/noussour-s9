@@ -1,0 +1,79 @@
+*** This is NuSMV 2.7.1 (compiled on Mon Sep 29 16:07:59 2025)
+*** Enabled addons are: compass
+*** For more information on NuSMV see <http://nusmv.fbk.eu>
+*** or email to <nusmv-users@list.fbk.eu>.
+*** Please report bugs to <Please report bugs to <nusmv-users@fbk.eu>>
+
+*** Copyright (c) 2010-2025, Fondazione Bruno Kessler
+
+*** This version of NuSMV is linked to the CUDD library version 2.4.1
+*** Copyright (c) 1995-2004, Regents of the University of Colorado
+
+*** This version of NuSMV is linked to the MiniSat SAT solver.
+*** See http://minisat.se/MiniSat.html
+*** Copyright (c) 2003-2006, Niklas Een, Niklas Sorensson
+*** Copyright (c) 2007-2010, Niklas Sorensson
+
+-- specification EF (confirme_a & confirme_b)  is true
+-- invariant !(confirme_a & confirme_b)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: AG alpha Counterexample
+Trace Type: Counterexample
+  -> State: 1.1 <-
+    phase_a = lecture
+    phase_b = lecture
+    vu_a = FALSE
+    vu_b = FALSE
+    confirme_a = FALSE
+    confirme_b = FALSE
+    libre = 1
+    acteur = a
+  -> State: 1.2 <-
+    phase_a = ecriture
+    vu_a = TRUE
+    acteur = b
+  -> State: 1.3 <-
+    phase_b = ecriture
+    vu_b = TRUE
+  -> State: 1.4 <-
+    phase_b = fin
+    confirme_b = TRUE
+    libre = 0
+    acteur = a
+  -> State: 1.5 <-
+    phase_a = fin
+    confirme_a = TRUE
+-- invariant (libre + case
+confirme_a : 1;
+TRUE : 0;
+esac) + case
+confirme_b : 1;
+TRUE : 0;
+esac = 1  is false
+-- as demonstrated by the following execution sequence
+Trace Description: AG alpha Counterexample
+Trace Type: Counterexample
+  -> State: 2.1 <-
+    phase_a = lecture
+    phase_b = lecture
+    vu_a = FALSE
+    vu_b = FALSE
+    confirme_a = FALSE
+    confirme_b = FALSE
+    libre = 1
+    acteur = a
+  -> State: 2.2 <-
+    phase_a = ecriture
+    vu_a = TRUE
+    acteur = b
+  -> State: 2.3 <-
+    phase_b = ecriture
+    vu_b = TRUE
+  -> State: 2.4 <-
+    phase_b = fin
+    confirme_b = TRUE
+    libre = 0
+    acteur = a
+  -> State: 2.5 <-
+    phase_a = fin
+    confirme_a = TRUE

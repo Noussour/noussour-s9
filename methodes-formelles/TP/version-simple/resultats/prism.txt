@@ -1,0 +1,105 @@
+PRISM
+=====
+
+Version: 4.11
+Date: Thu Nov 05 13:59:26 CET 2026
+Hostname: DESKTOP-7DICJ79
+Memory limits: cudd=1g, java(heap)=3.9g
+Command line: prism 'H:\noussour-s9\methodes-formelles\TP\version-simple\modeles\reservation-probabiliste.pm' 'H:\noussour-s9\methodes-formelles\TP\version-simple\modeles\reservation-probabiliste.pctl' -explicit -const D=5
+
+Parsing PRISM model file "H:\noussour-s9\methodes-formelles\TP\version-simple\modeles\reservation-probabiliste.pm"...
+
+Type:        DTMC
+Modules:     reservation
+Actions:     []
+Variables:   s
+Labels:      "confirmee" "defaillance" "attente"
+
+Parsing properties file "H:\noussour-s9\methodes-formelles\TP\version-simple\modeles\reservation-probabiliste.pctl"...
+
+4 properties:
+(1) "avant_echeance": P=? [ F<=D "confirmee" ]
+(2) "confirmation_eventuelle": P=? [ F "confirmee" ]
+(3) "defaillance_eventuelle": P=? [ F "defaillance" ]
+(4) "seuil_90_pourcent": P>=0.90 [ F<=D "confirmee" ]
+
+---------------------------------------------------------------------
+
+Model checking: "avant_echeance": P=? [ F<=D "confirmee" ]
+Property constants: D=5
+
+Building model (engine:explicit)...
+
+Computing reachable states... 3 states
+Reachable states exploration and model construction done in 0.021 secs.
+Sorting reachable states list...
+
+Time for model construction: 0.112 seconds.
+
+Type:        DTMC
+States:      3 (1 initial)
+Transitions: 5
+
+Starting bounded probabilistic reachability...
+Bounded probabilistic reachability took 5 iterations and 0.006 seconds.
+
+Value in the initial state: 0.932421875
+
+Time for model checking: 0.042 seconds.
+
+Result: 0.932421875 (exact floating point)
+
+---------------------------------------------------------------------
+
+Model checking: "confirmation_eventuelle": P=? [ F "confirmee" ]
+
+Starting probabilistic reachability...
+Calculating predecessor relation for discrete-time Markov chain...  done (0.018 seconds)
+Starting Prob0...
+Prob0 took 0.012 seconds.
+Starting Prob1...
+Prob1 took 0.0 seconds.
+target=1, yes=1, no=1, maybe=1
+Starting value iteration (with Jacobi)...
+Value iteration (with Jacobi) took 2 iterations, 6 multiplications and 0.008 seconds.
+Probabilistic reachability took 0.07 seconds.
+
+Value in the initial state: 0.9333333333333332
+
+Time for model checking: 0.074 seconds.
+
+Result: 0.9333333333333332 (exact floating point)
+
+---------------------------------------------------------------------
+
+Model checking: "defaillance_eventuelle": P=? [ F "defaillance" ]
+
+Starting probabilistic reachability...
+Starting Prob0...
+Prob0 took 0.0 seconds.
+Starting Prob1...
+Prob1 took 0.0 seconds.
+target=1, yes=1, no=1, maybe=1
+Starting value iteration (with Jacobi)...
+Value iteration (with Jacobi) took 2 iterations, 6 multiplications and 0.0 seconds.
+Probabilistic reachability took 0.001 seconds.
+
+Value in the initial state: 0.06666666666666667
+
+Time for model checking: 0.005 seconds.
+
+Result: 0.06666666666666667 (exact floating point)
+
+---------------------------------------------------------------------
+
+Model checking: "seuil_90_pourcent": P>=0.90 [ F<=D "confirmee" ]
+Property constants: D=5
+
+Starting bounded probabilistic reachability...
+Bounded probabilistic reachability took 5 iterations and 0.0 seconds.
+
+Property satisfied in 1 of 1 initial states.
+
+Time for model checking: 0.007 seconds.
+
+Result: true

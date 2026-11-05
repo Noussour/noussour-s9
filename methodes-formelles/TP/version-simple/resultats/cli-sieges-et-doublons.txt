@@ -1,0 +1,31 @@
+Reservation de 5 places (une place par reservant).
+Place 1 : libre
+Place 2 : libre
+Place 3 : libre
+Place 4 : libre
+Place 5 : libre
+Numero du reservant (0 pour quitter) : Numero de la place (1 a 5, 0 pour annuler) : Reservation confirmee.
+Place 1 : libre
+Place 2 : reservant 10
+Place 3 : libre
+Place 4 : libre
+Place 5 : libre
+Numero du reservant (0 pour quitter) : Numero de la place (1 a 5, 0 pour annuler) : Refus : place occupee ou reservant deja inscrit.
+Place 1 : libre
+Place 2 : reservant 10
+Place 3 : libre
+Place 4 : libre
+Place 5 : libre
+Numero du reservant (0 pour quitter) : Numero de la place (1 a 5, 0 pour annuler) : Refus : place occupee ou reservant deja inscrit.
+Place 1 : libre
+Place 2 : reservant 10
+Place 3 : libre
+Place 4 : libre
+Place 5 : libre
+Numero du reservant (0 pour quitter) : Numero de la place (1 a 5, 0 pour annuler) : Reservation confirmee.
+Place 1 : libre
+Place 2 : reservant 10
+Place 3 : reservant 30
+Place 4 : libre
+Place 5 : libre
+Numero du reservant (0 pour quitter) :

@@ -38,6 +38,19 @@ public class Reservation {
         return total;
     }
 
+    public synchronized boolean annuler(int reservant) {
+        if (reservant <= 0) {
+            return false;
+        }
+        for (int i = 0; i < places.length; i++) {
+            if (places[i] == reservant) {
+                places[i] = 0;
+                return true;
+            }
+        }
+        return false;
+    }
+
     public synchronized void afficherPlaces() {
         for (int i = 0; i < places.length; i++) {
             System.out.println("Place " + (i + 1) + " : "
@@ -50,8 +63,11 @@ public class Reservation {
         Scanner clavier = new Scanner(System.in);
         System.out.println("Reservation de 5 places (une place par reservant).");
 
-        while (salle.placesLibres() > 0) {
+        while (true) {
             salle.afficherPlaces();
+            if (salle.placesLibres() == 0) {
+                System.out.println("Complet ! Une annulation reste possible.");
+            }
             System.out.print("Numero du reservant (0 pour quitter) : ");
             if (!clavier.hasNext()) {
                 return;
@@ -70,7 +86,7 @@ public class Reservation {
                 continue;
             }
 
-            System.out.print("Numero de la place (1 a 5) : ");
+            System.out.print("Numero de la place (1 a 5, 0 pour annuler) : ");
             if (!clavier.hasNext()) {
                 return;
             }
@@ -80,7 +96,10 @@ public class Reservation {
                 continue;
             }
             int siege = clavier.nextInt();
-            if (siege < 1 || siege > 5) {
+            if (siege == 0) {
+                System.out.println(salle.annuler(reservant)
+                        ? "Reservation annulee." : "Aucune reservation pour ce numero.");
+            } else if (siege < 1 || siege > 5) {
                 System.out.println("La place doit etre entre 1 et 5.");
             } else if (salle.reserver(reservant, siege)) {
                 System.out.println("Reservation confirmee.");
@@ -88,7 +107,5 @@ public class Reservation {
                 System.out.println("Refus : place occupee ou reservant deja inscrit.");
             }
         }
-        System.out.println("Complet !");
-        salle.afficherPlaces();
     }
 }

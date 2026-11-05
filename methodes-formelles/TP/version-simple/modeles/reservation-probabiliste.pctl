@@ -1,0 +1,6 @@
+const int D;
+
+"avant_echeance": P=? [ F<=D "confirmee" ];
+"confirmation_eventuelle": P=? [ F "confirmee" ];
+"defaillance_eventuelle": P=? [ F "defaillance" ];
+"seuil_90_pourcent": P>=0.90 [ F<=D "confirmee" ];

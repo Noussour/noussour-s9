@@ -1,0 +1,4 @@
+Fichier : reservation-pipe.xml
+Places=10, transitions=6, marquages accessibles=12
+Maximum de jetons par place=1, marquages sans transition=3
+Conservation=true, exclusion=true

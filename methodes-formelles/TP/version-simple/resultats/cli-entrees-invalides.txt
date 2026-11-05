@@ -1,0 +1,43 @@
+Reservation de 5 places (une place par reservant).
+Place 1 : libre
+Place 2 : libre
+Place 3 : libre
+Place 4 : libre
+Place 5 : libre
+Numero du reservant (0 pour quitter) : Entrez un nombre entier.
+Place 1 : libre
+Place 2 : libre
+Place 3 : libre
+Place 4 : libre
+Place 5 : libre
+Numero du reservant (0 pour quitter) : Entrez un nombre entier.
+Place 1 : libre
+Place 2 : libre
+Place 3 : libre
+Place 4 : libre
+Place 5 : libre
+Numero du reservant (0 pour quitter) : Le numero du reservant doit etre positif.
+Place 1 : libre
+Place 2 : libre
+Place 3 : libre
+Place 4 : libre
+Place 5 : libre
+Numero du reservant (0 pour quitter) : Numero de la place (1 a 5, 0 pour annuler) : La place doit etre entre 1 et 5.
+Place 1 : libre
+Place 2 : libre
+Place 3 : libre
+Place 4 : libre
+Place 5 : libre
+Numero du reservant (0 pour quitter) : Numero de la place (1 a 5, 0 pour annuler) : La place doit etre entre 1 et 5.
+Place 1 : libre
+Place 2 : libre
+Place 3 : libre
+Place 4 : libre
+Place 5 : libre
+Numero du reservant (0 pour quitter) : Numero de la place (1 a 5, 0 pour annuler) : Entrez un nombre entier.
+Place 1 : libre
+Place 2 : libre
+Place 3 : libre
+Place 4 : libre
+Place 5 : libre
+Numero du reservant (0 pour quitter) :

@@ -1,0 +1,44 @@
+MODULE main
+VAR
+  phase_a : {lecture, ecriture, fin};
+  phase_b : {lecture, ecriture, fin};
+  vu_a : boolean;
+  vu_b : boolean;
+  confirme_a : boolean;
+  confirme_b : boolean;
+  libre : 0..1;
+  acteur : {a, b, repos};
+ASSIGN
+  init(phase_a) := lecture;
+  init(phase_b) := lecture;
+  init(vu_a) := FALSE;
+  init(vu_b) := FALSE;
+  init(confirme_a) := FALSE;
+  init(confirme_b) := FALSE;
+  init(libre) := 1;
+  init(acteur) := {a, b, repos};
+  next(acteur) := {a, b, repos};
+  next(phase_a) := case
+    acteur = a & phase_a = lecture : ecriture;
+    acteur = a & phase_a = ecriture : fin;
+    TRUE : phase_a;
+  esac;
+  next(phase_b) := case
+    acteur = b & phase_b = lecture : ecriture;
+    acteur = b & phase_b = ecriture : fin;
+    TRUE : phase_b;
+  esac;
+  next(vu_a) := case acteur = a & phase_a = lecture : libre = 1; TRUE : vu_a; esac;
+  next(vu_b) := case acteur = b & phase_b = lecture : libre = 1; TRUE : vu_b; esac;
+  next(confirme_a) := case acteur = a & phase_a = ecriture & vu_a : TRUE; TRUE : confirme_a; esac;
+  next(confirme_b) := case acteur = b & phase_b = ecriture & vu_b : TRUE; TRUE : confirme_b; esac;
+  next(libre) := case
+    acteur = a & phase_a = ecriture & vu_a : 0;
+    acteur = b & phase_b = ecriture & vu_b : 0;
+    TRUE : libre;
+  esac;
+INVARSPEC NAME exclusion := !(confirme_a & confirme_b);
+INVARSPEC NAME conservation := libre
+    + (case confirme_a : 1; TRUE : 0; esac)
+    + (case confirme_b : 1; TRUE : 0; esac) = 1;
+CTLSPEC NAME double_reservation_accessible := EF (confirme_a & confirme_b);
