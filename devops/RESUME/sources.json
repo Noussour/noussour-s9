@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-04",
+  "date": "2026-11-07",
   "module": "devops",
   "pending": [],
   "documents": [
@@ -14,6 +14,12 @@
       "source": "devops/COURS/2-CloudCompute.pdf",
       "sha256": "3b7a02beda48f9f94a7f22bf9fb150b76680787c797214d3cf28ad5810f34284",
       "pages": 117
+    },
+    {
+      "module": "devops",
+      "source": "devops/TD/td1.pdf",
+      "sha256": "abe7386692c26d8c503fc22e24f0967c40b60d9b4928c387da31a8c16640f990",
+      "pages": 3
     },
     {
       "module": "devops",

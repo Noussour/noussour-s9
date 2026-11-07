@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-04",
+  "date": "2026-11-07",
   "module": "iot",
   "pending": [],
   "documents": [
@@ -14,6 +14,12 @@
       "source": "iot/TD/TD1_IoT.pdf",
       "sha256": "9ceaf1f4b2eb973adecedb519f9d49e5abb78c1380f52a08a78df3df1bd8f0cb",
       "pages": 2
+    },
+    {
+      "module": "iot",
+      "source": "iot/TD/td2.pdf",
+      "sha256": "5a353fb458a6f637d62d6b771d539437f8fdd99492451e051f950af84479e0cd",
+      "pages": 4
     }
   ]
 }

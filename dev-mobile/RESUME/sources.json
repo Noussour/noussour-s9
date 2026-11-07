@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-04",
+  "date": "2026-11-07",
   "module": "dev-mobile",
   "pending": [
     "chapitre 1 : lien Prezi non accessible"
@@ -30,9 +30,21 @@
     },
     {
       "module": "dev-mobile",
+      "source": "dev-mobile/TP/mobileDevTP2.pdf",
+      "sha256": "117986f8f7f01f76a60013145987ccaa895c2b378bd58f69661c49809fcf991b",
+      "pages": 4
+    },
+    {
+      "module": "dev-mobile",
       "source": "dev-mobile/TP/TP1.pdf",
       "sha256": "8039ce1b9e7d4198a89f0edc3aec83e7429c91ddc53406057103ce06339a526e",
       "pages": 6
+    },
+    {
+      "module": "dev-mobile",
+      "source": "dev-mobile/TP/tp3.pdf",
+      "sha256": "acf7cc6daaf253d56a90ec9202023de1feb60afc766352190fb90b357d53c973",
+      "pages": 8
     }
   ]
 }

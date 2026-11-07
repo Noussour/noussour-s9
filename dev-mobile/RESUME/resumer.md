@@ -1,6 +1,6 @@
 # Développement mobile — Résumé de révision
 
-Synthèse des documents locaux disponibles au 4 novembre 2026. Enseignante du chapitre 2 : Dr Kouchi. Le chapitre 1 n'est fourni que par un lien Prezi non accessible lors de cette préparation : son contenu n'est donc pas reconstitué. Le résumé couvre le chapitre 2, le TD1 et le TP1.
+Synthèse des documents locaux disponibles au 7 novembre 2026. Enseignante du chapitre 2 : Dr Kouchi. Le chapitre 1 n'est fourni que par un lien Prezi non accessible lors de la préparation : son contenu n'est donc pas reconstitué. Le résumé couvre le chapitre 2, le TD1 et les TP1 à TP3.
 
 ## Chapitre 2 — Appareils mobiles et architecture matérielle
 
@@ -134,6 +134,76 @@ Destruction normale de l'instance : onDestroy
 
 Le TP observe ces transitions via `Log.d` et Logcat. Un émulateur exige une configuration compatible ; un téléphone réel avec débogage USB autorisé constitue une autre voie d'exécution. Les observations d'un appareil ne remplacent pas les règles générales du cycle de vie.
 
+## TP2 — Interface XML et calcul du double
+
+### Éléments d'interface
+
+Le TP construit une application qui lit un nombre et affiche son double. Le layout XML décrit les vues ; l'activité Java définit le comportement.
+
+| Élément | Fonction dans le TP |
+| --- | --- |
+| LinearLayout / LinearLayoutCompat | Organiser les enfants verticalement ou horizontalement |
+| TextView | Afficher titre, libellé ou résultat |
+| EditText | Recueillir la saisie |
+| Button | Déclencher le calcul |
+| Identifiant XML | Relier une vue à `R.id...` dans Java |
+| colors.xml | Centraliser une couleur réutilisable par `@color/result` |
+
+`match_parent` occupe l'espace offert par le parent ; `wrap_content` dimensionne selon le contenu. Garder dp pour les dimensions et sp pour le texte. Le champ `inputType="numberDecimal"` oriente la saisie, mais ne remplace pas toutes les validations de la valeur.
+
+### Du clic au résultat
+
+Après `setContentView`, `findViewById` récupère les vues du layout. Le TP associe le clic à `public void computeDouble(View view)` via `android:onClick="computeDouble"`.
+
+```text
+Clic → lire getText().toString().trim()
+     → refuser une chaîne vide
+     → convertir en double
+     → calculer 2 × valeur
+     → afficher avec TextView.setText
+```
+
+Un `Toast` informe l'utilisateur d'une saisie manquante. Le code fourni vérifie le vide ; une conversion peut encore lever `NumberFormatException` pour une chaîne invalide. Une application robuste doit aussi vérifier la conversion et les résultats numériques. Cet ajout est un point de vigilance, pas une fonctionnalité déjà présente dans le PDF.
+
+## TP3 — Deux activités, Intent et transmission de données
+
+### Organisation
+
+L'application d'exercice « My Health Coach » contient une activité de saisie et une activité de résultat. La première lit une masse en kg et une taille en cm ; elle calcule un indice puis le transmet à l'autre activité. Le mot « width » du document doit être compris ici comme **weight**, la masse, et non une largeur.
+
+```text
+taille_m = taille_cm / 100
+indice = masse_kg / (taille_m × taille_m)
+```
+
+Exemple purement numérique : 75 kg et 180 cm donnent 75 / 1,8² ≈ **23,15**. Cet exemple sert à étudier les conversions et le transfert de données dans l'application ; il ne constitue pas une interprétation médicale.
+
+### Écouteur et Intent explicite
+
+Le TP2 reliait le clic dans XML ; le TP3 utilise aussi un écouteur Java : `computeButton.setOnClickListener(this::compute)`. Les vues doivent être initialisées avant l'installation de l'écouteur.
+
+```java
+Intent intent = new Intent(this, ResultActivity.class);
+intent.putExtra("EXTRA_BMI", indice);
+startActivity(intent);
+```
+
+`Intent` désigne ici explicitement l'activité à ouvrir. L'extra associe une clé à une valeur ; la même clé et un type compatible doivent être utilisés à la réception.
+
+```java
+double indice = getIntent().getDoubleExtra("EXTRA_BMI", 0.0);
+```
+
+Le TP lit cet extra dans `onStart`, après l'initialisation des TextView dans `onCreate`, puis formate l'affichage à deux décimales. La valeur par défaut 0,0 ne démontre pas qu'un extra était présent : il faut prévoir le comportement si la donnée manque.
+
+### Validation, suppression et navigation
+
+Le bouton Delete vide les champs avec `setText("")`. Avant de calculer, vérifier des chaînes non vides, une conversion correcte et des valeurs strictement positives, notamment la taille pour éviter une division par zéro.
+
+Le bouton Back du PDF démarre une nouvelle MainActivity. Cela peut empiler une autre instance ; pour simplement revenir à l'activité de saisie déjà présente sous l'activité résultat, `finish()` correspond au comportement de fermeture de l'écran courant.
+
+Le sujet annonce un affichage d'interprétation, mais le code visible de ResultActivity met seulement à jour le texte numérique : `interpretationText` est initialisé sans règle d'interprétation dans l'extrait fourni. Il ne faut pas présenter cette fonctionnalité comme déjà implémentée.
+
 ## Révision active et sources
 
 ### Questions avec réponses courtes
@@ -143,12 +213,18 @@ Le TP observe ces transitions via `Log.d` et Logcat. Un émulateur exige une con
 3. **Que vaut 48 dp à 480 dpi ?** 144 px.
 4. **Une activité peut-elle être invisible sans être détruite ?** Oui, elle peut être arrêtée et reprendre ensuite.
 5. **Pourquoi compléter les logs du TP avec la documentation ?** Certaines transitions dépendent du scénario ; onDestroy n'est notamment pas garanti à la mort du processus.
+6. **Quand utiliser findViewById ?** Après avoir chargé le layout contenant la vue avec setContentView.
+7. **Pourquoi la taille est-elle divisée par 100 dans le TP3 ?** Pour convertir les centimètres en mètres avant le carré.
+8. **Quel lien entre putExtra et getDoubleExtra ?** Ils transmettent puis récupèrent une valeur avec une clé commune et un type compatible.
+9. **Le code du TP3 calcule-t-il l'interprétation annoncée ?** Pas dans l'extrait fourni : seul l'indice numérique est affiché.
 
 ### Documents utilisés
 
 - `dev-mobile/COURS/Chapter-2.pdf` : 35 pages ; matériel p. 3–12, affichage p. 13–33.
 - `dev-mobile/TD/TD1.pdf` et `TD1-sol.pdf` : conversions et exercices ; recalcul des valeurs signalées.
 - `dev-mobile/TP/TP1.pdf` : 6 pages ; structure du projet et cycle de vie.
+- `dev-mobile/TP/mobileDevTP2.pdf` : 4 pages ; vues XML, clic, saisie et calcul du double.
+- `dev-mobile/TP/tp3.pdf` : 8 pages ; deux activités, conversion d'unités, Intent et extras.
 - `dev-mobile/COURS/Chatper1.txt` : lien Prezi uniquement ; chapitre non consultable, à compléter.
 
 Les références Android servent à préciser les points ambigus du support. Les exemples numériques de cette fiche sont recalculés ; ce document ne prétend pas couvrir le chapitre 1 manquant.

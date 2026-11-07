@@ -1,6 +1,6 @@
 # Internet of Things — Résumé de révision
 
-Synthèse du chapitre 1 et du TD1 disponibles au 4 novembre 2026. Enseignante : Ameur Imane. Le cours annonce des protocoles approfondis au chapitre 2, mais aucun fichier de ce chapitre n'est actuellement présent ; la fiche reste centrée sur l'introduction fournie.
+Synthèse du chapitre 1 et des TD1 et TD2 disponibles au 7 novembre 2026. Enseignante : Ameur Imane. Le cours annonce des protocoles approfondis au chapitre 2, mais aucun fichier de ce chapitre n'est actuellement présent ; la fiche reste centrée sur l'introduction et les exercices fournis.
 
 ## Chapitre 1 — Définition, objets et chaîne de valeur
 
@@ -186,4 +186,83 @@ Le calcul suppose le courant moyen représentatif et toute la capacité utilisab
 6. **Que faut-il justifier pour choisir LoRaWAN ?** Besoin de portée et d'autonomie, avec un débit compatible.
 7. **Pourquoi la batterie seule ne donne-t-elle pas l'autonomie ?** Il faut connaître le courant moyen et les conditions d'utilisation.
 
-Sources : `COURS/IOT Course 1.pdf` (86 pages : définitions p. 5–29, caractéristiques p. 30–35, M2M p. 36–41, applications p. 42–55, technologies p. 56–72, défis p. 73–85) et `TD/TD1_IoT.pdf` (2 pages). Les projections de marché et débits publicitaires ne sont pas repris comme faits de révision.
+## TD2 — Composants, acquisition et énergie
+
+### Identifier les blocs d'un système
+
+Pour ESP32 + DHT22 + LED + Wi-Fi : le DHT22 mesure température et humidité (entrée), l'ESP32 traite, la LED matérialise une sortie et le Wi-Fi assure la communication. L'alimentation fournit l'énergie à l'ensemble. Le schéma fonctionnel devient : capteur → MCU → décision → LED, avec échanges réseau vers le service.
+
+| Composant | Grandeur / événement | Nature de l'information utile |
+| --- | --- | --- |
+| DHT22 | Température et humidité | Mesures codées numériquement |
+| LDR | Éclairement | Variation de résistance, convertie en tension dans un montage analogique |
+| PIR | Mouvement détecté par variation infrarouge | Signal de détection généralement numérique sur le module étudié |
+| HC-SR04 | Distance | Durée d'une impulsion numérique à mesurer, pas directement un nombre de mètres |
+| MQ-2 | Réponse à certains gaz / fumée | Sortie analogique, et éventuellement sortie à seuil sur un module équipé |
+
+Le type de module et son interface doivent être identifiés avant de programmer l'acquisition. Un capteur de mouvement ne garantit pas la détection d'une présence immobile.
+
+### Courant moyen sur un cycle
+
+Le TD précise que les phases ne se recouvrent pas. Dans chaque minute : 10 mA pendant 2 s, 20 mA pendant 3 s, puis 0,1 mA pendant 55 s.
+
+```text
+I_moyen = somme(I_i × t_i) / T
+        = (10 × 2 + 20 × 3 + 0,1 × 55) / 60
+        = 1,425 mA
+Autonomie = 3000 / 1,425 ≈ 2105,26 h ≈ 87,72 jours
+```
+
+Ce résultat théorique suppose les courants représentatifs, les phases exclusives et la capacité utilisable. Si plusieurs composants consomment simultanément, il faut calculer le courant total de chaque phase avant de pondérer. Réduire la consommation de veille, le temps actif et les transmissions peut améliorer l'autonomie.
+
+### ADC 12 bits et tension d'entrée
+
+Un potentiomètre produit une tension analogique variable ; l'ADC la code numériquement. Pour 12 bits : **4096 codes, de 0 à 4095**. Dans l'hypothèse idéale 0–3,3 V de l'énoncé :
+
+```text
+Code ≈ Vin / 3,3 × 4095
+Vin = 1,65 V → 2047,5 → environ 2048 après arrondi
+```
+
+Cette approximation du TD n'est pas une calibration d'un ESP32 réel. Plage, atténuation, référence et erreurs de conversion doivent être considérées lors d'une mesure effective.
+
+## TD2 — Réseaux, serrure, parking et actionneurs
+
+### Topologies et panne
+
+A : les capteurs parlent directement à une passerelle → **étoile**. B : des voisins relaient → organisation multi-saut, **maillage dans le scénario du TD**. C : deux appareils communiquent directement → **point à point**.
+
+Le maillage peut offrir des chemins alternatifs si sa connectivité le permet ; avoir des relais ne garantit pas à lui seul une redondance. Une passerelle unique en panne interrompt le service central associé, même si certains capteurs continuent de mesurer localement.
+
+### Serrure connectée
+
+Le lecteur RFID lit un identifiant, le MCU applique une règle d'autorisation puis pilote le verrou via un driver adapté. Le logiciel doit gérer lecture, autorisation, commande et cas de refus. Une liste d'identifiants illustre la logique du TD ; lire un identifiant ne constitue pas à lui seul une authentification forte contre la copie.
+
+Le driver ou relais commute la charge selon ses caractéristiques électriques. Son rôle ne tient pas seulement à une différence de tension : courant nécessaire et protection de la commande comptent aussi.
+
+### Parking de 20 places
+
+Architecture : détection par place → microcontrôleur / collecte → réseau adapté → serveur → tableau de bord. Un choix de capteur doit permettre de détecter un véhicule stationné, par exemple selon distance ou présence magnétique ; la réponse « capteur de mouvement » seule est insuffisante pour une voiture immobile.
+
+Le tableau de bord doit distinguer **libre, occupé et inconnu / capteur en défaut**. Ne pas transformer automatiquement une absence de mesure en place libre. La portée Wi-Fi dépend du site réel ; sommeil et transmissions sur changement d'état sont des pistes de réduction énergétique.
+
+### Choisir le composant de commande
+
+| Besoin | Composant / principe |
+| --- | --- |
+| Ouvrir une arrivée d'eau | Électrovanne et commande électrique adaptée |
+| Régler la vitesse d'un moteur DC | Driver moteur commandé en PWM |
+| Commander une pompe ON/OFF | Relais ou dispositif de commutation adapté à la charge |
+| Positionner un bras à un angle | Actionneur de position, par exemple servomoteur, avec commande adaptée |
+| Faire varier la luminosité d'une LED | PWM et circuit de LED adapté |
+
+Le corrigé écrit « DWM » pour la vitesse moteur : lire **PWM** dans ce contexte. Un relais commute une alimentation ; il n'est pas lui-même une vanne ni un dispositif de positionnement.
+
+### Questions de révision du TD2
+
+1. **Le HC-SR04 fournit-il directement une distance numérique en mètres ?** Non : le logiciel exploite la durée d'impulsion de la mesure.
+2. **Pourquoi pondérer les courants par leur durée ?** Les phases n'occupent pas la même part du cycle.
+3. **Que signifie absence de mesure d'une place de parking ?** État inconnu à traiter, pas preuve de disponibilité.
+4. **PWM est-il un moteur ?** Non : c'est un principe de commande ; un driver et la charge restent nécessaires.
+
+Sources : `COURS/IOT Course 1.pdf` (86 pages : définitions p. 5–29, caractéristiques p. 30–35, M2M p. 36–41, applications p. 42–55, technologies p. 56–72, défis p. 73–85), `TD/TD1_IoT.pdf` (2 pages) et `TD/td2.pdf` (4 pages, huit exercices corrigés). Les projections de marché et débits publicitaires ne sont pas repris comme faits de révision.

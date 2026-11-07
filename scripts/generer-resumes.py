@@ -6,12 +6,14 @@ Requires reportlab, pymupdf and DejaVu or Arial/Consolas fonts.
 from __future__ import annotations
 
 import hashlib
+import argparse
 import importlib.util
 import json
 import re
 import textwrap
 from html import escape
 from pathlib import Path
+from datetime import date
 
 import pymupdf
 from reportlab.lib import colors
@@ -193,9 +195,17 @@ def paragraphs(lines,document):
     return story
 
 
-def build_module(module,label):
+def build_module(module,label,revision_date=None):
     path=ROOT/module/'RESUME'
     source=(path/'resumer.md').read_text(encoding='utf-8')
+    if revision_date is None:
+        manifest=path/'sources.json'
+        revision_date=(json.loads(manifest.read_text(encoding='utf-8'))['date']
+                       if manifest.exists() else date.today().isoformat())
+    edition=date.fromisoformat(revision_date)
+    mois=['janvier','février','mars','avril','mai','juin','juillet','août',
+          'septembre','octobre','novembre','décembre'][edition.month-1]
+    edition_label=f'Mise à jour : {edition.day} {mois} {edition.year}'
     lines=source.splitlines()
     start=next(i for i,line in enumerate(lines) if line.startswith('## '))
     intro=[line for line in lines[1:start] if line.strip()]
@@ -206,7 +216,7 @@ def build_module(module,label):
            Paragraph('Définitions · Comparaisons · Méthodes · Révision active',STYLES['body']),
            Spacer(1,25)]
     story.extend(Paragraph(inline(line),STYLES['body']) for line in intro)
-    story.extend([Spacer(1,20),Paragraph('Supports disponibles au 4 novembre 2026',STYLES['body']),
+    story.extend([Spacer(1,20),Paragraph(edition_label,STYLES['body']),
                   PageBreak(),Paragraph('Sommaire',STYLES['section'])])
     toc=TableOfContents()
     toc.levelStyles=[STYLES['toc']]
@@ -217,7 +227,7 @@ def build_module(module,label):
     return path/'resumer.pdf'
 
 
-def sources_manifest():
+def sources_manifest(selected_modules=None,revision_date=None):
     inventory=[]
     for module,label in MODULES:
         for folder in ['COURS','TD','TP']:
@@ -245,21 +255,35 @@ def sources_manifest():
                 entry['pages']=len(pdf)
         inventory.append(entry)
     for module,label in MODULES:
+        if selected_modules is not None and module not in selected_modules:
+            continue
         pending = ['chapitre 1 : lien Prezi non accessible'] if module=='dev-mobile' else []
         destination=ROOT/module/'RESUME/sources.json'
-        destination.write_text(json.dumps({'date':'2026-11-04',
+        manifest_date=revision_date
+        if manifest_date is None:
+            manifest_date=(json.loads(destination.read_text(encoding='utf-8'))['date']
+                           if destination.exists() else date.today().isoformat())
+        destination.write_text(json.dumps({'date':manifest_date,
             'module':module, 'pending':pending,
             'documents':[entry for entry in inventory if entry['module']==module]},
             ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 
 
 def main():
+    parser=argparse.ArgumentParser(description='Generate separate module summaries.')
+    parser.add_argument('--modules',nargs='+',choices=[m for m,_ in MODULES],
+                        default=[m for m,_ in MODULES])
+    parser.add_argument('--date',type=date.fromisoformat,help='Revision date, YYYY-MM-DD')
+    args=parser.parse_args()
+    revision_date=args.date.isoformat() if args.date else None
     fonts()
     for module,label in MODULES:
-        path=build_module(module,label)
+        if module not in args.modules:
+            continue
+        path=build_module(module,label,revision_date)
         with pymupdf.open(path) as pdf:
             print(module,len(pdf),'pages')
-    sources_manifest()
+    sources_manifest(args.modules,revision_date)
     print('Generated separate summaries in each module RESUME folder.')
 
 

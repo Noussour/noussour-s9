@@ -1,6 +1,6 @@
 # Développement de logiciels embarqués — Résumé de révision
 
-Synthèse des trois supports locaux disponibles au 4 novembre 2026. Enseignant : Dr ABADA Lyes. Le cours 2 est rangé dans un fichier « Chapter_2 », tout en affichant encore « Chapter 1 » dans son en-tête : on suit ici les titres Introduction et Architecture ARM. Les autres thèmes du plan général ne disposent pas encore de supports dans le dépôt.
+Synthèse des cours 1 à 3, du complément STM32 et du TP1 disponibles au 7 novembre 2026. Enseignant : Dr ABADA Lyes. Les supports des cours 2 et 3 conservent « Chapter 1 » dans leurs en-têtes : on suit ici les intitulés COURSE 1, COURSE 2 et COURSE 3 pour organiser les révisions.
 
 ## Cours 1 — Systèmes embarqués, architecture et contraintes
 
@@ -168,6 +168,164 @@ Le débogage utilise traces série, LED, points d'arrêt, observation des variab
 
 Le complément de deux pages présente l'ajout du support STM32 dans l'IDE Arduino : installer le paquet de cartes, choisir la carte et vérifier sa présence. Ce n'est pas un chapitre supplémentaire d'architecture. Le lien du document semble avoir perdu des caractères dans sa mise en forme ; utiliser l'URL publiée officiellement par le projet pour une installation effective.
 
+## Cours 3 — GPIO, entrées et configuration électrique
+
+### Du processeur au monde physique
+
+Le CPU traite des nombres et des instructions ; GPIO, ADC et bus relient ces traitements aux capteurs et actionneurs. La chaîne complète est : grandeur physique → capteur → signal/interface → MCU → décision → commande → driver → actionneur. Exemple du cours : mesurer une température puis commander un ventilateur.
+
+Un signal numérique présente des états logiques discrets LOW/HIGH. Pour un système à 3,3 V, le support illustre environ 0 V et 3,3 V ; les seuils électriques effectifs dépendent du composant. **Bouton pressé ne signifie pas nécessairement HIGH** : cela dépend du câblage.
+
+### Entrée flottante, pull-up et pull-down
+
+Une entrée non reliée à un potentiel défini peut capter du bruit et changer d'état sans action réelle. Une résistance de rappel impose un niveau au repos.
+
+| Montage du bouton | Bouton relâché | Bouton pressé | Logique |
+| --- | --- | --- | --- |
+| Pull-up et bouton vers GND | HIGH | LOW | Active à l'état bas |
+| Pull-down et bouton vers l'alimentation | LOW | HIGH | Active à l'état haut |
+
+Des résistances internes peuvent être configurables en logiciel. Leur disponibilité et leur valeur dépendent de la broche et du MCU. Une résistance de rappel définit le repos ; elle ne supprime pas à elle seule les rebonds mécaniques.
+
+### Paramètres d'une broche
+
+| Paramètre | Question à résoudre |
+| --- | --- |
+| Mode | Entrée, sortie, fonction alternative ou analogique ? |
+| Pull | Aucun rappel, pull-up ou pull-down ? |
+| Type de sortie | Push-pull ou open-drain ? |
+| Vitesse de sortie | Quels fronts/configuration électrique sont nécessaires ? |
+
+Une sortie **push-pull** commande activement le niveau haut et le niveau bas. Une sortie **open-drain** impose le niveau bas ou se met en haute impédance ; un pull-up est normalement nécessaire pour obtenir le niveau haut. Le transistor coupé ne produit donc pas activement un HIGH. Ne pas confondre le type de sortie, le rappel d'entrée et la fréquence d'un signal PWM.
+
+### Rebond et anti-rebond
+
+Un seul appui mécanique peut produire plusieurs transitions électriques. Sans filtrage, un compteur peut incrémenter plusieurs fois pour un appui.
+
+Le support propose de relire l'entrée après un délai illustratif de 10 à 50 ms. Une meilleure stratégie mémorise le changement, démarre une temporisation, puis confirme seulement un état resté stable suffisamment longtemps. Ce filtrage peut fonctionner sans immobiliser toute la boucle. Le délai doit être choisi selon le bouton et l'application.
+
+## Cours 3 — Acquisition analogique, ADC et DAC
+
+### Types d'interface
+
+Un capteur numérique peut fournir un état binaire ou une mesure codée via I²C, SPI, UART ou un autre bus. Un capteur analogique fournit une tension variable, généralement convertie par un ADC. La conversion peut aussi se faire dans le capteur lui-même avant transmission numérique.
+
+| Conversion | Sens | Usage |
+| --- | --- | --- |
+| ADC | Tension analogique → nombre | Acquisition d'une mesure |
+| DAC | Nombre → tension analogique | Génération de signal ou commande analogique |
+
+### Nombre de codes et conversion approximative
+
+```text
+ADC sur N bits : 2^N codes, de 0 à 2^N − 1
+Code ≈ (Vin / Vref) × (2^N − 1)
+Vin ≈ Code × Vref / (2^N − 1)
+Pas idéal de quantification ≈ Vref / 2^N
+```
+
+La formule du code est l'approximation par les extrémités utilisée dans le cours. Un ADC réel quantifie selon sa fonction de transfert ; la valeur entière dépend des seuils et de la convention d'arrondi. Pour 12 bits et Vref = 3,3 V, les codes sont 0 à 4095 et le pas idéal vaut environ **0,806 mV**.
+
+| Vin | Calcul approché du support | Code arrondi pour l'exercice |
+| --- | --- | --- |
+| 1,65 V | 1,65 / 3,3 × 4095 = 2047,5 | Environ 2048 |
+| 1,70 V | 1,70 / 3,3 × 4095 ≈ 2109,55 | 2110 |
+| 1,80 V | 1,80 / 3,3 × 4095 ≈ 2233,64 | 2234 |
+| 2,20 V | 2,20 / 3,3 × 4095 = 2730 | 2730 |
+
+**Résolution et précision diffèrent.** Davantage de bits donne des niveaux plus fins ; l'erreur finale dépend aussi du capteur, de la référence, du bruit, du câblage et de la calibration. Une formule idéale ne garantit pas la précision réelle du montage.
+
+## Cours 3 — Actionneurs, PWM et temporisation
+
+### Driver et commande de puissance
+
+Un GPIO ne fournit qu'un courant et une tension limités. Pour un moteur ou une charge nécessitant davantage de puissance, la commande passe par un driver, transistor, relais ou ESC adapté à la charge. Le GPIO transmet la consigne ; l'alimentation de puissance fournit l'énergie.
+
+### PWM et rapport cyclique
+
+Une PWM commute rapidement entre LOW et HIGH. Son rapport cyclique décrit la fraction de la période passée au niveau haut.
+
+```text
+D = temps_HIGH / période
+D_pourcentage = 100 × temps_HIGH / période
+f = 1 / période
+```
+
+Exemple : période de 2 ms et temps haut de 0,5 ms → D = 25 % et f = 500 Hz. À période identique, 25 %, 50 % et 90 % correspondent à des durées hautes différentes. La PWM ne transforme pas directement la broche en une source analogique intermédiaire ; la charge et éventuellement un filtrage déterminent l'effet obtenu. Applications du cours : luminosité, commande moteur, chauffage et commande adaptée de servomoteur.
+
+### Timers, PSC et ARR
+
+Un timer matériel compte des impulsions pour mesurer des durées, produire des événements, de la PWM ou des timeouts. Avec une horloge de 1 MHz, un tick sans division dure 1 microseconde ; 1000 ticks représentent 1 ms.
+
+Dans le mode simple de comptage croissant présenté pour STM32 :
+
+```text
+f_compteur = f_timer / (PSC + 1)
+T_evenement = (PSC + 1) × (ARR + 1) / f_timer
+f_evenement = f_timer / ((PSC + 1) × (ARR + 1))
+```
+
+Le compteur parcourt 0 à ARR inclus : les **+1** sont indispensables. Pour f_timer = 1 MHz, PSC = 0 et ARR = 999 donnent T = 1 ms. Avec PSC = 9, f_compteur = 100 kHz : chaque tick dure 10 microsecondes. Ces calculs partent de l'horloge du timer indiquée ; il faut vérifier sa configuration effective sur la carte.
+
+### Temporisation bloquante ou non bloquante
+
+`HAL_Delay(1000)` bloque le flot d'exécution appelant pendant l'attente ; les autres actions de la même boucle sont retardées. Cela ne signifie pas que toutes les interruptions du processeur sont nécessairement arrêtées.
+
+Pour faire avancer la boucle, mémoriser un instant et comparer le temps écoulé :
+
+```c
+uint32_t now = HAL_GetTick();
+if ((uint32_t)(now - last) >= 1000U) {
+    last = now;
+    toggle_led();
+}
+```
+
+`last` doit être un compteur non signé de même type, initialisé avant la boucle. Cet exemple illustre une action périodique sans attente bloquante. La boucle peut encore lire un capteur et traiter des communications entre deux actions. Le respect d'une échéance dépend toujours du temps des autres traitements.
+
+## Cours 3 — Boucle de contrôle et hystérésis
+
+La boucle de base lit les capteurs, traite les données, commande les actionneurs, communique puis recommence. Avec un ventilateur, le seuil simple « température > 30 °C » peut provoquer des commutations fréquentes lorsque la mesure oscille autour de 30 °C.
+
+L'**hystérésis** emploie deux seuils :
+
+| Température | Décision |
+| --- | --- |
+| Supérieure à 30 °C | Ventilateur ON |
+| Inférieure à 28 °C | Ventilateur OFF |
+| Entre 28 et 30 °C, bornes comprises pour ces gardes strictes | Conserver l'état précédent |
+
+La mémoire de l'état est essentielle ; l'état initial doit être défini. Le système évite ainsi de basculer à chaque petite variation autour d'un unique seuil. L'anti-rebond stabilise l'interprétation d'un contact ; l'hystérésis stabilise une décision à seuil : les deux répondent à des situations différentes.
+
+## TP1 — STM32, LED, ST-LINK et breadboard
+
+### Chaîne d'outils et téléversement
+
+Le TP présente l'IDE Arduino avec le support des cartes STM32, STM32CubeProgrammer et une sonde ST-LINK V2. La carte et le mode de téléversement doivent correspondre au matériel employé. La liaison SWD repose notamment sur SWDIO, SWCLK, une masse commune et les connexions d'alimentation/référence prévues par le montage.
+
+Il faut distinguer programmation du microcontrôleur, alimentation de la carte et liaison série. Le moniteur série doit utiliser le débit configuré par le programme, ici **115200** ; un câble USB ne garantit pas à lui seul que la sortie série choisie est correctement configurée.
+
+### LED active à LOW
+
+Dans la carte décrite par le TP, la LED intégrée sur **PC13** s'allume avec LOW et s'éteint avec HIGH. Il s'agit d'une propriété de ce câblage, pas d'une règle universelle des STM32.
+
+| Montage | Chemin du courant quand la LED est allumée | Niveau actif |
+| --- | --- | --- |
+| Sinking | Alimentation → résistance → LED → GPIO | LOW |
+| Sourcing | GPIO → LED → résistance → GND | HIGH |
+
+Dans les deux cas, la résistance série limite le courant. Le niveau logique nécessaire dépend du montage ; il faut respecter les caractéristiques électriques de la broche et de la LED.
+
+### Programme et période de clignotement
+
+`setup()` initialise la broche en OUTPUT et la communication série ; `loop()` répète les actions. LOW pendant 500 ms puis HIGH pendant 500 ms donnent une période totale de **1 s**, soit **1 Hz** pour le cycle complet. Le TP utilise une attente bloquante ; le cours 3 montre comment l'éviter lorsqu'il faut aussi effectuer d'autres tâches.
+
+Une attente `while (!Serial)` peut empêcher d'atteindre `loop()` si la liaison attendue n'est pas disponible. Si la LED ne démarre pas, vérifier cette attente, la sélection de carte, la broche et le téléversement avant de conclure à un défaut de LED.
+
+### Breadboard
+
+Les groupes de contacts internes assurent les connexions sans soudure. Le séparateur central isole les deux côtés ; les rails d'alimentation sont distincts des groupes de signaux et peuvent être coupés au milieu selon le modèle. Vérifier les continuités réelles plutôt que supposer que toute une ligne est reliée.
+
 ## Révision active et sources
 
 1. **Pourquoi un résultat exact peut-il rester incorrect ?** Il arrive après l'échéance d'un système temps réel.
@@ -177,5 +335,11 @@ Le complément de deux pages présente l'ajout du support STM32 dans l'IDE Ardui
 5. **Une interruption garantit-elle une réaction immédiate ?** Non ; analyser masquage, priorités et latence.
 6. **Pourquoi une écriture mémoire peut-elle allumer une LED ?** L'adresse peut désigner un registre GPIO.
 7. **Quel intérêt du pipeline ?** Augmenter le débit de traitement d'instructions.
+8. **Un pull-up donne quel niveau lors d'un appui vers GND ?** LOW, donc logique active à l'état bas.
+9. **Un open-drain produit-il activement HIGH ?** Non, il libère la ligne ; le pull-up fournit le niveau haut.
+10. **Combien de codes pour 12 bits ?** 4096, numérotés 0 à 4095.
+11. **Pourquoi ajouter 1 à PSC et ARR ?** Le diviseur et le comptage représentés incluent zéro dans le mode étudié.
+12. **Pourquoi utiliser deux seuils pour le ventilateur ?** Conserver l'état dans une bande intermédiaire et éviter les commutations répétées.
+13. **Deux attentes de 500 ms donnent quelle fréquence de clignotement ?** Un cycle de 1 s, donc 1 Hz.
 
-Sources : `COURS/Chapter_1_introduction.pdf` (49 pages), `COURS/Chapter_2_introduction.pdf` (46 pages) et `COURS/Chapter_2_stm32Extension.pdf` (2 pages). Les thèmes Linux embarqué détaillé, synchronisation avancée et méthodes de conception figurent au plan général, sans support dédié présent ; ils ne sont pas inventés dans cette fiche.
+Sources : `COURS/Chapter_1_introduction.pdf` (49 pages), `COURS/Chapter_2_introduction.pdf` (46 pages), `COURS/Chapter_2_stm32Extension.pdf` (2 pages), `COURS/course3.pdf` (55 pages : GPIO p. 9–24, acquisition p. 25–31, actionneurs/PWM p. 32–36, timers p. 37–45, contrôle p. 46–55) et `TP/tp1.pdf` (8 pages). Les formules présentes dans les schémas des pages 40–41 ont été consultées visuellement. Linux embarqué détaillé, synchronisation avancée et méthodes de conception restent des thèmes annoncés sans support dédié présent.

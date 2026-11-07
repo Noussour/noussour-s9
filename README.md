@@ -40,3 +40,6 @@ Sécurité Logicielle reste en attente des supports de cours.
 Chaque dossier contient aussi la version Markdown modifiable et la liste des
 sources. Pour régénérer les PDF séparés : `python scripts/generer-resumes.py`
 (Python, ReportLab, PyMuPDF et polices DejaVu ou Arial/Consolas nécessaires).
+
+Pour actualiser certains modules avec une nouvelle date :
+`python scripts/generer-resumes.py --modules embedded dev-mobile devops iot --date 2026-11-07`.

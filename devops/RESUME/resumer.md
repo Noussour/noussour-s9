@@ -1,6 +1,6 @@
 # DevOps et Cloud Computing — Résumé de révision
 
-Synthèse des deux cours et des énoncés pratiques disponibles au 4 novembre 2026. Enseignante : Ameur Imane. Le contenu porte surtout sur virtualisation, cloud et infrastructure ; aucun chapitre autonome sur CI/CD n'est présent dans les supports fournis.
+Synthèse des deux cours, des énoncés pratiques et du TD1 disponibles au 7 novembre 2026. Enseignante : Ameur Imane. Le contenu porte surtout sur virtualisation, cloud et infrastructure ; aucun chapitre autonome sur CI/CD n'est présent dans les supports fournis.
 
 ## Chapitre 1 — Principes de virtualisation
 
@@ -196,6 +196,57 @@ Un service actif localement peut rester inaccessible depuis un navigateur à cau
 
 Cette section résume les énoncés ; elle ne prétend pas qu'un nouveau déploiement cloud a été effectué pour rédiger cette fiche.
 
+## TD1 — Architecture, stockage et services
+
+### Plateforme de commerce en ligne
+
+Une architecture en couches sépare interface utilisateur, traitement métier et persistance. Le **back end** comprend les services côté serveur ; la logique métier et l'accès aux données en font partie, ce ne sont pas nécessairement quatre serveurs distincts.
+
+| Couche / ressource | Proposition pour le cas du TD | Justification |
+| --- | --- | --- |
+| Front end | Interface web | Interaction avec les utilisateurs |
+| Logique métier | Commandes et paiements | Règles et traitements applicatifs |
+| Données structurées | Base relationnelle, telle que RDS dans l'exemple AWS | Relations, intégrité et transactions |
+| Images | Stockage objet, tel que S3 dans l'exemple | Stockage et distribution de fichiers avec métadonnées |
+
+Le besoin de 50 000 utilisateurs simultanés exige un dimensionnement et des mesures ; ce nombre seul ne permet pas de déduire une taille de VM. La disponibilité nécessite plusieurs instances, un routage vers les instances saines et une stratégie de reprise des données. Une sauvegarde permet une restauration ; elle ne remplace pas un basculement automatique.
+
+Les microservices permettent de faire évoluer certains composants séparément, mais ajoutent échanges réseau et exploitation distribuée. Leur choix doit être justifié par les besoins et l'équipe ; plusieurs fonctions métier ne rendent pas un monolithe automatiquement inadapté.
+
+### Ressources virtuelles et contention
+
+Pour trois départements, une VM par département fournit une séparation logique sur le serveur physique. L'hyperviseur attribue et ordonnance les ressources. Un invité trop consommateur peut dégrader les autres : prévoir limites, réservations et surveillance adaptées. La panne du seul hôte reste un risque commun.
+
+**Migration** : déplacer une VM vers un autre hôte. **Réplication** : maintenir une copie selon la stratégie prévue, utilisable notamment pour une reprise. Une copie ne reste pas synchronisée spontanément ; il faut un mécanisme de réplication.
+
+### Stockage fichier, objet, bloc et VFS
+
+| Notion | Fonction |
+| --- | --- |
+| Partage de fichiers | Accès à une arborescence avec un protocole et des droits |
+| SMB / NFS | Protocoles de partage de fichiers, fréquemment associés à Windows / Unix mais pas exclusifs à ces OS |
+| Stockage objet | Accès à des objets identifiés, avec données et métadonnées |
+| Stockage bloc | Volumes vus comme blocs par un système, qui peut y créer un système de fichiers |
+| VFS | Abstraction d'accès aux systèmes de fichiers au niveau du système d'exploitation |
+
+Pour des postes Windows et Linux, vérifier le protocole, les clients, les identités et les permissions réellement compatibles. Dire seulement « virtualisation de fichiers » ne résout pas ces exigences. Un VFS n'est pas une garantie automatique de chemins réseau identiques après déplacement des fichiers.
+
+Le stockage objet convient au scénario d'images proposé ; le choix final dépend aussi des applications et contraintes d'accès. Pour protéger les données, distinguer **accès non autorisé** (identités, autorisations, chiffrement) et **perte de données** (sauvegardes, versions, réplication et essais de restauration). Un pare-feu ou le chiffrement ne suffit pas à restaurer des données effacées.
+
+### FaaS et traitement d'images
+
+Le traitement événementiel peut suivre : dépôt de l'image dans un stockage → notification de création d'objet → fonction de traitement → résultat stocké. Le déclencheur cloud est l'événement configuré après le dépôt, pas le simple clic sur un bouton de l'interface.
+
+Le modèle FaaS évite de gérer directement les serveurs d'exécution. Le coût dépend de la tarification du service, notamment invocations, durée et ressources, avec d'autres coûts possibles ; il n'est pas limité universellement au seul temps d'exécution. Le cold start peut ajouter de la latence ; une capacité préinitialisée, quand le service la propose, constitue un compromis de coût et de délai. Le TD ne fournit pas de tarifs à mémoriser.
+
+### SOA, SOAP et REST
+
+Des services Java, Python et Node.js peuvent coopérer grâce à des contrats d'interface et des formats/protocoles communs. Le couplage faible limite certaines dépendances ; il ne signifie pas absence de dépendances.
+
+**SOAP** est un protocole de messages utilisant XML. **REST** est un style d'architecture fondé notamment sur des ressources et des interactions définies ; REST n'impose pas JSON, même si ce format est courant dans les exemples web.
+
+Une panne de notification ne doit pas nécessairement arrêter un paiement, mais cela dépend de l'implémentation. Une notification asynchrone avec reprise et gestion des erreurs limite la propagation ; un appel synchrone mal géré peut au contraire bloquer le flux. L'indépendance annoncée dans un schéma ne suffit pas à garantir la résilience.
+
 ## Révision active et sources
 
 1. **Une VM suffit-elle à faire un cloud ?** Non, considérer aussi les caractéristiques de service.
@@ -204,5 +255,8 @@ Cette section résume les énoncés ; elle ne prétend pas qu'un nouveau déploi
 4. **Pourquoi distinguer snapshot et sauvegarde ?** Un état de retour local ne couvre pas tous les scénarios de perte de l'hôte ou du stockage.
 5. **Pourquoi comparer curl local et accès navigateur distant ?** Ils ne testent pas le même chemin réseau.
 6. **Que signifie élasticité dans les deux sens ?** Ajouter des ressources puis les libérer lorsque la demande baisse.
+7. **Une sauvegarde garantit-elle la continuité immédiate après une panne ?** Non : elle doit être distinguée de la redondance et du basculement.
+8. **REST implique-t-il JSON ?** Non, c'est un style architectural ; plusieurs représentations sont possibles.
+9. **Un service de notification en panne bloque-t-il toujours le paiement ?** Cela dépend des dépendances et de la gestion des erreurs.
 
-Sources locales : `COURS/01-Virtualization.pdf` (49 pages), `COURS/2-CloudCompute.pdf` (117 pages), `TP/Lab1.pdf` (6 pages), `TP/TP1-supportpdf.pdf` (21 pages), `TP/TP2_Lab Cloud Environment.pdf` (4 pages). Les exemples de fournisseurs, dates historiques et chiffres commerciaux non nécessaires à la compréhension ont été écartés.
+Sources locales : `COURS/01-Virtualization.pdf` (49 pages), `COURS/2-CloudCompute.pdf` (117 pages), `TP/Lab1.pdf` (6 pages), `TP/TP1-supportpdf.pdf` (21 pages), `TP/TP2_Lab Cloud Environment.pdf` (4 pages), `TD/td1.pdf` (3 pages, cinq exercices corrigés). Les notes du TD précisent les réponses trop générales sur disponibilité, stockage et indépendance des services. Les exemples de fournisseurs, dates historiques et chiffres commerciaux non nécessaires à la compréhension ont été écartés.
