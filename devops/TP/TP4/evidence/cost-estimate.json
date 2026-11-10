@@ -1,0 +1,34 @@
+{
+  "recorded_at_utc": "2026-11-10T13:11:51.571674+00:00",
+  "source": "https://prices.azure.com/api/retail/prices",
+  "region": "polandcentral",
+  "compute": {
+    "productName": "Virtual Machines DSv3 Series",
+    "skuName": "D2s v3",
+    "meterName": "D2s v3",
+    "retailPrice": 0.115,
+    "currencyCode": "USD",
+    "unitOfMeasure": "1 Hour",
+    "effectiveStartDate": "2025-02-01T00:00:00Z"
+  },
+  "disk": {
+    "productName": "Standard SSD Managed Disks",
+    "skuName": "E10 LRS",
+    "meterName": "E10 LRS Disk",
+    "retailPrice": 9.6,
+    "currencyCode": "USD",
+    "unitOfMeasure": "1/Month",
+    "effectiveStartDate": "2025-02-01T00:00:00Z"
+  },
+  "public_ip": {
+    "productName": "IP Addresses",
+    "skuName": "Standard",
+    "meterName": "Standard IPv4 Static Public IP",
+    "retailPrice": 0.005,
+    "currencyCode": "USD",
+    "unitOfMeasure": "1 Hour",
+    "effectiveStartDate": "2023-02-21T00:00:00Z"
+  },
+  "estimate_usd_per_hour": 0.13315068493150686,
+  "basis": "730 hours/month; excludes taxes, disk transactions, egress and subscription benefits"
+}

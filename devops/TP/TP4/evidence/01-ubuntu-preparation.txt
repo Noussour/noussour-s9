@@ -1,0 +1,27 @@
+Tue Nov 10 12:58:33 UTC 2026
+tp4-openstack
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.5 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+2
+               total        used        free      shared  buff/cache   available
+Mem:           7.7Gi       642Mi       6.1Gi       4.0Mi       1.3Gi       7.1Gi
+Swap:          4.0Gi          0B       4.0Gi
+NAME          TYPE SIZE USED PRIO
+/swapfile-tp4 file   4G   0B   -1
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        77G  6.5G   70G   9% /
+crw-rw---- 1 root kvm 10, 232 Nov 10 12:57 /dev/kvm
+uid=1001(stack) gid=1001(stack) groups=1001(stack)
+stack passwordless sudo: OK
+902e73e50c24ba7e470b8798c867985ccb754c9c

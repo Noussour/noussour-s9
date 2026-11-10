@@ -1,0 +1,98 @@
+=== Ubuntu and host ===
+2026-11-10T14:31:47Z
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.5 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+tp4-openstack
+10.44.1.4 192.168.122.1 172.24.4.1 2001:db8::2 
+2
+               total        used        free      shared  buff/cache   available
+Mem:           7.7Gi       5.5Gi       235Mi       156Mi       2.5Gi       2.3Gi
+Swap:          4.0Gi       148Ki       4.0Gi
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        77G   13G   65G  16% /
+=== Dedicated installer account ===
+uid=1001(stack) gid=1001(stack) groups=1001(stack),122(libvirt)
+Passwordless sudo: OK
+=== Virtualization ===
+/dev/kvm available
+=== DevStack version ===
+902e73e50c24ba7e470b8798c867985ccb754c9c
+stack.sh completion marker: PRESENT
+=== Token issuance (ID omitted) ===
+2026-11-10T15:31:48+0000
+=== Service catalogue ===
++----------------------------------+-------------+----------------+
+| ID                               | Name        | Type           |
++----------------------------------+-------------+----------------+
+| [REDACTED] | glance      | image          |
+| [REDACTED] | placement   | placement      |
+| [REDACTED] | nova_legacy | compute_legacy |
+| [REDACTED] | nova        | compute        |
+| [REDACTED] | neutron     | network        |
+| [REDACTED] | cinder      | block-storage  |
+| [REDACTED] | keystone    | identity       |
++----------------------------------+-------------+----------------+
+=== Images ===
++--------------------------------------+--------------------------+--------+
+| ID                                   | Name                     | Status |
++--------------------------------------+--------------------------+--------+
+| bcb36cac-dcff-4bc0-af0d-9d8af5a91922 | cirros-0.6.3-x86_64-disk | active |
++--------------------------------------+--------------------------+--------+
+=== Flavors ===
++----+-----------+-------+------+-----------+-------+-----------+
+| ID | Name      |   RAM | Disk | Ephemeral | VCPUs | Is Public |
++----+-----------+-------+------+-----------+-------+-----------+
+| 1  | m1.tiny   |   512 |    1 |         0 |     1 | True      |
+| 2  | m1.small  |  2048 |   20 |         0 |     1 | True      |
+| 3  | m1.medium |  4096 |   40 |         0 |     2 | True      |
+| 4  | m1.large  |  8192 |   80 |         0 |     4 | True      |
+| 42 | m1.nano   |   192 |    1 |         0 |     1 | True      |
+| 5  | m1.xlarge | 16384 |  160 |         0 |     8 | True      |
+| 84 | m1.micro  |   256 |    1 |         0 |     1 | True      |
+| c1 | cirros256 |   256 |    1 |         0 |     1 | True      |
+| d1 | ds512M    |   512 |    5 |         0 |     1 | True      |
+| d2 | ds1G      |  1024 |   10 |         0 |     1 | True      |
+| d3 | ds2G      |  2048 |   10 |         0 |     2 | True      |
+| d4 | ds4G      |  4096 |   20 |         0 |     4 | True      |
++----+-----------+-------+------+-----------+-------+-----------+
+=== Networks ===
++--------------------------------------+---------+----------------------------------------------------------------------------+
+| ID                                   | Name    | Subnets                                                                    |
++--------------------------------------+---------+----------------------------------------------------------------------------+
+| 39f8435c-a711-4047-88d9-a0715cd01c7a | shared  | d8bbe1ed-2346-4935-9d85-1d200755ee95                                       |
+| a282c33f-3319-4c8d-b523-2df9b58f1f9a | private | 9a2297f9-bcb4-47b0-b8ba-1b2d5499a864, c98c4f83-a058-4930-ae08-32102013976d |
+| aca7b6be-fa1f-4402-a626-ebc234e40b11 | public  | 863646b5-8aaf-485c-b515-829535db4ba0, a93ffdc7-aa2e-45b8-8a75-ff8362497dd7 |
++--------------------------------------+---------+----------------------------------------------------------------------------+
+=== Servers ===
+
+=== Compute and network services ===
++--------------------------------------+----------------+---------------+----------+---------+-------+----------------------------+
+| ID                                   | Binary         | Host          | Zone     | Status  | State | Updated At                 |
++--------------------------------------+----------------+---------------+----------+---------+-------+----------------------------+
+| 1416d205-5f1e-48a4-888c-8027d6c92d52 | nova-scheduler | tp4-openstack | internal | enabled | up    | 2026-11-10T14:31:57.000000 |
+| 240c36bb-b11f-48c3-95cb-e141dd35e94e | nova-conductor | tp4-openstack | internal | enabled | up    | 2026-11-10T14:30:09.000000 |
+| 0a0021c8-8dcf-4ebf-9ddb-06d33d1b0280 | nova-conductor | tp4-openstack | internal | enabled | up    | 2026-11-10T14:31:51.000000 |
+| 81d9819e-7f1a-4a02-87f6-aaf1ce326b12 | nova-compute   | tp4-openstack | nova     | enabled | up    | 2026-11-10T14:30:43.000000 |
++--------------------------------------+----------------+---------------+----------+---------+-------+----------------------------+
++--------------------------------------+------------------------------+---------------+-------------------+-------+-------+-------------------+
+| ID                                   | Agent Type                   | Host          | Availability Zone | Alive | State | Binary            |
++--------------------------------------+------------------------------+---------------+-------------------+-------+-------+-------------------+
+| ba1ee2de-4e9e-4100-86c6-d47ff3059852 | OVN Controller Gateway agent | tp4-openstack |                   | :-)   | UP    | ovn-controller    |
+| 769a6597-afd9-5048-84f9-e7708053cba7 | OVN Neutron agent            | tp4-openstack |                   | :-)   | UP    | neutron-ovn-agent |
++--------------------------------------+------------------------------+---------------+-------------------+-------+-------+-------------------+
+=== Horizon HTTP response ===
+HTTP/1.1 302 Found
+Date: Tue, 10 Nov 2026 14:32:01 GMT
+Server: Apache/2.4.58 (Ubuntu)
+Location: http://10.44.1.4/dashboard/auth/login/?next=/dashboard/
+X-Frame-Options: DENY
+Vary: Accept-Language,Cookie
+Content-Language: en
+Connection: close
+Content-Type: text/html; charset=utf-8
+
+TP4 CLI verification completed successfully.

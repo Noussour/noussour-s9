@@ -1,0 +1,4 @@
+﻿Horizon HTTP: 200
+Horizon admin login succeeded. Page: http://127.0.0.1:18080/dashboard/project/
+Captured 04-horizon-services.png
+Captured 05-horizon-networks.png

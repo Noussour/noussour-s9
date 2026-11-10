@@ -1,0 +1,62 @@
+{
+  "observed_at_utc": "2026-11-10T13:04:17.989516+00:00",
+  "resource_group": "rg-devops-tp4-20261110",
+  "vm_name": "tp4-openstack",
+  "location": "polandcentral",
+  "vm_size": "Standard_D2s_v3",
+  "power_state": "VM running",
+  "image": {
+    "exactVersion": "24.04.202610250",
+    "offer": "ubuntu-24_04-lts",
+    "publisher": "Canonical",
+    "sku": "server",
+    "version": "latest"
+  },
+  "disk_size_gb": 80,
+  "disk_sku": "StandardSSD_LRS",
+  "disk_tier": null,
+  "ssh_access": "TCP/22 restricted to the current client public IPv4 /32",
+  "ssh_rule": {
+    "access": "Allow",
+    "protocol": "Tcp",
+    "port": "22"
+  },
+  "public_http_rule_created": false,
+  "resources": [
+    {
+      "name": "tp4-nsg",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "francecentral"
+    },
+    {
+      "name": "tp4-nsg-pl",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "location": "polandcentral"
+    },
+    {
+      "name": "tp4-vnet-pl",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "polandcentral"
+    },
+    {
+      "name": "tp4-public-ip-pl",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "polandcentral"
+    },
+    {
+      "name": "tp4-openstackVMNic",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "polandcentral"
+    },
+    {
+      "name": "tp4-openstack",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "polandcentral"
+    },
+    {
+      "name": "tp4-openstack_OsDisk_1_1245e498fb694a61bf213c07615a70bd",
+      "type": "Microsoft.Compute/disks",
+      "location": "polandcentral"
+    }
+  ]
+}
