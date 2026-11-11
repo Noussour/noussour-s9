@@ -14,7 +14,7 @@ The revised **GitHub Codespaces report uses the user's real execution screenshot
 
 ## Read and reproduce
 
-Use the sheets alongside the corresponding report: `../Lab1.pdf`, `../TP1-supportpdf.pdf`, `../TP2_Lab Cloud Environment.pdf` (Azure option), and `../TP2_Lab Cloud Environment Pr.pdf` (revised GitHub Codespaces option).
+Use the sheets alongside the corresponding report: `../TP1.pdf`, `../TP1-support-network-modes.pdf`, `../TP2.pdf` (Azure option), and `../TP2_Lab Cloud Environment Pr.pdf` (revised GitHub Codespaces option).
 
 For Azure, start in WSL/Linux on your own computer, run `az login`, choose your subscription, and check regional availability and your budget. Set `CLIENT_IP` to the public IPv4 address of the computer that will make the SSH/browser connections. Cloud Shell's public IP may differ from your browser's egress IP.
 

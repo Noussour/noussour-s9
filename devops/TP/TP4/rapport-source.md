@@ -4,7 +4,7 @@ Date d'exécution : {{date}}. Le rapport décrit une installation réellement ef
 
 ## 1. Objectif et adaptation de l'environnement
 
-Le sujet `TP4_Openstack.pdf` demande Ubuntu 24.04, la préparation d'un utilisateur stack, l'installation de DevStack, un accès authentifié à Horizon et des vérifications avec la CLI OpenStack. Le but est de disposer d'un environnement de laboratoire pour explorer les services et préparer les exercices de réseau et d'instances.
+Le sujet `TP4.pdf` demande Ubuntu 24.04, la préparation d'un utilisateur stack, l'installation de DevStack, un accès authentifié à Horizon et des vérifications avec la CLI OpenStack. Le but est de disposer d'un environnement de laboratoire pour explorer les services et préparer les exercices de réseau et d'instances.
 
 Azure héberge ici la VM Ubuntu ; OpenStack est installé à l'intérieur. Une VM Azure seule ne constitue donc pas la réalisation du TP. Le choix du cloud remplace uniquement l'hyperviseur local VMware/VirtualBox proposé par l'énoncé.
 
@@ -173,4 +173,4 @@ Après la vérification complète (installation, Horizon, CLI), toutes les resso
 
 Le dossier fournit le rapport Markdown/PDF, les scripts de préparation et vérification, les journaux sélectionnés, les captures Horizon et un manifeste de provenance avec empreintes SHA-256. Les secrets et clés privées ne font pas partie des livrables.
 
-Sources : sujet local `TP4_Openstack.pdf` (6 pages), [DevStack Quick Start](https://docs.openstack.org/devstack/latest/), [DevStack dans une VM](https://docs.openstack.org/devstack/latest/guides/single-vm.html), [CLI OpenStack](https://docs.openstack.org/python-openstackclient/latest/) et API publique Azure Retail Prices. Les captures et sorties observées sont datées dans les fichiers de preuve.
+Sources : sujet local `TP4.pdf` (6 pages), [DevStack Quick Start](https://docs.openstack.org/devstack/latest/), [DevStack dans une VM](https://docs.openstack.org/devstack/latest/guides/single-vm.html), [CLI OpenStack](https://docs.openstack.org/python-openstackclient/latest/) et API publique Azure Retail Prices. Les captures et sorties observées sont datées dans les fichiers de preuve.

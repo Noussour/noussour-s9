@@ -8,7 +8,7 @@ Prepared: 3 November 2026 · Student name: ____________________
 
 ## Scope and evidence status
 
-This is a complete worked solution to `Lab1.pdf`, using `TP1-supportpdf.pdf` for the network concepts. It covers Parts A–E and Q1–Q11, then supplies an Azure CLI adaptation. Commands are reproducible instructions. All illustrated outputs, IP addresses, elapsed times and terminal captures are SIMULATED EXAMPLES, not measured results. No VMware VM or Azure resource was provisioned while writing this report.
+This is a complete worked solution to `TP1.pdf`, using `TP1-support-network-modes.pdf` for the network concepts. It covers Parts A–E and Q1–Q11, then supplies an Azure CLI adaptation. Commands are reproducible instructions. All illustrated outputs, IP addresses, elapsed times and terminal captures are SIMULATED EXAMPLES, not measured results. No VMware VM or Azure resource was provisioned while writing this report.
 
 The original exercise is a local hypervisor exercise. Azure can demonstrate VM administration, private networking, SSH and disk recovery, but does not reproduce a local Linux Lite ISO installation, an OVA appliance workflow, or bridged/host-only adapters. Those tasks remain documented in their original form. The Azure appendix explicitly identifies substitutions.
 

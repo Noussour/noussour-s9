@@ -1,6 +1,6 @@
 # TP4 — OpenStack / DevStack sur Ubuntu 24.04
 
-Ce dossier accompagne le sujet `../TP4_Openstack.pdf`.
+Ce dossier accompagne le sujet `../TP4.pdf`.
 
 - `scripts/prepare-ubuntu.sh` : préparation d'une VM Ubuntu dédiée, utilisateur stack et configuration.
 - `scripts/install-devstack.sh` : lancement de DevStack comme utilisateur stack.

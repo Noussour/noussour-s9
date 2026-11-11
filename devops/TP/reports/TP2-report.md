@@ -8,7 +8,7 @@ Prepared: 3 November 2026 · Student name: ____________________
 
 ## Scope and evidence status
 
-This report solves Parts A–E of `TP2_Lab Cloud Environment.pdf`, including every question and all four requested evidence items. It uses Microsoft Azure and Azure CLI with Ubuntu Server and Nginx. The first printed question is labeled Q10 in the worksheet; it is treated as Q1 below so the answers cover Q1–Q9 without omitting the provider question.
+This report solves Parts A–E of `TP2.pdf`, including every question and all four requested evidence items. It uses Microsoft Azure and Azure CLI with Ubuntu Server and Nginx. The first printed question is labeled Q10 in the worksheet; it is treated as Q1 below so the answers cover Q1–Q9 without omitting the provider question.
 
 This is a worked deployment plan, not a record of a completed cloud session. Every terminal/browser illustration is marked SIMULATED EXAMPLE. The addresses 203.0.113.10 and 198.51.100.20 are documentation examples, not usable cloud endpoints. No cloud resources, cost measurements, live browser checks or genuine Azure portal screenshots were produced. The short companion `TP2-short-report.pdf` provides concise answers; this document contains the detailed procedure and reasoning.
 
