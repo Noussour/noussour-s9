@@ -5,31 +5,31 @@
   "documents": [
     {
       "module": "embedded",
-      "source": "embedded/COURS/Chapter_1_introduction.pdf",
+      "source": "embedded/COURS/Course1-Introduction-Embedded-Systems.pdf",
       "sha256": "039fac179b1f417dc8829c7bf2675096bceb93fd23a4cb9b3e8a3ca6e4657431",
       "pages": 49
     },
     {
       "module": "embedded",
-      "source": "embedded/COURS/Chapter_2_introduction.pdf",
+      "source": "embedded/COURS/Course2-ARM-Architecture.pdf",
       "sha256": "8152f17929e6f7684d05efb5584e8955dccc36bd771e397b9aa3eb71f0184955",
       "pages": 46
     },
     {
       "module": "embedded",
-      "source": "embedded/COURS/Chapter_2_stm32Extension.pdf",
+      "source": "embedded/COURS/Course2-STM32-Extension-Setup.pdf",
       "sha256": "3bb25b3ace0e418aea565e1d5c86e948dff5ae8bc6122650d36ec8745ea8bbf8",
       "pages": 2
     },
     {
       "module": "embedded",
-      "source": "embedded/COURS/course3.pdf",
+      "source": "embedded/COURS/Course3-Embedded-IO.pdf",
       "sha256": "2497fada1041adfc27d355316cc7a679d0b85d5ed5ff3518bd15c30cc4eacfa2",
       "pages": 55
     },
     {
       "module": "embedded",
-      "source": "embedded/TP/tp1.pdf",
+      "source": "embedded/TP/TP1.pdf",
       "sha256": "c4109116873a9b7156f57974a1d8c90d121e8720eca66c4d58ba37d0fc3fdd90",
       "pages": 8
     }
