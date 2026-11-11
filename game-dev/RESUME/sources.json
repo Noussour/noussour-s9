@@ -5,19 +5,19 @@
   "documents": [
     {
       "module": "game-dev",
-      "source": "game-dev/COURS/Chapter 2 - Sprites and Tiles.pdf",
+      "source": "game-dev/COURS/Chapter2-Sprites-Tiles.pdf",
       "sha256": "de5a4c17e3f8cb80d5e064e9d0684432794dcb3121fa8611e5734138153a7346",
       "pages": 40
     },
     {
       "module": "game-dev",
-      "source": "game-dev/COURS/Chapter1_GameDev.pdf",
+      "source": "game-dev/COURS/Chapter1-Game-Design-Development.pdf",
       "sha256": "c07eed312c15f3de07f70260bf5f10af8699803c12db90042f7296b58eca3ebb",
       "pages": 31
     },
     {
       "module": "game-dev",
-      "source": "game-dev/TP/Basics.pdf",
+      "source": "game-dev/TP/TP0-Basics.pdf",
       "sha256": "c3c740721b689d6f1c998d12bd247ac5258c5ea2dca8a7b530871b2571ad01f7",
       "pages": 3
     },
@@ -29,13 +29,13 @@
     },
     {
       "module": "game-dev",
-      "source": "game-dev/TP/PW 1.pdf",
+      "source": "game-dev/TP/TP1.pdf",
       "sha256": "39129e9f765da39e71e3530b69688ea2725faca92aac877933b0bf507ef68b12",
       "pages": 2
     },
     {
       "module": "game-dev",
-      "source": "game-dev/TP/PW 2.pdf",
+      "source": "game-dev/TP/TP2.pdf",
       "sha256": "8e679007b6feb65cd89e9192b7eb1d9a339a83c04a66e043b5c92f6d185cc774",
       "pages": 3
     }

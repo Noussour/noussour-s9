@@ -173,4 +173,4 @@ Dates inscrites dans le sujet : groupes le 08/11/2026, GDD le 22/11/2026, produi
 5. **Un GDD suffit-il à livrer le projet ?** Non : un niveau jouable, le code et les autres livrables demandés restent nécessaires.
 6. **Que mesure le playtesting ?** La qualité de l'expérience et sa compréhension, en complément de la recherche de bugs.
 
-Sources : `COURS/Chapter1_GameDev.pdf` (31 pages), `COURS/Chapter 2 - Sprites and Tiles.pdf` (40 pages), `TP/Basics.pdf` (3 pages), `TP/PW 1.pdf` (2 pages), `TP/PW 2.pdf` (3 pages) et `TP/Project.pdf` (2 pages). Les exemples et formules suivent ces supports, avec les précisions de lecture signalées.
+Sources : `COURS/Chapter1-Game-Design-Development.pdf` (31 pages), `COURS/Chapter2-Sprites-Tiles.pdf` (40 pages), `TP/TP0-Basics.pdf` (3 pages), `TP/TP1.pdf` (2 pages), `TP/TP2.pdf` (3 pages) et `TP/Project.pdf` (2 pages). Les exemples et formules suivent ces supports, avec les précisions de lecture signalées.
