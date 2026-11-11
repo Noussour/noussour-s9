@@ -220,11 +220,11 @@ Le sujet annonce un affichage d'interprétation, mais le code visible de ResultA
 
 ### Documents utilisés
 
-- `dev-mobile/COURS/Chapter-2.pdf` : 35 pages ; matériel p. 3–12, affichage p. 13–33.
+- `dev-mobile/COURS/Chapter2-Resolution-Density-Android.pdf` : 35 pages ; matériel p. 3–12, affichage p. 13–33.
 - `dev-mobile/TD/TD1.pdf` et `TD1-sol.pdf` : conversions et exercices ; recalcul des valeurs signalées.
 - `dev-mobile/TP/TP1.pdf` : 6 pages ; structure du projet et cycle de vie.
-- `dev-mobile/TP/mobileDevTP2.pdf` : 4 pages ; vues XML, clic, saisie et calcul du double.
-- `dev-mobile/TP/tp3.pdf` : 8 pages ; deux activités, conversion d'unités, Intent et extras.
+- `dev-mobile/TP/TP2.pdf` : 4 pages ; vues XML, clic, saisie et calcul du double.
+- `dev-mobile/TP/TP3.pdf` : 8 pages ; deux activités, conversion d'unités, Intent et extras.
 - `dev-mobile/COURS/Chatper1.txt` : lien Prezi uniquement ; chapitre non consultable, à compléter.
 
 Les références Android servent à préciser les points ambigus du support. Les exemples numériques de cette fiche sont recalculés ; ce document ne prétend pas couvrir le chapitre 1 manquant.

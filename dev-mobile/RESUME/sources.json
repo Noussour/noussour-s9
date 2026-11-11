@@ -7,7 +7,7 @@
   "documents": [
     {
       "module": "dev-mobile",
-      "source": "dev-mobile/COURS/Chapter-2.pdf",
+      "source": "dev-mobile/COURS/Chapter2-Resolution-Density-Android.pdf",
       "sha256": "f0f508e50bfe5f97c96a10b9339661c88a89566ab3a6000a3e17408f041ac68f",
       "pages": 35
     },
@@ -30,7 +30,7 @@
     },
     {
       "module": "dev-mobile",
-      "source": "dev-mobile/TP/mobileDevTP2.pdf",
+      "source": "dev-mobile/TP/TP2.pdf",
       "sha256": "117986f8f7f01f76a60013145987ccaa895c2b378bd58f69661c49809fcf991b",
       "pages": 4
     },
@@ -42,7 +42,7 @@
     },
     {
       "module": "dev-mobile",
-      "source": "dev-mobile/TP/tp3.pdf",
+      "source": "dev-mobile/TP/TP3.pdf",
       "sha256": "acf7cc6daaf253d56a90ec9202023de1feb60afc766352190fb90b357d53c973",
       "pages": 8
     }
