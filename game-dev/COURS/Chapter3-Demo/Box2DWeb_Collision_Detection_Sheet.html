@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Box2DWeb – Collision Detection</title>
+<script type="text/javascript" src="https://ff.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=aXCKz2SkQv9cRMsoSl5NM9_O2WFCCm60sN-xT6i4N5FxGVGbI_E__-4jSY9xR0nWSgzngaf84uO_ShWnri1jEoHriPGZVRlbxUejuisPbxcqCP4o0hm3Ivez1fOjd7BdWVb8XzjvmSyVyvD9BIp5iQ7FURnzT1B6FduW2UzaWDe7JlFAXHr5Phjtb0oy1FVgtAIC8cRP3B03k3GLHtMuE7LLMTOYk67Cm3qL0KDjXoO-IHmHNR1Otyh8W0wkO4gzW-pwDcJv5muluI9pQoduLQ" charset="UTF-8"></script><style>
+  :root { --ink:#202938; --muted:#586579; --blue:#2457a7; --pale:#edf4ff; --line:#d8e0ea; --code:#172033; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#f4f6f9; color:var(--ink); font:16px/1.58 Arial, Helvetica, sans-serif; }
+  main { max-width:900px; margin:32px auto; padding:42px 54px; background:white; box-shadow:0 4px 24px #18253a12; }
+  h1 { margin:0 0 8px; font-size:30px; line-height:1.2; color:#173b70; }
+  h2 { margin:30px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--line); color:#173b70; font-size:21px; }
+  h3 { margin:20px 0 6px; font-size:17px; }
+  p { margin:8px 0 12px; }
+  .subtitle { color:var(--muted); margin-bottom:24px; }
+  .note { background:#fff8e8; border-left:4px solid #d69b22; }
+  .task { background:#f0f7f2; border-left:4px solid #398653; }
+  pre { background:var(--code); color:#f1f5fb; padding:16px 18px; border-radius:8px; overflow-x:auto; font:13.5px/1.55 Consolas, Monaco, monospace; }
+  code { font-family:Consolas, Monaco, monospace; }
+  p code, li code { background:#eef1f5; padding:2px 5px; border-radius:4px; color:#233b60; }
+  ul, ol { padding-left:24px; }
+  li { margin:5px 0; }
+  table { width:100%; border-collapse:collapse; margin:12px 0 18px; }
+  th, td { border:1px solid var(--line); padding:9px 11px; text-align:left; vertical-align:top; }
+  th { background:#f0f4f9; }
+  .small { color:var(--muted); font-size:14px; }
+  .footer { margin-top:32px; padding-top:12px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; }
+  @media print { body { background:white; } main { margin:0; padding:20mm; box-shadow:none; max-width:none; } pre { white-space:pre-wrap; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Box2DWeb: Collision Detection</h1>
+  <div class="subtitle">Practical sheet · Contact listeners and collision events</div>
+
+  <h2>Creating and registering the listener</h2>
+  <p>Create the listener after creating the Box2D world, then register it with that world:</p>
+  <pre><code>var listener = new Box2D.Dynamics.b2ContactListener();
+
+// Called when two fixtures start touching
+listener.BeginContact = function(contact) {
+    console.log("Collision started!");
+};
+
+// Called when two fixtures stop touching
+listener.EndContact = function(contact) {
+    console.log("Collision ended!");
+};
+
+// Register the listener with the world
+world.SetContactListener(listener);</code></pre>
+
+  <div class="note">
+    <strong>Important:</strong> Register the listener once, after the world has been created. The callbacks are invoked by Box2D during the simulation; do not call them manually.
+  </div>
+  
+  <h2>Adding an action when a collision occurs</h2>
+  <p>The contact callback can also trigger an action in the application. For example, the following code counts the number of new contacts detected:</p>
+  <pre><code>var collisionCount = 0;
+
+listener.BeginContact = function(contact) {
+    collisionCount++;
+    console.log("Collision count: " + collisionCount);
+};
+
+listener.EndContact = function(contact) {
+    console.log("Contact ended.");
+};</code></pre>
+  <p>Another possibility is to play a sound when contact begins:</p>
+  <pre><code>// Make sure the sound file is available to the web page.
+// Browsers may require the user to click a Start button first.
+var collisionSound = new Audio("collision.mp3");
+
+listener.BeginContact = function(contact) {
+    collisionSound.currentTime = 0;
+    collisionSound.play();
+};</code></pre>
+  <p class="small">The sound file path must be correct. The example plays a sound for every new contact, so several simultaneous contacts may trigger several playback requests.</p>
+  <div class="task">
+    <h2 style="margin-top:0;border:0;">Application</h2>
+    <strong>Objective: Combine the static platform and dynamic object, then detect their collision.</strong>
+    <ol>
+      <li>Combine the two supplied programs into one application using a single Box2D world.</li>
+      <li>Create and register a contact listener.</li>
+      <li>Display a message in the console when contact begins and when it ends.</li>
+	  <li>Change the restitution (bounciness) of the dynamic object's fixture and observe the result.</li>
+    </ol>
+  </div>
+  <div class="footer">Box2DWeb practical course · Collision detection</div>
+</main>
+</body>
+</html>

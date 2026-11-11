@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Iso Ralph</title>
+</head>
+
+<body>
+
+<canvas id="game" width="800" height="400">
+    Your browser does not support HTML5 Canvas.
+</canvas>
+
+<script>
+
+// Ralph image
+var Ralph = new Image();
+Ralph.src = "ralph.png";
+
+// Ralph dimensions
+var ralphW = 51;
+var ralphH = 50;
+
+// Ralph position on the isometric grid
+var rx = 0;
+var ry = 0;
+
+// Isometric grid dimensions
+var tileW = 49;
+var tileH = 25;
+
+// Canvas position offset
+var mapX = 300;
+var mapY = 150;
+
+// Grid boundaries (invisible grid)
+var maxRows = 6;
+var maxCols = 4;
+
+
+// Draw Ralph
+function drawRalph() {
+
+    var canvas = document.getElementById("game");
+    var ctx = canvas.getContext("2d");
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Convert isometric coordinates to screen coordinates
+    var x = (rx - ry) * tileW / 2 + mapX;
+    var y = (rx + ry) * tileH / 2 + mapY;
+
+    // Draw Ralph, with his feet at the grid position
+    ctx.drawImage(
+        Ralph,
+        x - ralphW / 2,
+        y + tileH / 2 - ralphH,
+        ralphW,
+        ralphH
+    );
+}
+
+
+// Wait until Ralph's image is loaded
+Ralph.onload = function() {
+    drawRalph();
+};
+
+
+// Keyboard controls
+addEventListener("keydown", function(e) {
+
+    switch(e.keyCode) {
+
+        case 37: // Left
+            if (ry < maxCols - 1)
+                ry++;
+            break;
+
+        case 39: // Right
+            if (ry > 0)
+                ry--;
+            break;
+
+        case 38: // Up
+            if (rx > 0)
+                rx--;
+            break;
+
+        case 40: // Down
+            if (rx < maxRows - 1)
+                rx++;
+            break;
+    }
+
+    e.preventDefault();
+    drawRalph();
+
+});
+
+</script>
+
+</body>
+</html>

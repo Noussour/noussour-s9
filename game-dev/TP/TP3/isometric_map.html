@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ISOMETRIC TILES</title>
+</head>
+
+<body>
+	
+	<canvas id='game' width='800' height='400' >
+		Your browser does not support HTML5 Canvas.
+	</canvas>
+	<script>
+
+// Create the isometric scope.
+// Two Dimensional Array storing our isometric map layout. Each number represents a tile.
+
+var mapArray = [[0,0,0,0,0,0],
+				[0,0,0,0,0,0],
+				[0,0,0,0,0,0],
+				[0,1,1,1,1,0],
+				[0,1,1,1,1,0],
+				[0,1,1,1,1,0],
+                [0,0,0,0,0,0]];
+
+var Tiles = [];
+
+
+loadImg();
+
+
+function loadImg() {
+	
+	var TabOfTiles = ["grass.png","water.png"],
+	NumbTilesLoaded = 0;
+
+	for (var i = 0; i < TabOfTiles.length; i++) {
+		Tiles[i] = new Image();
+		Tiles[i].src = TabOfTiles[i];
+		Tiles[i].onload = function() {
+            // Once the image is loaded increment the number of loaded tiles count and check if all images are ready.
+            NumbTilesLoaded++;
+            // If all tiles are loaded we can start drawing
+            if (NumbTilesLoaded === TabOfTiles.length) {drawMap();}
+    }
+}
+}
+
+function drawMap() {
+	
+    // create the canvas context
+    var ctx = document.getElementById('game').getContext('2d');
+
+    // Set as your tile pixel sizes, alter if you are using larger tiles.
+    var tileH = 16;
+    var tileW = 32;
+    
+    // mapX and mapY are offsets to make sure we can position the map as we want.
+    var mapX = 100;
+    var mapY = 52;
+
+    var drawTile;
+	// Clear the  canvas
+	ctx.clearRect(0, 0, 500, 500);
+
+    // loop through our mapArray and draw out the image represented by the number.
+    for (var i = 0; i < mapArray.length; i++) {
+    	for (var j = 0; j < mapArray[i].length; j++) {
+    		drawTile = mapArray[i][j];
+        // Draw the represented image number, at the desired X & Y coordinates followed by the graphic width and height.
+        ctx.drawImage(Tiles[drawTile], (i - j) * tileW/2 + mapX, (i + j) * tileH / 2 + mapY);
+        console.log(mapArray.length);
+    }
+}
+}
+
+</script>
+
+</body>
+</html>

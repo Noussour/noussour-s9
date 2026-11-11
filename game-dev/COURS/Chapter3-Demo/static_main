@@ -1,0 +1,86 @@
+
+function init() {
+
+    // get canvas
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+
+    // scale to translate from box2d elements to pixels
+    var scale = 20;
+
+    // shortcuts to box2d classes
+    var Vec2 = Box2D.Common.Math.b2Vec2;
+    var BodyDef = Box2D.Dynamics.b2BodyDef;
+    var Body = Box2D.Dynamics.b2Body;
+    var FixtureDef = Box2D.Dynamics.b2FixtureDef;
+    var World = Box2D.Dynamics.b2World;
+    var Polygon = Box2D.Collision.Shapes.b2PolygonShape;
+    var DebugDraw = Box2D.Dynamics.b2DebugDraw;
+
+    // 1. Create Physics World
+    // gravity, it's a vector showing horizontal and vertical forces
+    var gravity = new Vec2(0, 10);
+    // create world
+    var world = new World(gravity, true);
+
+
+    // 2. Define Fixtures
+    var fixDef = new FixtureDef();
+    // density 
+    fixDef.density = 1;
+    // friction 
+    fixDef.friction = 0.4;
+    // restitution : for rebound after collision
+    // 0 = no rebound ; 1 = rebound
+    fixDef.restitution = 0.2;
+
+
+    // 3. Create a Body, Ground for example
+    var groundDef = new BodyDef();
+    // the ground won't move due to forces so it's static
+    groundDef.type = Body.b2_staticBody;
+    // position of the center of the ground, from pixels to meters
+    groundDef.position.Set(400 / scale, 280 / scale);
+    // give a rectangular "shape" to the ground
+    var groundShape = new Polygon();
+    // SetAsBox takes half-width and half-height of the body, in meters
+    groundShape.SetAsBox(200 / scale, 20 / scale);
+    // associate the shape to the fixture
+    fixDef.shape = groundShape;
+    // create the body add it to the world and associate the fixture to it
+    world.CreateBody(groundDef).CreateFixture(fixDef);
+
+    // 4. TODO Create a Vertical Wall
+    // var wallDef = new BodyDef();
+    // a wall is also static, so define its type
+    // wallDef.type = ;
+    // position of the center of the wall
+    // wallDef.position.Set(,);
+    // create a shape for the wall
+    // var wallShape = new Polygon();
+    // width/2 = 2 pixels ; height/2 = 170 pixels, to meters
+    // wallShape.SetAsBox(, );
+    // associate the shape of the fixture
+    // fixDef.shape = wallShape;
+    // add the wall to the world
+    // .. ;
+
+
+    // 5. Simulate and Display
+    // tool that draws on the screen
+    var debug = new DebugDraw();
+    // precise on which context it's going to draw
+    debug.SetSprite(context);
+    // convert coordinates to pixels
+    debug.SetDrawScale(scale);
+    // define transparency 
+    debug.SetFillAlpha(1);
+    // define contours 
+    debug.SetLineThickness(2);
+    // display shapes 
+    debug.SetFlags(DebugDraw.e_shapeBit);
+    // associate the drawing tool to the world
+    world.SetDebugDraw(debug);
+    // draw the bodies of this world, once (one call)
+    world.DrawDebugData();
+}

@@ -1,0 +1,91 @@
+
+function init() {
+
+    // get canvas
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+
+    // scale to translate from box2d elements to pixels
+    var scale = 20;
+
+    // shortcuts to box2d classes
+    var Vec2 = Box2D.Common.Math.b2Vec2;
+    var BodyDef = Box2D.Dynamics.b2BodyDef;
+    var Body = Box2D.Dynamics.b2Body;
+    var FixtureDef = Box2D.Dynamics.b2FixtureDef;
+    var World = Box2D.Dynamics.b2World;
+    var Polygon = Box2D.Collision.Shapes.b2PolygonShape;
+    var DebugDraw = Box2D.Dynamics.b2DebugDraw;
+
+    // 1. Create Physics World
+    // gravity, it's a vector showing horizontal and vertical forces
+    var gravity = new Vec2(0, 10);
+    // create world
+    var world = new World(gravity, true);
+
+
+    // 2. Define Fixtures
+    var fixDef = new FixtureDef();
+    // density 
+    fixDef.density = 1;
+    // friction 
+    fixDef.friction = 0.4;
+    // restitution : for rebound after collision
+    // 0 = no rebound ; 1 = rebound
+    fixDef.restitution = 0.2;
+
+
+    // 3. Create a Dynamic Body
+    // Create a body definition
+    var boxDef = new BodyDef();
+    // The body is dynamic, so it is affected by gravity
+    boxDef.type = Body.b2_dynamicBody;
+    // Set the initial position (in meters)
+    boxDef.position.Set(400 / scale, 100 / scale);
+    // Define a rectangular shape
+    var boxShape = new Polygon();
+    // Set half-width and half-height
+    boxShape.SetAsBox(30 / scale, 30 / scale);
+    // Associate the shape with the fixture
+    fixDef.shape = boxShape;
+    // Create the body and attach the fixture
+    world.CreateBody(boxDef).CreateFixture(fixDef);
+
+    // 4. Simulate and Display
+    // tool that draws on the screen
+    var debug = new DebugDraw();
+    // precise on which context it's going to draw
+    debug.SetSprite(ctx);
+    // convert coordinates to pixels
+    debug.SetDrawScale(scale);
+    // define transparency 
+    debug.SetFillAlpha(1);
+    // define contours 
+    debug.SetLineThickness(2);
+    // display shapes 
+    debug.SetFlags(DebugDraw.e_shapeBit);
+    // associate the drawing tool to the world
+    world.SetDebugDraw(debug);
+    // draw the bodies of this world, once (one call)
+    world.DrawDebugData();
+
+
+    // 5. Add gameloop
+    function gameLoop() {
+        // Update the physics simulation
+        world.Step(
+            1 / 60,  // Time step
+            10,      // Velocity iterations
+            10       // Position iterations
+        );
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Draw the bodies
+        world.DrawDebugData();
+        // Prepare the next frame
+        requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+
+}
