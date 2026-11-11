@@ -10,7 +10,7 @@ Date de réalisation et de vérification : 4 novembre 2026
 
 ## 1. Lecture du sujet et choix de modélisation
 
-Le sujet `TD_TP_MFGL_Dr Mekahlia.pdf` demande de spécifier, programmer, modéliser et vérifier un système de réservation dont la capacité est fixée. Le point critique est la compétition de deux utilisateurs pour la dernière place. Ce corrigé traite les douze travaux demandés, avec une application Java 17, un automate PlantUML, des réseaux de Petri, des modèles NuSMV et une étude probabiliste PRISM.
+Le sujet `TD-TP-MFGL.pdf` demande de spécifier, programmer, modéliser et vérifier un système de réservation dont la capacité est fixée. Le point critique est la compétition de deux utilisateurs pour la dernière place. Ce corrigé traite les douze travaux demandés, avec une application Java 17, un automate PlantUML, des réseaux de Petri, des modèles NuSMV et une étude probabiliste PRISM.
 
 Le programme, les tests, l'exploration des marquages et le calcul de contrôle des probabilités sont écrits en Java. Les fichiers SMV, PRISM, PNML et PlantUML sont les formats de modélisation nécessaires aux outils du sujet. Les résultats numériques et les sorties de vérification rapportés ici ont réellement été obtenus sur les fichiers fournis ; les probabilités d'entrée sont des hypothèses pédagogiques, pas des mesures d'un service réel.
 

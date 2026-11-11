@@ -382,7 +382,7 @@ automatique des modèles finis et les tests du Java ont des portées différente
 6. **Que prouve un contre-exemple ?** Qu'une propriété est violée dans le modèle, sous les hypothèses de vérification.
 7. **Une demande refusée viole-t-elle forcément la vivacité ?** Non : elle a reçu une issue, même sans confirmation.
 
-Sources complémentaires locales : `methodes-formelles/TD_TP_MFGL_Dr Mekahlia.pdf`
+Sources complémentaires locales : `methodes-formelles/TD-TP-MFGL.pdf`
 (1 page) et son corrigé détaillé Java/modèles. La synthèse des quatre chapitres
 ci-dessus reprend le résumé déjà conservé dans `COURS/resumer.md` ; ce fichier
 original et son PDF restent inchangés.

@@ -1,6 +1,6 @@
 # solution tdtp — Méthodes formelles
 
-Le corrigé répond aux douze points du sujet `../../TD_TP_MFGL_Dr Mekahlia.pdf`.
+Le corrigé répond aux douze points du sujet `../../TD-TP-MFGL.pdf`.
 
 - [Document PDF](../solution-mimobn.pdf)
 - [Version Markdown complète](../solution-mimobn.md)
