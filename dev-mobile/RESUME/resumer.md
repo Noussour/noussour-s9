@@ -225,6 +225,6 @@ Le sujet annonce un affichage d'interprétation, mais le code visible de ResultA
 - `dev-mobile/TP/TP1.pdf` : 6 pages ; structure du projet et cycle de vie.
 - `dev-mobile/TP/TP2.pdf` : 4 pages ; vues XML, clic, saisie et calcul du double.
 - `dev-mobile/TP/TP3.pdf` : 8 pages ; deux activités, conversion d'unités, Intent et extras.
-- `dev-mobile/COURS/Chatper1.txt` : lien Prezi uniquement ; chapitre non consultable, à compléter.
+- `dev-mobile/COURS/LINKS.md` : lien Prezi du chapitre 1 ; chapitre non intégré à cette fiche.
 
 Les références Android servent à préciser les points ambigus du support. Les exemples numériques de cette fiche sont recalculés ; ce document ne prétend pas couvrir le chapitre 1 manquant.

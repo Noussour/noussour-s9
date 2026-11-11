@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-07",
+  "date": "2026-11-11",
   "module": "embedded",
   "pending": [],
   "documents": [
@@ -32,6 +32,12 @@
       "source": "embedded/TP/TP1.pdf",
       "sha256": "c4109116873a9b7156f57974a1d8c90d121e8720eca66c4d58ba37d0fc3fdd90",
       "pages": 8
+    },
+    {
+      "module": "embedded",
+      "source": "embedded/TP/TP2.pdf",
+      "sha256": "d58d704f401101aef76f61b84af1a6f477441b141edc86d40ac53b9109ca13e4",
+      "pages": 4
     }
   ]
 }

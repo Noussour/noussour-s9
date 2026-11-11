@@ -124,6 +124,69 @@ y = (i + j) × h / 2
 
 Ajouter ensuite l'origine de scène et retirer le décalage de caméra. Exemple : i=2, j=1, w=64, h=32 donne (32,48) avant ces décalages. Une projection isométrique ne transforme pas automatiquement le modèle en véritable scène 3D.
 
+## Chapitre 3 — Physique des corps rigides
+
+### Corps rigide et mouvement
+
+Un corps rigide garde forme et taille sous l'effet des forces. Il se déplace par **translation** et **rotation**. Propriétés : dimensions, masse, position, vitesse, accélération, gravité, élasticité.
+
+```text
+p_new = p + v · Δt        F = m · a        F_g = m · g
+```
+
+En jeu, la gravité est souvent ajustée pour le gameplay plutôt que fixée à sa valeur réelle.
+
+| Type de corps | Comportement | Usage |
+| --- | --- | --- |
+| Statique | Ne bouge pas sous la simulation | Sol, murs, plateformes fixes |
+| Dynamique | Réagit aux forces, à la gravité et aux collisions | Caisses, balles |
+| Cinématique | Mouvement piloté par le code, pas par les forces | Plateformes mobiles |
+
+### Moteur physique
+
+Bibliothèque qui simule la mécanique classique. 2D : Box2D, Box2DWeb, Matter.js. 3D : PhysX, Bullet. Cycle à chaque pas : **appliquer les forces → détecter les collisions → résoudre les collisions → mettre à jour position, vitesse, rotation**.
+
+## Chapitre 3 — Détection de collisions
+
+Tester toutes les paires de n objets coûte **O(n²)**. Approche en deux phases :
+
+| Phase | Méthode | Résultat |
+| --- | --- | --- |
+| Large (broad) | Volumes englobants simples (AABB, OBB, cercle, sphère) ; grilles, quadtrees, BVH, Sweep and Prune | Paires candidates |
+| Étroite (narrow) | Tests géométriques précis : SAT, GJK | Contact, normale, profondeur de pénétration |
+
+La phase large réduit beaucoup de tests en pratique, mais le pire cas reste O(n²). **SAT** : deux objets convexes disjoints admettent un axe sur lequel leurs projections ne se chevauchent pas.
+
+**Tunneling** : un objet rapide traverse un mur entre deux pas de simulation. La détection **continue** (CCD) analyse la trajectoire entre deux pas, au lieu des seules positions discrètes.
+
+## Chapitre 3 — Box2DWeb
+
+Hiérarchie : **World → Body → Fixture → Shape**.
+
+| Élément | Rôle |
+| --- | --- |
+| Shape | Géométrie de collision (cercle, rectangle, polygone), sans propriétés physiques |
+| Fixture | Lie la forme au corps : densité, friction, restitution, filtrage |
+| Body | Position, rotation, vitesse ; type statique, dynamique ou cinématique |
+| World | Gravité, collisions, mise à jour des corps |
+
+```js
+var world = new b2World(new b2Vec2(0, 9), true);
+var fixDef = new b2FixtureDef();
+fixDef.density = 1; fixDef.friction = 0.4; fixDef.restitution = 0.2;
+var groundDef = new b2BodyDef();
+groundDef.type = b2Body.b2_staticBody;
+groundDef.position.Set(400 / scale, 280 / scale);
+var shape = new b2PolygonShape();
+shape.SetAsBox(200 / scale, 20 / scale);   // demi-largeur, demi-hauteur
+fixDef.shape = shape;
+world.CreateBody(groundDef).CreateFixture(fixDef);
+```
+
+Points pièges : Box2D travaille en unités **MTS** (mètres, tonnes, secondes) ; `scale` = pixels par mètre, choisi par le programmeur. La position désigne le **centre** du corps. `SetAsBox` prend les **demi**-dimensions. Une boucle de jeu reste nécessaire pour animer ; `b2DebugDraw` dessine les corps sur le canvas.
+
+Un `b2ContactListener` déclenche du code sur `BeginContact`, `EndContact`, `PreSolve`, `PostSolve` (score, son, changement de couleur), puis s'enregistre par `world.SetContactListener(listener)`. Exemples dans `COURS/Chapter3-Demo/`.
+
 ## Pratique — Canvas, animation et travaux demandés
 
 ### Fonctions à comprendre
@@ -150,7 +213,7 @@ Lire les entrées → mettre à jour l'état → effacer → dessiner → recomm
 
 Une boucle for qui dessine toutes les frames immédiatement ne crée pas une animation visible dans le temps : elles se superposent, ou seule la dernière reste après effacement. La planification des rendus et le calcul du temps écoulé sont nécessaires.
 
-**PW1** : créer plusieurs frames dans Piskel, exporter une sprite sheet, afficher la feuille puis une frame, et animer avec une boucle de rendu. **PW2** : produire des tiles, construire une carte avec Tiled, exporter en CSV, afficher une portion, ajouter le scrolling puis le déplacement clavier du personnage.
+**PW1** : créer plusieurs frames dans Piskel, exporter une sprite sheet, afficher la feuille puis une frame, et animer avec une boucle de rendu. **PW2** : produire des tiles, construire une carte avec Tiled, exporter en CSV, afficher une portion, ajouter le scrolling puis le déplacement clavier du personnage. **PW3** : construire une carte **isométrique** dans Tiled (orientation isométrique, hauteur de tile sur la carte égale à la moitié de sa hauteur réelle), l'afficher avec le tileset ou les tiles séparées à partir de `isometric_map.html` (carte en matrice 2D), réduire le canvas, ajouter le scrolling et animer le personnage isométrique de `Character0_Run.png` dans plusieurs directions (fichiers dans `TP/TP3/`).
 
 Les conventions d'identifiants exportés et d'indexation doivent être vérifiées avant de relier CSV et tileset. Un identifiant de tile n'est pas directement une coordonnée en pixels.
 
@@ -173,4 +236,4 @@ Dates inscrites dans le sujet : groupes le 08/11/2026, GDD le 22/11/2026, produi
 5. **Un GDD suffit-il à livrer le projet ?** Non : un niveau jouable, le code et les autres livrables demandés restent nécessaires.
 6. **Que mesure le playtesting ?** La qualité de l'expérience et sa compréhension, en complément de la recherche de bugs.
 
-Sources : `COURS/Chapter1-Game-Design-Development.pdf` (31 pages), `COURS/Chapter2-Sprites-Tiles.pdf` (40 pages), `TP/TP0-Basics.pdf` (3 pages), `TP/TP1.pdf` (2 pages), `TP/TP2.pdf` (3 pages) et `TP/Project.pdf` (2 pages). Les exemples et formules suivent ces supports, avec les précisions de lecture signalées.
+Sources : `COURS/Chapter1-Game-Design-Development.pdf` (31 pages), `COURS/Chapter2-Sprites-Tiles.pdf` (40 pages), `TP/TP0-Basics.pdf` (3 pages), `TP/TP1.pdf` (2 pages), `TP/TP2.pdf` (3 pages), `TP/TP3.pdf` et `TP/Project.pdf` (2 pages), ainsi que `COURS/Chapter3-Physics-Collisions.pdf` (61 pages). Les exemples et formules suivent ces supports, avec les précisions de lecture signalées.

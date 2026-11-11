@@ -1,6 +1,6 @@
 # DevOps et Cloud Computing — Résumé de révision
 
-Synthèse des deux cours, des énoncés pratiques et du TD1 disponibles au 7 novembre 2026. Enseignante : Ameur Imane. Le contenu porte surtout sur virtualisation, cloud et infrastructure ; aucun chapitre autonome sur CI/CD n'est présent dans les supports fournis.
+Synthèse des trois cours, des quatre énoncés pratiques et du TD1 disponibles au 11 novembre 2026. Enseignante : Ameur Imane. Le contenu porte surtout sur virtualisation, cloud et infrastructure ; aucun chapitre autonome sur CI/CD n'est présent dans les supports fournis.
 
 ## Chapitre 1 — Principes de virtualisation
 
@@ -155,6 +155,48 @@ Des centres géographiquement répartis peuvent rapprocher les services des util
 
 Le plan du chapitre annonce des thèmes supplémentaires sur adoption, SLA et multi-cloud ; le PDF présent développe surtout les sections résumées ci-dessus. Ces thèmes annoncés ne sont pas traités ici comme des chapitres détaillés déjà disponibles.
 
+## Chapitre 3 — Architecture du cloud
+
+### Front end et back end
+
+| Partie | Contenu | Rôle |
+| --- | --- | --- |
+| Front end | Terminal client, navigateur ou application, interface (portail, SaaS) | Permettre à l'utilisateur d'accéder aux services |
+| Back end | Infrastructure physique, hyperviseurs (VMware, KVM), plateforme de gestion (OpenStack), stockage, sécurité et sauvegarde | Gérer les ressources, exécuter la logique métier, protéger les données |
+
+L'architecture vise des solutions évolutives, fiables, sécurisées et économiques : redondance et tolérance aux pannes pour la disponibilité, réduction des dépenses d'investissement en matériel.
+
+### Quatre briques d'architecture
+
+| Brique | Principe | Exemple cloud |
+| --- | --- | --- |
+| N-Tiers | Couches présentation, logique métier, données ; séparation des responsabilités | Front sur S3/CloudFront, logique sur Lambda/EC2, données sur RDS/BigQuery |
+| Machines virtuelles | Émulation logicielle d'un ordinateur : OS hôte, hyperviseur, OS invité | Isolation, portabilité, mutualisation |
+| Virtualisation de fichiers | Découpler l'accès aux fichiers du stockage physique ; vue unifiée (VFS) | Dropbox, Google Drive, S3 |
+| SOA | Services indépendants, faiblement couplés, réutilisables, communiquant par API | Utilisateur, produit, commande, notification d'un site e-commerce |
+
+Chaque niveau N-Tiers peut évoluer indépendamment, ce qui simplifie les mises à jour et isole les pannes.
+
+### SOA : caractéristiques et protocoles
+
+- **Couplage faible** : un service ne dépend pas de l'implémentation des autres.
+- **Communication par API** : REST, gRPC, GraphQL, SOAP.
+- **Réutilisabilité** et **indépendance technologique** : chaque service peut utiliser son propre langage.
+- Avantages annoncés : déploiement rapide, mise à l'échelle ciblée, résilience, mise à jour d'un seul service.
+
+### Serverless et FaaS
+
+Le développeur écrit des **fonctions** exécutées seulement en réponse à un événement (dépôt de fichier, modification de base, requête HTTP, message en file). Le fournisseur crée, exécute, met à l'échelle et arrête les ressources. Facturation **pay-as-you-go** : seule la durée d'exécution du code est payée, contre la durée de fonctionnement d'un serveur classique.
+
+| Fournisseur | Service |
+| --- | --- |
+| AWS | Lambda |
+| Azure | Azure Functions |
+| Google Cloud | Cloud Functions / Cloud Run |
+| Open source | OpenFaaS, OpenWhisk, Knative |
+
+Limite à connaître (TD1) : la latence de démarrage à froid ; la concurrence provisionnée garde des environnements prêts.
+
 ## TP1 et TP2 — Ce qu'il faut savoir expliquer
 
 ### TP1 : VM locale, réseau, SSH et snapshot
@@ -195,6 +237,52 @@ curl -I http://localhost
 Un service actif localement peut rester inaccessible depuis un navigateur à cause du pare-feu, du réseau ou d'une mauvaise adresse. Le TP demande SSH depuis l'IP autorisée et HTTP selon la règle de l'enseignante. Arrêter une VM peut laisser des disques, adresses ou snapshots facturables : vérifier les ressources effectivement créées.
 
 Cette section résume les énoncés ; elle ne prétend pas qu'un nouveau déploiement cloud a été effectué pour rédiger cette fiche.
+
+## TP3 et TP4 — Codespaces et OpenStack
+
+### TP3 : environnement de développement GitHub Codespaces
+
+Le sujet porte le titre « TP2 » mais est distribué comme TP3. Chaîne : créer un dépôt → ouvrir un Codespace 2 cœurs → explorer Linux (`whoami`, `hostname`, `uname -a`, `df -h`, `free -h`, `uptime`) → installer et lancer Nginx → exposer le port 80 par redirection de port → observer l'usage → arrêter ou supprimer le Codespace.
+
+```sh
+sudo apt-get update
+sudo apt-get install -y nginx
+sudo nginx
+curl -I http://localhost
+```
+
+| Caractéristique cloud | Observation dans Codespaces |
+| --- | --- |
+| Libre-service à la demande | Création du Codespace sans intervention humaine |
+| Accès réseau large | Éditeur et page Nginx accessibles depuis un navigateur |
+| Mutualisation | Matériel, hyperviseur et réseau gérés par GitHub |
+| Provisionnement rapide | Environnement prêt en quelques minutes ; type de machine modifiable |
+| Service mesuré | Page de facturation : heures-cœur et Go-mois de stockage |
+
+Le port redirigé reste **privé** sauf demande explicite. Un Codespace arrêté ne consomme plus de calcul, mais son stockage reste compté : supprimer ceux qui ne servent plus.
+
+### TP4 : installation d'OpenStack avec DevStack
+
+Sur Ubuntu Server 24.04 dédiée (recommandation de classe : 4 vCPU, 16 Go RAM, 80 Go disque, virtualisation imbriquée si possible) : mettre à jour le système → créer l'utilisateur `stack` avec sudo sans mot de passe → cloner DevStack → écrire `local.conf` → lancer `./stack.sh` en tant que `stack`, jamais avec sudo.
+
+```sh
+source openrc admin admin
+openstack service list
+openstack image list
+openstack network list
+```
+
+| Composant | Rôle |
+| --- | --- |
+| Keystone | Identité et authentification |
+| Nova | Instances de calcul |
+| Neutron | Réseaux, sous-réseaux, routage, groupes de sécurité |
+| Glance | Images de VM |
+| Cinder | Volumes bloc |
+| Horizon | Tableau de bord web (`http://<IP>/dashboard`) |
+| Placement | Inventaire et allocation des ressources de calcul |
+
+DevStack sert au développement et à l'enseignement, pas à la production : il modifie la configuration système et réseau.
 
 ## TD1 — Architecture, stockage et services
 
@@ -259,4 +347,4 @@ Une panne de notification ne doit pas nécessairement arrêter un paiement, mais
 8. **REST implique-t-il JSON ?** Non, c'est un style architectural ; plusieurs représentations sont possibles.
 9. **Un service de notification en panne bloque-t-il toujours le paiement ?** Cela dépend des dépendances et de la gestion des erreurs.
 
-Sources locales : `COURS/Chapter1-Virtualization.pdf` (49 pages), `COURS/Chapter2-Cloud-Computing.pdf` (117 pages), `TP/TP1.pdf` (6 pages), `TP/TP1-support-network-modes.pdf` (21 pages), `TP/TP2.pdf` (4 pages), `TD/TD1-sol.pdf` (3 pages, cinq exercices corrigés). Les notes du TD précisent les réponses trop générales sur disponibilité, stockage et indépendance des services. Les exemples de fournisseurs, dates historiques et chiffres commerciaux non nécessaires à la compréhension ont été écartés.
+Sources locales : `COURS/Chapter1-Virtualization.pdf` (49 pages), `COURS/Chapter2-Cloud-Computing.pdf` (117 pages), `COURS/Chapter3-Cloud-Architecture.pdf` (39 pages), `TP/TP1.pdf` (6 pages), `TP/TP1-support-network-modes.pdf` (21 pages), `TP/TP2.pdf` (4 pages), `TP/TP3.pdf` (4 pages), `TP/TP4.pdf` (6 pages), `TD/TD1-sol.pdf` (3 pages, cinq exercices corrigés). Les notes du TD précisent les réponses trop générales sur disponibilité, stockage et indépendance des services. Les exemples de fournisseurs, dates historiques et chiffres commerciaux non nécessaires à la compréhension ont été écartés.

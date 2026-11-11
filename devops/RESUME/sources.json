@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-07",
+  "date": "2026-11-11",
   "module": "devops",
   "pending": [],
   "documents": [
@@ -17,15 +17,15 @@
     },
     {
       "module": "devops",
-      "source": "devops/TD/TD1-sol.pdf",
-      "sha256": "abe7386692c26d8c503fc22e24f0967c40b60d9b4928c387da31a8c16640f990",
-      "pages": 3
+      "source": "devops/COURS/Chapter3-Cloud-Architecture.pdf",
+      "sha256": "6bca5067702b821cc6ae342b52c4564da6516da25deea3eb4985f9cfc10b70a4",
+      "pages": 39
     },
     {
       "module": "devops",
-      "source": "devops/TP/TP1.pdf",
-      "sha256": "81594a6613fb7523e0ef46bb8eb7d35f97b1bfa59d6337768e7b947069976ad8",
-      "pages": 6
+      "source": "devops/TD/TD1-sol.pdf",
+      "sha256": "abe7386692c26d8c503fc22e24f0967c40b60d9b4928c387da31a8c16640f990",
+      "pages": 3
     },
     {
       "module": "devops",
@@ -35,9 +35,27 @@
     },
     {
       "module": "devops",
+      "source": "devops/TP/TP1.pdf",
+      "sha256": "81594a6613fb7523e0ef46bb8eb7d35f97b1bfa59d6337768e7b947069976ad8",
+      "pages": 6
+    },
+    {
+      "module": "devops",
       "source": "devops/TP/TP2.pdf",
       "sha256": "c1b5a7a94dc45cc2111387b8b30e43b09db05ff99e937ff33bf8f3bb4631e456",
       "pages": 4
+    },
+    {
+      "module": "devops",
+      "source": "devops/TP/TP3.pdf",
+      "sha256": "ec80c8d0a3d47081b80247f3ea42df4571070526f17287dc7e485506cd78d8f9",
+      "pages": 4
+    },
+    {
+      "module": "devops",
+      "source": "devops/TP/TP4.pdf",
+      "sha256": "0dc05d72a9bf24b4bd05e733141343b724c839069996eabd95823d468ebbf6b0",
+      "pages": 6
     }
   ]
 }

@@ -1,13 +1,25 @@
 {
-  "date": "2026-11-07",
+  "date": "2026-11-11",
   "module": "iot",
   "pending": [],
   "documents": [
     {
       "module": "iot",
       "source": "iot/COURS/Chapter1-Introduction-IoT.pdf",
-      "sha256": "e81628ed188701b03d5212ce366932aa97e8eecb4b9e62561c8506e4269a7363",
+      "sha256": "d68c426c9d90c7a63ab8a9b7f26bce81e234f37df2a09fc6020e2242c087336a",
       "pages": 86
+    },
+    {
+      "module": "iot",
+      "source": "iot/COURS/Chapter2-Components-Sensors.pdf",
+      "sha256": "aecff7400075ba8fceedd69e065c3f6836b306cb558d997d6950146b7d8422ca",
+      "pages": 43
+    },
+    {
+      "module": "iot",
+      "source": "iot/COURS/Presentation-Guidelines.pdf",
+      "sha256": "20d250db979ac56ec1beea32e7ddd33fc13f730a94936fe7ef3cf63131c24874",
+      "pages": 1
     },
     {
       "module": "iot",
@@ -18,8 +30,8 @@
     {
       "module": "iot",
       "source": "iot/TD/TD2-sol.pdf",
-      "sha256": "5a353fb458a6f637d62d6b771d539437f8fdd99492451e051f950af84479e0cd",
-      "pages": 4
+      "sha256": "62e77d03b1c8c9e86827bdc31249362d3d1919b43d44f1bdacadfb1f4d181ddc",
+      "pages": 2
     }
   ]
 }

@@ -1,14 +1,8 @@
 {
-  "date": "2026-11-04",
+  "date": "2026-11-11",
   "module": "game-dev",
   "pending": [],
   "documents": [
-    {
-      "module": "game-dev",
-      "source": "game-dev/COURS/Chapter2-Sprites-Tiles.pdf",
-      "sha256": "de5a4c17e3f8cb80d5e064e9d0684432794dcb3121fa8611e5734138153a7346",
-      "pages": 40
-    },
     {
       "module": "game-dev",
       "source": "game-dev/COURS/Chapter1-Game-Design-Development.pdf",
@@ -17,15 +11,27 @@
     },
     {
       "module": "game-dev",
-      "source": "game-dev/TP/TP0-Basics.pdf",
-      "sha256": "c3c740721b689d6f1c998d12bd247ac5258c5ea2dca8a7b530871b2571ad01f7",
-      "pages": 3
+      "source": "game-dev/COURS/Chapter2-Sprites-Tiles.pdf",
+      "sha256": "de5a4c17e3f8cb80d5e064e9d0684432794dcb3121fa8611e5734138153a7346",
+      "pages": 40
+    },
+    {
+      "module": "game-dev",
+      "source": "game-dev/COURS/Chapter3-Physics-Collisions.pdf",
+      "sha256": "f5b5715a87f8426b99f3475c077e334c63752998d29c66970c7e525c5acc1656",
+      "pages": 61
     },
     {
       "module": "game-dev",
       "source": "game-dev/TP/Project.pdf",
       "sha256": "f3eb24508d7fb18968ec6a3d76d9878f176891071e28e0a0b9ad3cfc80c52c0c",
       "pages": 2
+    },
+    {
+      "module": "game-dev",
+      "source": "game-dev/TP/TP0-Basics.pdf",
+      "sha256": "c3c740721b689d6f1c998d12bd247ac5258c5ea2dca8a7b530871b2571ad01f7",
+      "pages": 3
     },
     {
       "module": "game-dev",
@@ -37,6 +43,12 @@
       "module": "game-dev",
       "source": "game-dev/TP/TP2.pdf",
       "sha256": "8e679007b6feb65cd89e9192b7eb1d9a339a83c04a66e043b5c92f6d185cc774",
+      "pages": 3
+    },
+    {
+      "module": "game-dev",
+      "source": "game-dev/TP/TP3.pdf",
+      "sha256": "27b831db40053e6c9725601d279e191421c255bece4e0cf6aec5180af1013047",
       "pages": 3
     }
   ]

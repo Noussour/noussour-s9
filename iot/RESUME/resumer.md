@@ -153,6 +153,58 @@ Le cours utilise **Mirai, 2016**, comme exemple d'appareils insuffisamment prot�
 
 La fiabilité et la confidentialité doivent être examinées à chaque niveau : objet, liaison, passerelle, plateforme et application. Une passerelle commune peut aussi devenir une dépendance critique.
 
+## Chapitre 2 — Architecture d'un nœud IoT
+
+### Blocs matériels
+
+| Bloc | Rôle | Exemples |
+| --- | --- | --- |
+| Capteurs | Mesurer l'environnement | Température, humidité, lumière, mouvement |
+| Microcontrôleur | Lire, traiter, décider | CPU, Flash, RAM, GPIO, ADC |
+| Actionneurs (via driver) | Agir sur le monde physique | Moteur, relais, pompe, buzzer |
+| Connectivité | Relier à la passerelle et au cloud | Wi-Fi, BLE, LoRa, Zigbee |
+| Alimentation | Alimenter tous les blocs | Batterie, secteur, solaire |
+
+Modèle à retenir : **SENSE → PROCESS → COMMUNICATE → ACT**. Les données montent vers le cloud ; les commandes redescendent vers les actionneurs.
+
+### Capteurs
+
+Chaîne : grandeur physique → transducteur → conditionnement → ADC → valeur numérique.
+
+| Analogique | Numérique |
+| --- | --- |
+| Tension continue (ex. 0–3,3 V), ADC nécessaire | Données discrètes, traitement interne |
+| LM35, LDR, humidité du sol, MQ-2 | DHT22, BME280, DS18B20 (I²C, SPI, UART, 1-Wire) |
+
+Caractéristiques : étendue, sensibilité, exactitude, résolution, temps de réponse, consommation. **Exactitude ≠ fidélité** : un capteur répétable peut rester faux et demander un étalonnage.
+
+### Actionneurs
+
+Ils convertissent une commande en effet physique : LED (lumière), moteur (rotation), relais (commutation), buzzer (son), pompe, vanne. Ne jamais piloter un moteur ou un relais directement par une broche GPIO : utiliser un driver et une diode de roue libre.
+
+## Chapitre 2 — Microcontrôleurs et connectivité
+
+| Carte | Cœur | Connectivité | Usage |
+| --- | --- | --- | --- |
+| Arduino Uno | ATmega328P, 8 bits, 16 MHz | Aucune | Apprentissage |
+| ESP32 | Double cœur 32 bits, 240 MHz | Wi-Fi + Bluetooth | La plupart des projets IoT |
+| Raspberry Pi Pico W | RP2040, 133 MHz | Wi-Fi | Bas coût, MicroPython |
+| STM32 | ARM Cortex-M 32 bits | Par modules | Industriel, basse consommation |
+| Raspberry Pi 4 | Microprocesseur, Linux | Wi-Fi, Ethernet, BT | Passerelle, vision, IA en périphérie |
+
+Interfaces : **GPIO** (entrée/sortie numérique), **ADC** (tension → nombre), **PWM** (puissance moyenne : luminosité, vitesse moteur), **I²C** (SDA + SCL, bus partagé), **SPI** (MOSI, MISO, SCLK, CS, rapide), **UART** (TX/RX, point à point : GPS, GSM).
+
+| Technologie | Profil | Cas typique |
+| --- | --- | --- |
+| Wi-Fi | Débit élevé, portée locale | Maison, caméra |
+| BLE | Courte portée, très basse consommation | Montre, bracelet |
+| Zigbee | Maillage basse consommation | Maison connectée, nombreux capteurs |
+| LoRa / LoRaWAN | Longue portée, faible débit | Capteur agricole à plusieurs km |
+| NB-IoT | Cellulaire basse consommation | Compteurs |
+| 4G / 5G | Grande zone, débit élevé | Véhicules, vidéo |
+
+Exemple fil rouge : capteur d'humidité du sol + ESP32 ; si humidité < 30 % alors relais → pompe ON, sinon OFF ; mesures envoyées par MQTT vers un tableau de bord. Le simulateur Wokwi permet de tester ESP32, Arduino et STM32 sans matériel.
+
 ## TD1 — Méthodes de réponse et fiche de calcul
 
 ### Démarche pour un cas concret
@@ -265,4 +317,4 @@ Le corrigé écrit « DWM » pour la vitesse moteur : lire **PWM** dans ce conte
 3. **Que signifie absence de mesure d'une place de parking ?** État inconnu à traiter, pas preuve de disponibilité.
 4. **PWM est-il un moteur ?** Non : c'est un principe de commande ; un driver et la charge restent nécessaires.
 
-Sources : `COURS/Chapter1-Introduction-IoT.pdf` (86 pages : définitions p. 5–29, caractéristiques p. 30–35, M2M p. 36–41, applications p. 42–55, technologies p. 56–72, défis p. 73–85), `TD/TD1.pdf` (2 pages) et `TD/TD2-sol.pdf` (4 pages, huit exercices corrigés). Les projections de marché et débits publicitaires ne sont pas repris comme faits de révision.
+Sources : `COURS/Chapter1-Introduction-IoT.pdf` (86 pages : définitions p. 5–29, caractéristiques p. 30–35, M2M p. 36–41, applications p. 42–55, technologies p. 56–72, défis p. 73–85), `COURS/Chapter2-Components-Sensors.pdf` (43 pages : nœud IoT, capteurs, actionneurs, microcontrôleurs, connectivité), `TD/TD1.pdf` (2 pages) et `TD/TD2-sol.pdf` (4 pages, huit exercices corrigés). Les projections de marché et débits publicitaires ne sont pas repris comme faits de révision.

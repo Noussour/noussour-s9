@@ -237,7 +237,7 @@ def sources_manifest(selected_modules=None,revision_date=None):
             for path in candidates:
                 if not path.is_file() or path.suffix.lower() not in ['.pdf','.txt','.md']:
                     continue
-                if path.name.startswith(('resumer','solution-','fiche-revision','README')):
+                if path.name.startswith(('resumer','solution-','fiche-revision','README','LINKS')):
                     continue
                 entry={'module':module,'source':path.relative_to(ROOT).as_posix(),
                        'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
@@ -245,8 +245,7 @@ def sources_manifest(selected_modules=None,revision_date=None):
                     with pymupdf.open(path) as pdf:
                         entry['pages']=len(pdf)
                 inventory.append(entry)
-    for relative in ['methodes-formelles/TD_TP_MFGL_Dr Mekahlia.pdf',
-                     'methodes-formelles/COURS/resumer.md']:
+    for relative in ['methodes-formelles/COURS/resumer.md']:
         path=ROOT/relative
         entry={'module':'methodes-formelles','source':relative,
                'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
@@ -257,7 +256,7 @@ def sources_manifest(selected_modules=None,revision_date=None):
     for module,label in MODULES:
         if selected_modules is not None and module not in selected_modules:
             continue
-        pending = ['chapitre 1 : lien Prezi non accessible'] if module=='dev-mobile' else []
+        pending = ['chapitre 1 : support Prezi en ligne (COURS/LINKS.md)'] if module=='dev-mobile' else []
         destination=ROOT/module/'RESUME/sources.json'
         manifest_date=revision_date
         if manifest_date is None:

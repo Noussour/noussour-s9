@@ -1,8 +1,8 @@
 {
-  "date": "2026-11-07",
+  "date": "2026-11-11",
   "module": "dev-mobile",
   "pending": [
-    "chapitre 1 : lien Prezi non accessible"
+    "chapitre 1 : support Prezi en ligne (COURS/LINKS.md)"
   ],
   "documents": [
     {
@@ -10,11 +10,6 @@
       "source": "dev-mobile/COURS/Chapter2-Resolution-Density-Android.pdf",
       "sha256": "f0f508e50bfe5f97c96a10b9339661c88a89566ab3a6000a3e17408f041ac68f",
       "pages": 35
-    },
-    {
-      "module": "dev-mobile",
-      "source": "dev-mobile/COURS/Chatper1.txt",
-      "sha256": "1e9eb0ec5dc84a110c10d5fd6c53183e710223f9db834a35460b8db3c590576e"
     },
     {
       "module": "dev-mobile",
@@ -30,15 +25,15 @@
     },
     {
       "module": "dev-mobile",
-      "source": "dev-mobile/TP/TP2.pdf",
-      "sha256": "117986f8f7f01f76a60013145987ccaa895c2b378bd58f69661c49809fcf991b",
-      "pages": 4
-    },
-    {
-      "module": "dev-mobile",
       "source": "dev-mobile/TP/TP1.pdf",
       "sha256": "8039ce1b9e7d4198a89f0edc3aec83e7429c91ddc53406057103ce06339a526e",
       "pages": 6
+    },
+    {
+      "module": "dev-mobile",
+      "source": "dev-mobile/TP/TP2.pdf",
+      "sha256": "117986f8f7f01f76a60013145987ccaa895c2b378bd58f69661c49809fcf991b",
+      "pages": 4
     },
     {
       "module": "dev-mobile",

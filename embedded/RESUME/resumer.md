@@ -326,6 +326,33 @@ Une attente `while (!Serial)` peut empêcher d'atteindre `loop()` si la liaison 
 
 Les groupes de contacts internes assurent les connexions sans soudure. Le séparateur central isole les deux côtés ; les rails d'alimentation sont distincts des groupes de signaux et peuvent être coupés au milieu selon le modèle. Vérifier les continuités réelles plutôt que supposer que toute une ligne est reliée.
 
+## TP2 — Bouton, pull-up/pull-down et anti-rebond
+
+### Résistance de tirage
+
+| Montage | Câblage | État actif |
+| --- | --- | --- |
+| Pull-up (`INPUT_PULLUP`) | Résistance vers VCC, bouton vers GND | LOW |
+| Pull-down (`INPUT_PULLDOWN`) | Résistance vers GND, bouton vers VCC | HIGH |
+
+Les broches du STM32F411 disposent de résistances internes dans les deux sens. Le bouton intégré de la carte est relié à GND : il fonctionne en pull-up mais pas en pull-down.
+
+### Détection de front et anti-rebond
+
+Le programme bascule la LED PC13 sur un **front** : passage HIGH → LOW en pull-up (LOW → HIGH en pull-down), en comparant l'état courant à `lastButtonState`. Un `delay(200)` absorbe le rebond mécanique du contact.
+
+```cpp
+bool current = digitalRead(BUTTON_PIN);
+if (lastButtonState == HIGH && current == LOW) {
+  ledState = !ledState;
+  digitalWrite(LED_PIN, ledState);   // LOW = LED allumée
+}
+lastButtonState = current;
+delay(200);
+```
+
+Sans bouton externe, un fil relié à A0 simule l'appui : vers GND en pull-up, vers 3,3 V en pull-down. Les exemples de code fournis par l'enseignant sont rangés dans `TP/code/` (LED, bouton, saisie série, lecture analogique, PWM pour ESC).
+
 ## Révision active et sources
 
 1. **Pourquoi un résultat exact peut-il rester incorrect ?** Il arrive après l'échéance d'un système temps réel.
@@ -342,4 +369,4 @@ Les groupes de contacts internes assurent les connexions sans soudure. Le sépar
 12. **Pourquoi utiliser deux seuils pour le ventilateur ?** Conserver l'état dans une bande intermédiaire et éviter les commutations répétées.
 13. **Deux attentes de 500 ms donnent quelle fréquence de clignotement ?** Un cycle de 1 s, donc 1 Hz.
 
-Sources : `COURS/Course1-Introduction-Embedded-Systems.pdf` (49 pages), `COURS/Course2-ARM-Architecture.pdf` (46 pages), `COURS/Course2-STM32-Extension-Setup.pdf` (2 pages), `COURS/Course3-Embedded-IO.pdf` (55 pages : GPIO p. 9–24, acquisition p. 25–31, actionneurs/PWM p. 32–36, timers p. 37–45, contrôle p. 46–55) et `TP/TP1.pdf` (8 pages). Les formules présentes dans les schémas des pages 40–41 ont été consultées visuellement. Linux embarqué détaillé, synchronisation avancée et méthodes de conception restent des thèmes annoncés sans support dédié présent.
+Sources : `COURS/Course1-Introduction-Embedded-Systems.pdf` (49 pages), `COURS/Course2-ARM-Architecture.pdf` (46 pages), `COURS/Course2-STM32-Extension-Setup.pdf` (2 pages), `COURS/Course3-Embedded-IO.pdf` (55 pages : GPIO p. 9–24, acquisition p. 25–31, actionneurs/PWM p. 32–36, timers p. 37–45, contrôle p. 46–55) , `TP/TP1.pdf` (8 pages) et `TP/TP2.pdf` (4 pages). Les formules présentes dans les schémas des pages 40–41 ont été consultées visuellement. Linux embarqué détaillé, synchronisation avancée et méthodes de conception restent des thèmes annoncés sans support dédié présent.
