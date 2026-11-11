@@ -5,19 +5,19 @@
   "documents": [
     {
       "module": "iot",
-      "source": "iot/COURS/IOT Course 1.pdf",
+      "source": "iot/COURS/Chapter1-Introduction-IoT.pdf",
       "sha256": "e81628ed188701b03d5212ce366932aa97e8eecb4b9e62561c8506e4269a7363",
       "pages": 86
     },
     {
       "module": "iot",
-      "source": "iot/TD/TD1_IoT.pdf",
+      "source": "iot/TD/TD1.pdf",
       "sha256": "9ceaf1f4b2eb973adecedb519f9d49e5abb78c1380f52a08a78df3df1bd8f0cb",
       "pages": 2
     },
     {
       "module": "iot",
-      "source": "iot/TD/td2.pdf",
+      "source": "iot/TD/TD2-sol.pdf",
       "sha256": "5a353fb458a6f637d62d6b771d539437f8fdd99492451e051f950af84479e0cd",
       "pages": 4
     }

@@ -265,4 +265,4 @@ Le corrigé écrit « DWM » pour la vitesse moteur : lire **PWM** dans ce conte
 3. **Que signifie absence de mesure d'une place de parking ?** État inconnu à traiter, pas preuve de disponibilité.
 4. **PWM est-il un moteur ?** Non : c'est un principe de commande ; un driver et la charge restent nécessaires.
 
-Sources : `COURS/IOT Course 1.pdf` (86 pages : définitions p. 5–29, caractéristiques p. 30–35, M2M p. 36–41, applications p. 42–55, technologies p. 56–72, défis p. 73–85), `TD/TD1_IoT.pdf` (2 pages) et `TD/td2.pdf` (4 pages, huit exercices corrigés). Les projections de marché et débits publicitaires ne sont pas repris comme faits de révision.
+Sources : `COURS/Chapter1-Introduction-IoT.pdf` (86 pages : définitions p. 5–29, caractéristiques p. 30–35, M2M p. 36–41, applications p. 42–55, technologies p. 56–72, défis p. 73–85), `TD/TD1.pdf` (2 pages) et `TD/TD2-sol.pdf` (4 pages, huit exercices corrigés). Les projections de marché et débits publicitaires ne sont pas repris comme faits de révision.
