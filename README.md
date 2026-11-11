@@ -18,9 +18,10 @@
 
 Each module folder follows the same layout:
 
-- `COURS`: course chapters, named `Chapter<N>_<Module>.pdf`
-- `TD`: exercise sheets and solutions, one folder per TD
-- `TP`: practical work
+- `COURS`: course chapters, named `Chapter<N>-<Topic>.pdf` (`Course<N>-<Topic>.pdf` when the teacher numbers courses), plus `LINKS.md` for recordings and online slides
+- `TD`: exercise sheets `TD<N>.pdf`, teacher solutions `TD<N>-sol.pdf`
+- `TP`: practical work `TP<N>.pdf`, supporting files `TP<N>-<topic>.<ext>`
+- `adel-solution`: our own solutions, inside the `TD` or `TP` folder
 - `RESUME`: summaries (added as we go)
 
 ## Résumés de révision
