@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>ISOMETRIC SCENE</title>
+</head>
+
+<body>
+
+	<canvas id='game' width='400' height='240' style='border:1px solid #000'>
+		Your browser does not support HTML5 Canvas.
+	</canvas>
+	<p>Arrow keys: move the character, the map scrolls to follow him.</p>
+	<script>
+
+// Tileset: a single image, tiles are 32x32, 11 tiles per row
+var tileset = new Image();
+tileset.src = "isometric_tileset.png";
+var TILE = 32;
+var TILESET_COLS = 11;
+
+// Character spritesheet: 4 rows (directions) x 4 columns (animation frames), 32x32 each
+var character = new Image();
+character.src = "Character0_Run.png";
+var frameW = 32;
+var frameH = 32;
+var DIR_DOWN_LEFT  = 0;
+var DIR_UP_LEFT    = 1;
+var DIR_DOWN_RIGHT = 2;
+var DIR_UP_RIGHT   = 3;
+var direction = DIR_DOWN_RIGHT;
+var frame = 0;
+
+// Isometric size of a tile on the map: the height is half the real height
+var tileW = 32;
+var tileH = 16;
+
+// Map exported from Tiled as CSV (map.csv), embedded here as a 2D array.
+// Tile id = tile index in the tileset + 1, 0 = empty
+var mapArray = [
+	[112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112],
+	[112,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,112],
+	[112,111,38,23,23,23,23,38,38,23,38,38,23,23,23,23,23,38,111,112],
+	[112,111,23,23,23,23,23,38,62,1,23,38,23,23,23,23,23,23,111,112],
+	[112,111,23,23,23,30,23,38,38,1,23,23,23,23,23,23,23,23,111,112],
+	[112,111,23,23,23,23,23,23,23,1,23,23,23,23,23,38,23,23,111,112],
+	[112,111,38,38,23,23,38,23,23,1,38,23,23,38,23,38,23,23,111,112],
+	[112,111,23,23,23,23,23,38,23,1,38,23,23,38,38,23,23,23,111,112],
+	[112,111,23,23,23,23,23,30,23,1,23,23,23,23,38,23,23,23,111,112],
+	[112,111,23,1,1,1,1,1,1,1,1,1,1,1,1,1,1,38,111,112],
+	[112,111,23,23,38,23,23,23,23,1,23,23,23,23,23,38,23,23,111,112],
+	[112,111,23,38,111,112,111,112,111,1,23,23,23,23,23,38,23,23,111,112],
+	[112,111,23,23,112,111,112,111,112,1,38,38,23,62,23,23,38,38,111,112],
+	[112,111,23,38,111,112,111,112,111,1,38,23,23,23,23,30,23,38,111,112],
+	[112,111,23,23,112,111,112,111,112,1,23,38,23,38,62,23,23,23,111,112],
+	[112,111,23,23,111,112,111,112,111,1,23,23,23,23,38,23,23,23,111,112],
+	[112,111,23,38,23,23,38,23,23,1,23,38,23,23,38,38,38,23,111,112],
+	[112,111,23,23,23,38,38,38,38,38,23,23,38,23,23,23,23,23,111,112],
+	[112,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,112],
+	[112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112]
+];
+
+// Character position on the grid (row, column)
+var rx = 9;
+var ry = 9;
+
+var canvas = document.getElementById('game');
+var ctx = canvas.getContext('2d');
+
+function mapWidth()  { return (mapArray[0].length + mapArray.length) * tileW / 2; }
+function mapHeight() { return (mapArray[0].length + mapArray.length) * tileH / 2 + TILE - tileH; }
+
+// Draw the map, and the character right after his own tile so nearer tiles cover him
+function draw() {
+
+	var offsetX = (mapArray[0].length - 1) * tileW / 2;
+
+	// Scrolling: the camera follows the character and stays inside the map
+	var charX = (rx - ry) * tileW / 2 + offsetX;
+	var charY = (rx + ry) * tileH / 2;
+	var camX = Math.max(0, Math.min(charX + TILE / 2 - canvas.width / 2, mapWidth() - canvas.width));
+	var camY = Math.max(0, Math.min(charY + TILE / 2 - canvas.height / 2, mapHeight() - canvas.height));
+
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	for (var i = 0; i < mapArray.length; i++) {
+		for (var j = 0; j < mapArray[i].length; j++) {
+			var id = mapArray[i][j];
+			var x = (i - j) * tileW / 2 + offsetX - camX;
+			var y = (i + j) * tileH / 2 - camY;
+
+			if (id !== 0) {
+				var sx = ((id - 1) % TILESET_COLS) * TILE;
+				var sy = Math.floor((id - 1) / TILESET_COLS) * TILE;
+				ctx.drawImage(tileset, sx, sy, TILE, TILE, x, y, TILE, TILE);
+			}
+
+			if (i === rx && j === ry) {
+				// feet on the center of the top face of the tile
+				ctx.drawImage(character, frame * frameW, direction * frameH, frameW, frameH,
+					x, y + tileH / 2 - frameH + 2, frameW, frameH);
+			}
+		}
+	}
+}
+
+// Draw once both images are loaded
+var loaded = 0;
+function onLoaded() { if (++loaded === 2) draw(); }
+tileset.onload = onLoaded;
+character.onload = onLoaded;
+
+// Keyboard controls: set the direction, move on the grid and play the next frame
+addEventListener("keydown", function (e) {
+	switch (e.keyCode) {
+		case 37: direction = DIR_DOWN_LEFT;  if (ry < mapArray[0].length - 1) ry++; break; // Left
+		case 39: direction = DIR_UP_RIGHT;   if (ry > 0) ry--; break;                      // Right
+		case 38: direction = DIR_UP_LEFT;    if (rx > 0) rx--; break;                      // Up
+		case 40: direction = DIR_DOWN_RIGHT; if (rx < mapArray.length - 1) rx++; break;    // Down
+		default: return;
+	}
+	frame = (frame + 1) % 4;
+	e.preventDefault();
+	draw();
+});
+
+</script>
+
+</body>
+</html>

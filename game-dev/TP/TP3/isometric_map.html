@@ -1,77 +1,109 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="UTF-8">
 	<title>ISOMETRIC TILES</title>
 </head>
 
 <body>
-	
-	<canvas id='game' width='800' height='400' >
+
+	<!-- 4. Small canvas: only a portion of the map is visible -->
+	<canvas id='game' width='400' height='240' style='border:1px solid #000'>
 		Your browser does not support HTML5 Canvas.
 	</canvas>
+	<p>Arrow keys: scroll the map.</p>
 	<script>
 
-// Create the isometric scope.
-// Two Dimensional Array storing our isometric map layout. Each number represents a tile.
+// Tileset (a): a single image, tiles are 32x32, 11 tiles per row
+var tileset = new Image();
+tileset.src = "isometric_tileset.png";
+var TILE = 32;
+var TILESET_COLS = 11;
 
-var mapArray = [[0,0,0,0,0,0],
-				[0,0,0,0,0,0],
-				[0,0,0,0,0,0],
-				[0,1,1,1,1,0],
-				[0,1,1,1,1,0],
-				[0,1,1,1,1,0],
-                [0,0,0,0,0,0]];
+// Isometric size of a tile on the map: the height is half the real height
+var tileW = 32;
+var tileH = 16;
 
-var Tiles = [];
+// Map exported from Tiled as CSV (map.csv), embedded here as a 2D array.
+// Tile id = tile index in the tileset + 1, 0 = empty
+var mapArray = [
+	[112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112],
+	[112,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,112],
+	[112,111,38,23,23,23,23,38,38,23,38,38,23,23,23,23,23,38,111,112],
+	[112,111,23,23,23,23,23,38,62,1,23,38,23,23,23,23,23,23,111,112],
+	[112,111,23,23,23,30,23,38,38,1,23,23,23,23,23,23,23,23,111,112],
+	[112,111,23,23,23,23,23,23,23,1,23,23,23,23,23,38,23,23,111,112],
+	[112,111,38,38,23,23,38,23,23,1,38,23,23,38,23,38,23,23,111,112],
+	[112,111,23,23,23,23,23,38,23,1,38,23,23,38,38,23,23,23,111,112],
+	[112,111,23,23,23,23,23,30,23,1,23,23,23,23,38,23,23,23,111,112],
+	[112,111,23,1,1,1,1,1,1,1,1,1,1,1,1,1,1,38,111,112],
+	[112,111,23,23,38,23,23,23,23,1,23,23,23,23,23,38,23,23,111,112],
+	[112,111,23,38,111,112,111,112,111,1,23,23,23,23,23,38,23,23,111,112],
+	[112,111,23,23,112,111,112,111,112,1,38,38,23,62,23,23,38,38,111,112],
+	[112,111,23,38,111,112,111,112,111,1,38,23,23,23,23,30,23,38,111,112],
+	[112,111,23,23,112,111,112,111,112,1,23,38,23,38,62,23,23,23,111,112],
+	[112,111,23,23,111,112,111,112,111,1,23,23,23,23,38,23,23,23,111,112],
+	[112,111,23,38,23,23,38,23,23,1,23,38,23,23,38,38,38,23,111,112],
+	[112,111,23,23,23,38,38,38,38,38,23,23,38,23,23,23,23,23,111,112],
+	[112,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,112],
+	[112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112]
+];
 
+// Scrolling: camera = top-left corner of the visible area, in map pixels
+var camX = 0;
+var camY = 0;
+var STEP = 16;
 
-loadImg();
+var canvas = document.getElementById('game');
+var ctx = canvas.getContext('2d');
 
+// Draw once the tileset is loaded
+tileset.onload = drawMap;
 
-function loadImg() {
-	
-	var TabOfTiles = ["grass.png","water.png"],
-	NumbTilesLoaded = 0;
-
-	for (var i = 0; i < TabOfTiles.length; i++) {
-		Tiles[i] = new Image();
-		Tiles[i].src = TabOfTiles[i];
-		Tiles[i].onload = function() {
-            // Once the image is loaded increment the number of loaded tiles count and check if all images are ready.
-            NumbTilesLoaded++;
-            // If all tiles are loaded we can start drawing
-            if (NumbTilesLoaded === TabOfTiles.length) {drawMap();}
-    }
-}
-}
+// Size of the whole map in pixels
+function mapWidth()  { return (mapArray[0].length + mapArray.length) * tileW / 2; }
+function mapHeight() { return (mapArray[0].length + mapArray.length) * tileH / 2 + TILE - tileH; }
 
 function drawMap() {
-	
-    // create the canvas context
-    var ctx = document.getElementById('game').getContext('2d');
 
-    // Set as your tile pixel sizes, alter if you are using larger tiles.
-    var tileH = 16;
-    var tileW = 32;
-    
-    // mapX and mapY are offsets to make sure we can position the map as we want.
-    var mapX = 100;
-    var mapY = 52;
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    var drawTile;
-	// Clear the  canvas
-	ctx.clearRect(0, 0, 500, 500);
+	// offset so that the leftmost tile (last column of the first row) starts at x = 0
+	var offsetX = (mapArray[0].length - 1) * tileW / 2;
 
-    // loop through our mapArray and draw out the image represented by the number.
-    for (var i = 0; i < mapArray.length; i++) {
-    	for (var j = 0; j < mapArray[i].length; j++) {
-    		drawTile = mapArray[i][j];
-        // Draw the represented image number, at the desired X & Y coordinates followed by the graphic width and height.
-        ctx.drawImage(Tiles[drawTile], (i - j) * tileW/2 + mapX, (i + j) * tileH / 2 + mapY);
-        console.log(mapArray.length);
-    }
+	// i = row, j = column: draw from the back to the front
+	for (var i = 0; i < mapArray.length; i++) {
+		for (var j = 0; j < mapArray[i].length; j++) {
+			var id = mapArray[i][j];
+			if (id === 0) continue;
+
+			// take only a portion of the tileset: the tile number id-1
+			var sx = ((id - 1) % TILESET_COLS) * TILE;
+			var sy = Math.floor((id - 1) / TILESET_COLS) * TILE;
+
+			var x = (i - j) * tileW / 2 + offsetX - camX;
+			var y = (i + j) * tileH / 2 - camY;
+
+			ctx.drawImage(tileset, sx, sy, TILE, TILE, x, y, TILE, TILE);
+		}
+	}
 }
-}
+
+// 5. Scrolling with the arrow keys
+addEventListener("keydown", function (e) {
+	switch (e.keyCode) {
+		case 37: camX -= STEP; break; // Left
+		case 39: camX += STEP; break; // Right
+		case 38: camY -= STEP; break; // Up
+		case 40: camY += STEP; break; // Down
+		default: return;
+	}
+	// keep the camera inside the map
+	camX = Math.max(0, Math.min(camX, mapWidth() - canvas.width));
+	camY = Math.max(0, Math.min(camY, mapHeight() - canvas.height));
+	e.preventDefault();
+	drawMap();
+});
 
 </script>
 

@@ -1,8 +1,8 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Iso Ralph</title>
+    <meta charset="UTF-8">
+    <title>Iso Character</title>
 </head>
 
 <body>
@@ -13,15 +13,23 @@
 
 <script>
 
-// Ralph image
-var Ralph = new Image();
-Ralph.src = "ralph.png";
+// Character spritesheet: 4 rows (directions) x 4 columns (animation frames), 32x32 each
+var Character = new Image();
+Character.src = "Character0_Run.png";
 
-// Ralph dimensions
-var ralphW = 51;
-var ralphH = 50;
+var frameW = 32;
+var frameH = 32;
 
-// Ralph position on the isometric grid
+// Row of the spritesheet for each direction on screen
+var DIR_DOWN_LEFT  = 0;
+var DIR_UP_LEFT    = 1;
+var DIR_DOWN_RIGHT = 2;
+var DIR_UP_RIGHT   = 3;
+
+var direction = DIR_DOWN_RIGHT;
+var frame = 0;
+
+// Character position on the isometric grid
 var rx = 0;
 var ry = 0;
 
@@ -38,8 +46,8 @@ var maxRows = 6;
 var maxCols = 4;
 
 
-// Draw Ralph
-function drawRalph() {
+// Draw the character
+function drawCharacter() {
 
     var canvas = document.getElementById("game");
     var ctx = canvas.getContext("2d");
@@ -51,51 +59,61 @@ function drawRalph() {
     var x = (rx - ry) * tileW / 2 + mapX;
     var y = (rx + ry) * tileH / 2 + mapY;
 
-    // Draw Ralph, with his feet at the grid position
+    // Draw the current frame of the current direction, with the feet at the grid position
     ctx.drawImage(
-        Ralph,
-        x - ralphW / 2,
-        y + tileH / 2 - ralphH,
-        ralphW,
-        ralphH
+        Character,
+        frame * frameW, direction * frameH, frameW, frameH,
+        x - frameW / 2,
+        y + tileH / 2 - frameH,
+        frameW,
+        frameH
     );
 }
 
 
-// Wait until Ralph's image is loaded
-Ralph.onload = function() {
-    drawRalph();
+// Wait until the image is loaded
+Character.onload = function() {
+    drawCharacter();
 };
 
 
-// Keyboard controls
+// Keyboard controls: each key sets the direction, moves on the grid and plays the next frame
 addEventListener("keydown", function(e) {
 
     switch(e.keyCode) {
 
-        case 37: // Left
+        case 37: // Left: down-left on screen
+            direction = DIR_DOWN_LEFT;
             if (ry < maxCols - 1)
                 ry++;
             break;
 
-        case 39: // Right
+        case 39: // Right: up-right on screen
+            direction = DIR_UP_RIGHT;
             if (ry > 0)
                 ry--;
             break;
 
-        case 38: // Up
+        case 38: // Up: up-left on screen
+            direction = DIR_UP_LEFT;
             if (rx > 0)
                 rx--;
             break;
 
-        case 40: // Down
+        case 40: // Down: down-right on screen
+            direction = DIR_DOWN_RIGHT;
             if (rx < maxRows - 1)
                 rx++;
             break;
+
+        default:
+            return;
     }
 
+    frame = (frame + 1) % 4;
+
     e.preventDefault();
-    drawRalph();
+    drawCharacter();
 
 });
 
