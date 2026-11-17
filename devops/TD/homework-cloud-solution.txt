@@ -1,0 +1,68 @@
+DEVOPS HOMEWORK SOLUTIONS
+
+PART 1: CLOUDSIM VS OPENSTACK
+
+1. Which tool should the company use to simulate different numbers of machines?
+CloudSim. It is a Java simulation toolkit. You can model any number of hosts, VMs and cloudlets in software, so no hardware is needed.
+
+2. Which tool can deploy and manage a real IaaS cloud?
+OpenStack. It is open-source cloud software that runs on real servers and provides VMs, networks and storage on demand.
+
+3. Difference between simulation and real deployment
+- Resources: simulation uses virtual models in a program; real deployment uses real servers, network and storage.
+- Cost: simulation is almost free; real deployment needs hardware, power and administration.
+- Risk: simulation has none and experiments are repeatable; real deployment has real failures and real impact.
+- Scale: simulation can model thousands of nodes on one laptop; real deployment is limited by the hardware you own.
+- Result: simulation gives estimates from a model; real deployment gives the actual behaviour of real workloads.
+Simulation is used to evaluate and decide before investing. Real deployment is the production infrastructure.
+
+4. Two parameters evaluated with CloudSim
+- Response time and execution time of tasks (cloudlets).
+- Resource utilization (CPU, RAM) and energy consumption. Cost and the effect of VM allocation policies can also be evaluated.
+
+5. Two services managed with OpenStack
+- Nova for compute (creating and managing VMs).
+- Neutron for networking.
+Other options: Cinder (block storage), Glance (images), Keystone (identity), Horizon (dashboard).
+
+
+Q1: VIRTUALIZATION, MIGRATION AND REPLICATION
+
+Difference
+- Migration moves a VM from one host to another. The VM exists in only one place at a time. It can be live (no downtime) or cold.
+- Replication keeps a copy of the VM, or of its data, on another host or site. The original keeps running and the copy is kept in sync.
+
+Practical situations
+- Migration: a physical server needs maintenance or is overloaded. You live-migrate its VMs to another host with no service interruption. It is also used for load balancing and server consolidation.
+- Replication: a company wants disaster recovery. If the main server or site fails, the replica takes over quickly.
+
+Can replication take place between two VMs on the same physical server?
+Technically yes, because the copy can be created and synchronized locally. It gives no real protection, though. Replication exists to survive failures, and if the physical server fails (hardware, power, disk), both the original and the replica are lost together. Replication is only effective across different physical hosts, ideally in different sites.
+
+
+Q2: VIRTUAL NETWORKING
+
+a) Which network mode?
+NAT (Network Address Translation).
+
+b) Why NAT gives internet access without exposing the VM
+The VM gets a private IP address from the hypervisor's virtual NAT router, which sits between it and the real network. Outgoing traffic is translated to the host's IP address, so the VM can reach the internet and replies come back to it. Other machines on the LAN only see the host's address. They cannot start a connection to the VM, because no mapping exists for unsolicited inbound traffic unless port forwarding is configured. The VM is therefore reachable from inside only by the host.
+
+c) Which mode for the VM to act like an independent physical computer on the LAN?
+Bridged mode. The VM's virtual network card is bridged to the physical card. It gets its own IP address from the LAN's router (DHCP), appears as a separate machine, and can be reached directly by other computers.
+
+
+Q3: CLOUD DEPLOYMENT MODELS
+
+Statement: a bank wants to keep confidential customer information.
+(The statement was cut off in the original; this assumes the question asks which deployment model to choose and why.)
+
+Answer: private cloud.
+
+Justification
+The infrastructure is dedicated to the bank alone, either on its own premises or hosted exclusively for it. The bank keeps full control of data location, access, security policies and encryption. It can meet banking regulations and data-protection rules (such as GDPR and local banking secrecy laws). Nothing is shared with other tenants, as it would be in a public cloud.
+
+Why not the others
+- Public cloud: shared infrastructure, less control, higher risk for confidential data.
+- Community cloud: shared with other organizations that have similar needs.
+- Hybrid cloud: an option if the bank wants confidential data in a private cloud and non-sensitive workloads (a public website, testing) in a public cloud for scalability and lower cost.
