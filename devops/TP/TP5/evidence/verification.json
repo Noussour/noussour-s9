@@ -1,0 +1,29 @@
+{
+  "checked_at_utc": "2026-11-17T12:41:43.399693+00:00",
+  "account": "mimobn",
+  "commit_count": 21,
+  "main": "123e04084ead89549ec790d7ee28ee53c62f2a5a",
+  "remote_main": "123e04084ead89549ec790d7ee28ee53c62f2a5a",
+  "tag_type": "tag",
+  "tag_target": "123e04084ead89549ec790d7ee28ee53c62f2a5a",
+  "registration_parents": [
+    "b36cd5de9cbe8fc1c838a20bc101afad4fb69a00",
+    "b1ef5d045701c3f814c637bc0f2aba0a271f6c5c"
+  ],
+  "conflict_parents": [
+    "9c98a4d56dd1d87197483664ec17e99524ceca5d",
+    "e15a9dca49754936123cd1f1fccfc1008bba7272"
+  ],
+  "worktree_clean": true,
+  "main_ci_run": {
+    "conclusion": "success",
+    "databaseId": 44085306522,
+    "event": "push",
+    "headBranch": "main",
+    "headSha": "123e04084ead89549ec790d7ee28ee53c62f2a5a",
+    "status": "completed",
+    "url": "https://github.com/mimobn/StudentManagement/actions/runs/44085306522"
+  },
+  "solo_review": true,
+  "independent_approval": false
+}

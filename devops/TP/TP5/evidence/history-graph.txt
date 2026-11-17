@@ -1,0 +1,35 @@
+*   123e040 Merge pull request #4 from mimobn/docs/lab-answers
+|\  
+| * 99b9876 Document all TP5 answers and add the hello workflow
+|/  
+*   7cba8dc Merge pull request #3 from mimobn/feature/title-b
+|\  
+| *   51cb7c6 Resolve the heading conflict as University Student Portal
+| |\  
+| |/  
+|/|   
+* |   e15a9dc Merge pull request #2 from mimobn/feature/title-a
+|\ \  
+| * | 10c5b7d Change application heading to student information
+* | |   01c0811 Merge pull request #1 from mimobn/feature/contact-section
+|\ \ \  
+| |/ /  
+|/| |   
+| * | f4425aa Make the demonstration contact address accessible
+| * | 6ac184e Add a student support contact section
+|/ /  
+| * 9c98a4d Change application heading to university student portal
+|/  
+* f32a634 Revert "Hide the heading for the shared undo exercise"
+* 96ebb16 Hide the heading for the shared undo exercise
+* 8b3b685 Explain fast-forward branch integration
+* 5d53d03 Explain temporary work storage with stash
+* 773b4ae Explain how to undo an unpublished experiment
+* ce4dcd4 Document focused commits and staged review
+*   ed39fcf Merge the student registration feature
+|\  
+| * b1ef5d0 Add a student registration form
+* | b36cd5d Document the registration feature
+|/  
+* 498c44f Clarify the student management welcome message
+* fdec0f7 Create initial student management structure

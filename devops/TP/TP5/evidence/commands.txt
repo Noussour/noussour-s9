@@ -1,0 +1,941 @@
+TP5 real command transcript, started 2026-11-17T12:34:34.077022+00:00
+$ git --version
+git version 2.45.1.windows.1
+
+$ git init -b main
+Initialized empty Git repository in H:/noussour-s9/.formal-tools/tp5/StudentManagement/.git/
+
+$ git config user.name mimobn
+
+$ git config user.email mimobn2004@gmail.com
+
+$ git config core.autocrlf false
+
+$ git config --show-origin --get user.name
+file:.git/config	mimobn
+
+$ git config --show-origin --get user.email
+file:.git/config	mimobn2004@gmail.com
+
+$ git status --short
+?? .gitignore
+?? README.md
+?? index.html
+
+$ git check-ignore --no-index .env demo.log __pycache__/demo.py .DS_Store
+.env
+demo.log
+__pycache__/demo.py
+.DS_Store
+
+$ git add index.html README.md .gitignore
+
+$ git status
+On branch main
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+	new file:   .gitignore
+	new file:   README.md
+	new file:   index.html
+
+
+$ git diff --staged
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..2da11de
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,4 @@
++.env
++*.log
++__pycache__/
++.DS_Store
+diff --git a/README.md b/README.md
+new file mode 100644
+index 0000000..77694ab
+--- /dev/null
++++ b/README.md
+@@ -0,0 +1,2 @@
++# Student Management System
++A small web application used to practise Git.
+diff --git a/index.html b/index.html
+new file mode 100644
+index 0000000..b8ca5b7
+--- /dev/null
++++ b/index.html
+@@ -0,0 +1,8 @@
++<!doctype html>
++<html lang="en">
++<head><meta charset="utf-8"><title>Student Management</title></head>
++<body>
++  <h1>Student Management System</h1>
++  <p>Welcome to our application.</p>
++</body>
++</html>
+
+$ git commit -m Create initial student management structure
+[main (root-commit) fdec0f7] Create initial student management structure
+ 3 files changed, 14 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 README.md
+ create mode 100644 index.html
+
+$ git log --oneline
+fdec0f7 Create initial student management structure
+
+$ git diff
+diff --git a/index.html b/index.html
+index b8ca5b7..fcd3756 100644
+--- a/index.html
++++ b/index.html
+@@ -3,6 +3,6 @@
+ <head><meta charset="utf-8"><title>Student Management</title></head>
+ <body>
+   <h1>Student Management System</h1>
+-  <p>Welcome to our application.</p>
++  <p>Register and manage student information in one place.</p>
+ </body>
+ </html>
+
+$ git add index.html
+
+$ git diff --staged
+diff --git a/index.html b/index.html
+index b8ca5b7..fcd3756 100644
+--- a/index.html
++++ b/index.html
+@@ -3,6 +3,6 @@
+ <head><meta charset="utf-8"><title>Student Management</title></head>
+ <body>
+   <h1>Student Management System</h1>
+-  <p>Welcome to our application.</p>
++  <p>Register and manage student information in one place.</p>
+ </body>
+ </html>
+
+$ git commit -m Clarify the student management welcome message
+[main 498c44f] Clarify the student management welcome message
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+$ git switch -c feature/registration
+Switched to a new branch 'feature/registration'
+
+$ git add index.html
+
+$ git commit -m Add a student registration form
+[feature/registration b1ef5d0] Add a student registration form
+ 1 file changed, 10 insertions(+)
+
+$ git switch main
+Switched to branch 'main'
+
+$ git add README.md
+
+$ git commit -m Document the registration feature
+[main b36cd5d] Document the registration feature
+ 1 file changed, 6 insertions(+)
+
+$ git merge feature/registration -m Merge the student registration feature
+Merge made by the 'ort' strategy.
+ index.html | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+$ git log --oneline --graph --all
+*   ed39fcf Merge the student registration feature
+|\  
+| * b1ef5d0 Add a student registration form
+* | b36cd5d Document the registration feature
+|/  
+* 498c44f Clarify the student management welcome message
+* fdec0f7 Create initial student management structure
+
+$ git branch -d feature/registration
+Deleted branch feature/registration (was b1ef5d0).
+
+$ git diff
+diff --git a/index.html b/index.html
+index c5ca86e..0ebe776 100644
+--- a/index.html
++++ b/index.html
+@@ -16,3 +16,4 @@
+   </section>
+ </body>
+ </html>
++<!-- Exercise 5A: disposable edit -->
+
+$ git restore index.html
+
+$ git diff
+
+$ git add README.md
+
+$ git status --short
+M  README.md
+
+$ git restore --staged README.md
+
+$ git status --short
+ M README.md
+
+$ git diff README.md
+diff --git a/README.md b/README.md
+index 313aae1..00526e5 100644
+--- a/README.md
++++ b/README.md
+@@ -6,3 +6,6 @@ A small web application used to practise Git.
+ - Introductory Git and GitHub exercises.
+ 
+ This is a static teaching example; it does not store registrations.
++
++## Git practice
++Use focused commits and inspect staged changes before committing.
+
+$ git add README.md
+
+$ git commit -m Document focused commits and staged review
+[main ce4dcd4] Document focused commits and staged review
+ 1 file changed, 3 insertions(+)
+
+$ git add README.md
+
+$ git commit -m Record a temporary local experiment
+[main 68516e7] Record a temporary local experiment
+ 1 file changed, 2 insertions(+)
+
+$ git reset --mixed HEAD~1
+Unstaged changes after reset:
+M	README.md
+
+$ git status --short
+ M README.md
+
+$ git diff
+diff --git a/README.md b/README.md
+index 00526e5..d71daed 100644
+--- a/README.md
++++ b/README.md
+@@ -9,3 +9,5 @@ This is a static teaching example; it does not store registrations.
+ 
+ ## Git practice
+ Use focused commits and inspect staged changes before committing.
++
++Local experiments can be undone before publication.
+
+$ git add README.md
+
+$ git commit -m Explain how to undo an unpublished experiment
+[main 773b4ae] Explain how to undo an unpublished experiment
+ 1 file changed, 2 insertions(+)
+
+$ git stash push -m TP5 unfinished documentation
+Saved working directory and index state On main: TP5 unfinished documentation
+
+$ git switch -c maintenance/urgent-check
+Switched to a new branch 'maintenance/urgent-check'
+
+$ git status --short
+
+$ git switch main
+Switched to branch 'main'
+
+$ git stash pop
+On branch main
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   README.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+Dropped refs/stash@{0} (b16c3e66cdfca7d03bd5b79303ca54cc309ff985)
+
+$ git diff
+diff --git a/README.md b/README.md
+index d71daed..96d9cad 100644
+--- a/README.md
++++ b/README.md
+@@ -11,3 +11,5 @@ This is a static teaching example; it does not store registrations.
+ Use focused commits and inspect staged changes before committing.
+ 
+ Local experiments can be undone before publication.
++
++Stash temporarily saves unfinished tracked work.
+
+$ git add README.md
+
+$ git commit -m Explain temporary work storage with stash
+[main 5d53d03] Explain temporary work storage with stash
+ 1 file changed, 2 insertions(+)
+
+$ git branch -d maintenance/urgent-check
+Deleted branch maintenance/urgent-check (was 773b4ae).
+
+$ git switch -c demo/fast-forward
+Switched to a new branch 'demo/fast-forward'
+
+$ git add README.md
+
+$ git commit -m Explain fast-forward branch integration
+[demo/fast-forward 8b3b685] Explain fast-forward branch integration
+ 1 file changed, 2 insertions(+)
+
+$ git switch main
+Switched to branch 'main'
+
+$ git merge --ff-only demo/fast-forward
+Updating 5d53d03..8b3b685
+Fast-forward
+ README.md | 2 ++
+ 1 file changed, 2 insertions(+)
+
+$ git branch -d demo/fast-forward
+Deleted branch demo/fast-forward (was 8b3b685).
+
+$ git log --oneline --graph --all
+* 8b3b685 Explain fast-forward branch integration
+* 5d53d03 Explain temporary work storage with stash
+* 773b4ae Explain how to undo an unpublished experiment
+* ce4dcd4 Document focused commits and staged review
+*   ed39fcf Merge the student registration feature
+|\  
+| * b1ef5d0 Add a student registration form
+* | b36cd5d Document the registration feature
+|/  
+* 498c44f Clarify the student management welcome message
+* fdec0f7 Create initial student management structure
+
+$ git status --short
+
+$ gh repo create mimobn/StudentManagement --public --description USTHB TP5: Git and GitHub exercises with recorded history, review and release
+https://github.com/mimobn/StudentManagement
+
+$ git remote add origin https://github.com/mimobn/StudentManagement.git
+
+$ git remote -v
+origin	https://github.com/mimobn/StudentManagement.git (fetch)
+origin	https://github.com/mimobn/StudentManagement.git (push)
+
+$ git -c credential.helper= -c credential.helper=!gh auth git-credential push -u origin main
+branch 'main' set up to track 'origin/main'.
+To https://github.com/mimobn/StudentManagement.git
+ * [new branch]      main -> main
+
+$ git add index.html
+
+$ git commit -m Hide the heading for the shared undo exercise
+[main 96ebb16] Hide the heading for the shared undo exercise
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+$ git -c credential.helper= -c credential.helper=!gh auth git-credential push origin main
+To https://github.com/mimobn/StudentManagement.git
+   8b3b685..96ebb16  main -> main
+
+$ git rev-parse HEAD
+96ebb1614beb1283b40e35b809fe3bebade0023c
+
+$ git revert --no-edit 96ebb1614beb1283b40e35b809fe3bebade0023c
+[main f32a634] Revert "Hide the heading for the shared undo exercise"
+ Date: Tue Nov 17 13:35:19 2026 +0100
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+$ git -c credential.helper= -c credential.helper=!gh auth git-credential push origin main
+To https://github.com/mimobn/StudentManagement.git
+   96ebb16..f32a634  main -> main
+
+$ git rev-parse HEAD
+f32a6348af225838ca8603e6e3d68e621bad1d31
+
+$ git switch -c feature/contact-section
+Switched to a new branch 'feature/contact-section'
+
+$ git add index.html
+
+$ git commit -m Add a student support contact section
+[feature/contact-section 6ac184e] Add a student support contact section
+ 1 file changed, 4 insertions(+)
+
+$ git -c credential.helper= -c credential.helper=!gh auth git-credential push -u origin feature/contact-section
+remote: 
+remote: Create a pull request for 'feature/contact-section' on GitHub by visiting:        
+remote:      https://github.com/mimobn/StudentManagement/pull/new/feature/contact-section        
+remote: 
+branch 'feature/contact-section' set up to track 'origin/feature/contact-section'.
+To https://github.com/mimobn/StudentManagement.git
+ * [new branch]      feature/contact-section -> feature/contact-section
+
+$ gh api --method PUT repos/mimobn/StudentManagement/branches/main/protection --input H:\noussour-s9\devops\TP\TP5\evidence\branch-protection-request.json
+{"url":"https://api.github.com/repos/mimobn/StudentManagement/branches/main/protection","required_pull_request_reviews":{"url":"https://api.github.com/repos/mimobn/StudentManagement/branches/main/protection/required_pull_request_reviews","dismiss_stale_reviews":true,"require_code_owner_reviews":false,"require_last_push_approval":false,"required_approving_review_count":1},"required_signatures":{"url":"https://api.github.com/repos/mimobn/StudentManagement/branches/main/protection/required_signatures","enabled":false},"enforce_admins":{"url":"https://api.github.com/repos/mimobn/StudentManagement/branches/main/protection/enforce_admins","enabled":true},"required_linear_history":{"enabled":false},"allow_force_pushes":{"enabled":false},"allow_deletions":{"enabled":false},"block_creations":{"enabled":false},"required_conversation_resolution":{"enabled":false},"lock_branch":{"enabled":false},"allow_fork_syncing":{"enabled":false}}
+$ gh pr create --repo mimobn/StudentManagement --base main --head feature/contact-section --title Add a student support contact section --body-file H:\noussour-s9\devops\TP\TP5\evidence\contact-pr-body.md
+https://github.com/mimobn/StudentManagement/pull/1
+
+$ git switch main
+Your branch is up to date with 'origin/main'.
+Switched to branch 'main'
+
+$ git switch -c feature/title-a
+Switched to a new branch 'feature/title-a'
+
+$ git add index.html
+
+$ git commit -m Change application heading to student information
+[feature/title-a 10c5b7d] Change application heading to student information
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+$ git -c credential.helper= -c credential.helper=!gh auth git-credential push -u origin feature/title-a
+remote: 
+remote: Create a pull request for 'feature/title-a' on GitHub by visiting:        
+remote:      https://github.com/mimobn/StudentManagement/pull/new/feature/title-a        
+remote: 
+branch 'feature/title-a' set up to track 'origin/feature/title-a'.
+To https://github.com/mimobn/StudentManagement.git
+ * [new branch]      feature/title-a -> feature/title-a
+
+$ git switch main
+Your branch is up to date with 'origin/main'.
+Switched to branch 'main'
+
+$ git switch -c feature/title-b
+Switched to a new branch 'feature/title-b'
+
+$ git add index.html
+
+$ git commit -m Change application heading to university student portal
+[feature/title-b 9c98a4d] Change application heading to university student portal
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+$ git -c credential.helper= -c credential.helper=!gh auth git-credential push -u origin feature/title-b
+remote: 
+remote: Create a pull request for 'feature/title-b' on GitHub by visiting:        
+remote:      https://github.com/mimobn/StudentManagement/pull/new/feature/title-b        
+remote: 
+branch 'feature/title-b' set up to track 'origin/feature/title-b'.
+To https://github.com/mimobn/StudentManagement.git
+ * [new branch]      feature/title-b -> feature/title-b
+
+$ git switch main
+Your branch is up to date with 'origin/main'.
+Switched to branch 'main'
+
+$ gh api --method PATCH repos/mimobn/StudentManagement/branches/main/protection/required_pull_request_reviews -F required_approving_review_count=0
+{"url":"https://api.github.com/repos/mimobn/StudentManagement/branches/main/protection/required_pull_request_reviews","dismiss_stale_reviews":true,"require_code_owner_reviews":false,"require_last_push_approval":false,"required_approving_review_count":0}
+$ gh api --method POST repos/mimobn/StudentManagement/pulls/1/reviews --input H:\noussour-s9\devops\TP\TP5\evidence\contact-review-request.json
+{"id":5938504400,"node_id":"PRR_kwDOVxr-Q88AAAABYfZi0A","user":{"login":"mimobn","id":112497685,"node_id":"U_kgDOBrSUFQ","avatar_url":"https://avatars.githubusercontent.com/u/112497685?v=4","gravatar_id":"","url":"https://api.github.com/users/mimobn","html_url":"https://github.com/mimobn","followers_url":"https://api.github.com/users/mimobn/followers","following_url":"https://api.github.com/users/mimobn/following{/other_user}","gists_url":"https://api.github.com/users/mimobn/gists{/gist_id}","starred_url":"https://api.github.com/users/mimobn/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mimobn/subscriptions","organizations_url":"https://api.github.com/users/mimobn/orgs","repos_url":"https://api.github.com/users/mimobn/repos","events_url":"https://api.github.com/users/mimobn/events{/privacy}","received_events_url":"https://api.github.com/users/mimobn/received_events","type":"User","user_view_type":"public","site_admin":false},"body":"TP5 solo review: the contact address needs a mailto link and a visible note that this is a demonstration address. GitHub does not allow the author to request changes or approve their own PR; this is a COMMENT review.","state":"COMMENTED","html_url":"https://github.com/mimobn/StudentManagement/pull/1#pullrequestreview-5938504400","pull_request_url":"https://api.github.com/repos/mimobn/StudentManagement/pulls/1","author_association":"OWNER","is_copilot_code_review":false,"copilot_code_review_effort":null,"_links":{"html":{"href":"https://github.com/mimobn/StudentManagement/pull/1#pullrequestreview-5938504400"},"pull_request":{"href":"https://api.github.com/repos/mimobn/StudentManagement/pulls/1"}},"submitted_at":"2026-11-17T12:37:15Z","commit_id":"6ac184e7e32fa01072c89f1e8b5f08d3e7f5e16f"}
+$ git switch feature/contact-section
+Your branch is up to date with 'origin/feature/contact-section'.
+Switched to branch 'feature/contact-section'
+
+$ git add index.html
+
+$ git commit -m Make the demonstration contact address accessible
+[feature/contact-section f4425aa] Make the demonstration contact address accessible
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+$ git -c credential.helper= -c credential.helper=!gh auth git-credential push origin feature/contact-section
+To https://github.com/mimobn/StudentManagement.git
+   6ac184e..f4425aa  feature/contact-section -> feature/contact-section
+
+$ gh pr merge 1 --repo mimobn/StudentManagement --merge
+
+$ git switch main
+Your branch is up to date with 'origin/main'.
+Switched to branch 'main'
+
+$ git -c credential.helper= -c credential.helper=!gh auth git-credential pull --ff-only origin main
+From https://github.com/mimobn/StudentManagement
+ * branch            main       -> FETCH_HEAD
+   f32a634..01c0811  main       -> origin/main
+Updating f32a634..01c0811
+Fast-forward
+ index.html | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+$ git clone https://github.com/mimobn/StudentManagement.git H:\noussour-s9\.formal-tools\tp5\StudentManagement-second-clone
+Cloning into 'H:\noussour-s9\.formal-tools\tp5\StudentManagement-second-clone'...
+
+$ git pull --ff-only origin main
+From https://github.com/mimobn/StudentManagement
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+
+$ gh api repos/mimobn/StudentManagement/pulls/1
+{"url":"https://api.github.com/repos/mimobn/StudentManagement/pulls/1","id":5356932443,"node_id":"PR_kwDOVxr-Q88AAAABP0xNWw","html_url":"https://github.com/mimobn/StudentManagement/pull/1","diff_url":"https://github.com/mimobn/StudentManagement/pull/1.diff","patch_url":"https://github.com/mimobn/StudentManagement/pull/1.patch","issue_url":"https://api.github.com/repos/mimobn/StudentManagement/issues/1","commits_url":"https://api.github.com/repos/mimobn/StudentManagement/pulls/1/commits","review_comments_url":"https://api.github.com/repos/mimobn/StudentManagement/pulls/1/comments","review_comment_url":"https://api.github.com/repos/mimobn/StudentManagement/pulls/comments{/number}","comments_url":"https://api.github.com/repos/mimobn/StudentManagement/issues/1/comments","statuses_url":"https://api.github.com/repos/mimobn/StudentManagement/statuses/f4425aaec8508d6e2312362062dd15e8065ff551","number":1,"state":"closed","locked":false,"title":"Add a student support contact section","user":{"login":"mimobn","id":112497685,"node_id":"U_kgDOBrSUFQ","avatar_url":"https://avatars.githubusercontent.com/u/112497685?v=4","gravatar_id":"","url":"https://api.github.com/users/mimobn","html_url":"https://github.com/mimobn","followers_url":"https://api.github.com/users/mimobn/followers","following_url":"https://api.github.com/users/mimobn/following{/other_user}","gists_url":"https://api.github.com/users/mimobn/gists{/gist_id}","starred_url":"https://api.github.com/users/mimobn/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mimobn/subscriptions","organizations_url":"https://api.github.com/users/mimobn/orgs","repos_url":"https://api.github.com/users/mimobn/repos","events_url":"https://api.github.com/users/mimobn/events{/privacy}","received_events_url":"https://api.github.com/users/mimobn/received_events","type":"User","user_view_type":"public","site_admin":false},"body":"Add a Contact section below the registration form.\r\n\r\nValidation: inspected the HTML structure. The form is a static teaching example.\r\n\r\nTP5 Exercise 7: review the contact address and its accessibility before merging.\r\n","labels":[],"milestone":null,"active_lock_reason":null,"created_at":"2026-11-17T12:36:24Z","updated_at":"2026-11-17T12:37:29Z","closed_at":"2026-11-17T12:37:29Z","merged_at":"2026-11-17T12:37:29Z","merge_commit_sha":"01c0811be158fe4a240fd4926791129d680fcbbd","assignee":null,"assignees":[],"requested_reviewers":[],"requested_teams":[],"head":{"label":"mimobn:feature/contact-section","ref":"feature/contact-section","repo":{"id":1461386819,"node_id":"R_kgDOVxr-Qw","name":"StudentManagement","full_name":"mimobn/StudentManagement","owner":{"login":"mimobn","id":112497685,"node_id":"U_kgDOBrSUFQ","avatar_url":"https://avatars.githubusercontent.com/u/112497685?v=4","gravatar_id":"","url":"https://api.github.com/users/mimobn","html_url":"https://github.com/mimobn","followers_url":"https://api.github.com/users/mimobn/followers","following_url":"https://api.github.com/users/mimobn/following{/other_user}","gists_url":"https://api.github.com/users/mimobn/gists{/gist_id}","starred_url":"https://api.github.com/users/mimobn/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mimobn/subscriptions","organizations_url":"https://api.github.com/users/mimobn/orgs","repos_url":"https://api.github.com/users/mimobn/repos","events_url":"https://api.github.com/users/mimobn/events{/privacy}","received_events_url":"https://api.github.com/users/mimobn/received_events","type":"User","user_view_type":"public","site_admin":false},"private":false,"fork":false,"archived":false,"disabled":false,"description":"USTHB TP5: Git and GitHub exercises with recorded history, review and release","homepage":null,"language":"HTML","visibility":"public","is_template":false,"topics":[],"forks_count":0,"forks":0,"stargazers_count":0,"watchers_count":0,"watchers":0,"open_issues_count":0,"open_issues":0,"size":0,"default_branch":"main","has_issues":true,"has_projects":true,"has_wiki":true,"has_pages":false,"has_downloads":false,"has_discussions":false,"has_pull_requests":true,"pushed_at":"2026-11-17T12:37:29Z","created_at":"2026-11-17T12:35:10Z","updated_at":"2026-11-17T12:35:23Z","allow_forking":true,"web_commit_signoff_required":false,"pull_request_creation_policy":"all","license":null,"url":"https://api.github.com/repos/mimobn/StudentManagement","html_url":"https://github.com/mimobn/StudentManagement","archive_url":"https://api.github.com/repos/mimobn/StudentManagement/{archive_format}{/ref}","assignees_url":"https://api.github.com/repos/mimobn/StudentManagement/assignees{/user}","blobs_url":"https://api.github.com/repos/mimobn/StudentManagement/git/blobs{/sha}","branches_url":"https://api.github.com/repos/mimobn/StudentManagement/branches{/branch}","collaborators_url":"https://api.github.com/repos/mimobn/StudentManagement/collaborators{/collaborator}","comments_url":"https://api.github.com/repos/mimobn/StudentManagement/comments{/number}","commits_url":"https://api.github.com/repos/mimobn/StudentManagement/commits{/sha}","compare_url":"https://api.github.com/repos/mimobn/StudentManagement/compare/{base}...{head}","contents_url":"https://api.github.com/repos/mimobn/StudentManagement/contents/{+path}","contributors_url":"https://api.github.com/repos/mimobn/StudentManagement/contributors","deployments_url":"https://api.github.com/repos/mimobn/StudentManagement/deployments","downloads_url":"https://api.github.com/repos/mimobn/StudentManagement/downloads","events_url":"https://api.github.com/repos/mimobn/StudentManagement/events","forks_url":"https://api.github.com/repos/mimobn/StudentManagement/forks","git_commits_url":"https://api.github.com/repos/mimobn/StudentManagement/git/commits{/sha}","git_refs_url":"https://api.github.com/repos/mimobn/StudentManagement/git/refs{/sha}","git_tags_url":"https://api.github.com/repos/mimobn/StudentManagement/git/tags{/sha}","git_url":"git://github.com/mimobn/StudentManagement.git","issue_comment_url":"https://api.github.com/repos/mimobn/StudentManagement/issues/comments{/number}","issue_events_url":"https://api.github.com/repos/mimobn/StudentManagement/issues/events{/number}","issues_url":"https://api.github.com/repos/mimobn/StudentManagement/issues{/number}","keys_url":"https://api.github.com/repos/mimobn/StudentManagement/keys{/key_id}","labels_url":"https://api.github.com/repos/mimobn/StudentManagement/labels{/name}","languages_url":"https://api.github.com/repos/mimobn/StudentManagement/languages","merges_url":"https://api.github.com/repos/mimobn/StudentManagement/merges","milestones_url":"https://api.github.com/repos/mimobn/StudentManagement/milestones{/number}","notifications_url":"https://api.github.com/repos/mimobn/StudentManagement/notifications{?since,all,participating}","pulls_url":"https://api.github.com/repos/mimobn/StudentManagement/pulls{/number}","releases_url":"https://api.github.com/repos/mimobn/StudentManagement/releases{/id}","ssh_url":"git@github.com:mimobn/StudentManagement.git","stargazers_url":"https://api.github.com/repos/mimobn/StudentManagement/stargazers","statuses_url":"https://api.github.com/repos/mimobn/StudentManagement/statuses/{sha}","subscribers_url":"https://api.github.com/repos/mimobn/StudentManagement/subscribers","subscription_url":"https://api.github.com/repos/mimobn/StudentManagement/subscription","tags_url":"https://api.github.com/repos/mimobn/StudentManagement/tags","teams_url":"https://api.github.com/repos/mimobn/StudentManagement/teams","trees_url":"https://api.github.com/repos/mimobn/StudentManagement/git/trees{/sha}","clone_url":"https://github.com/mimobn/StudentManagement.git","mirror_url":null,"hooks_url":"https://api.github.com/repos/mimobn/StudentManagement/hooks","svn_url":"https://github.com/mimobn/StudentManagement"},"sha":"f4425aaec8508d6e2312362062dd15e8065ff551","user":{"login":"mimobn","id":112497685,"node_id":"U_kgDOBrSUFQ","avatar_url":"https://avatars.githubusercontent.com/u/112497685?v=4","gravatar_id":"","url":"https://api.github.com/users/mimobn","html_url":"https://github.com/mimobn","followers_url":"https://api.github.com/users/mimobn/followers","following_url":"https://api.github.com/users/mimobn/following{/other_user}","gists_url":"https://api.github.com/users/mimobn/gists{/gist_id}","starred_url":"https://api.github.com/users/mimobn/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mimobn/subscriptions","organizations_url":"https://api.github.com/users/mimobn/orgs","repos_url":"https://api.github.com/users/mimobn/repos","events_url":"https://api.github.com/users/mimobn/events{/privacy}","received_events_url":"https://api.github.com/users/mimobn/received_events","type":"User","user_view_type":"public","site_admin":false}},"base":{"label":"mimobn:main","ref":"main","repo":{"id":1461386819,"node_id":"R_kgDOVxr-Qw","name":"StudentManagement","full_name":"mimobn/StudentManagement","owner":{"login":"mimobn","id":112497685,"node_id":"U_kgDOBrSUFQ","avatar_url":"https://avatars.githubusercontent.com/u/112497685?v=4","gravatar_id":"","url":"https://api.github.com/users/mimobn","html_url":"https://github.com/mimobn","followers_url":"https://api.github.com/users/mimobn/followers","following_url":"https://api.github.com/users/mimobn/following{/other_user}","gists_url":"https://api.github.com/users/mimobn/gists{/gist_id}","starred_url":"https://api.github.com/users/mimobn/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mimobn/subscriptions","organizations_url":"https://api.github.com/users/mimobn/orgs","repos_url":"https://api.github.com/users/mimobn/repos","events_url":"https://api.github.com/users/mimobn/events{/privacy}","received_events_url":"https://api.github.com/users/mimobn/received_events","type":"User","user_view_type":"public","site_admin":false},"private":false,"fork":false,"archived":false,"disabled":false,"description":"USTHB TP5: Git and GitHub exercises with recorded history, review and release","homepage":null,"language":"HTML","visibility":"public","is_template":false,"topics":[],"forks_count":0,"forks":0,"stargazers_count":0,"watchers_count":0,"watchers":0,"open_issues_count":0,"open_issues":0,"size":0,"default_branch":"main","has_issues":true,"has_projects":true,"has_wiki":true,"has_pages":false,"has_downloads":false,"has_discussions":false,"has_pull_requests":true,"pushed_at":"2026-11-17T12:37:29Z","created_at":"2026-11-17T12:35:10Z","updated_at":"2026-11-17T12:35:23Z","allow_forking":true,"web_commit_signoff_required":false,"pull_request_creation_policy":"all","license":null,"url":"https://api.github.com/repos/mimobn/StudentManagement","html_url":"https://github.com/mimobn/StudentManagement","archive_url":"https://api.github.com/repos/mimobn/StudentManagement/{archive_format}{/ref}","assignees_url":"https://api.github.com/repos/mimobn/StudentManagement/assignees{/user}","blobs_url":"https://api.github.com/repos/mimobn/StudentManagement/git/blobs{/sha}","branches_url":"https://api.github.com/repos/mimobn/StudentManagement/branches{/branch}","collaborators_url":"https://api.github.com/repos/mimobn/StudentManagement/collaborators{/collaborator}","comments_url":"https://api.github.com/repos/mimobn/StudentManagement/comments{/number}","commits_url":"https://api.github.com/repos/mimobn/StudentManagement/commits{/sha}","compare_url":"https://api.github.com/repos/mimobn/StudentManagement/compare/{base}...{head}","contents_url":"https://api.github.com/repos/mimobn/StudentManagement/contents/{+path}","contributors_url":"https://api.github.com/repos/mimobn/StudentManagement/contributors","deployments_url":"https://api.github.com/repos/mimobn/StudentManagement/deployments","downloads_url":"https://api.github.com/repos/mimobn/StudentManagement/downloads","events_url":"https://api.github.com/repos/mimobn/StudentManagement/events","forks_url":"https://api.github.com/repos/mimobn/StudentManagement/forks","git_commits_url":"https://api.github.com/repos/mimobn/StudentManagement/git/commits{/sha}","git_refs_url":"https://api.github.com/repos/mimobn/StudentManagement/git/refs{/sha}","git_tags_url":"https://api.github.com/repos/mimobn/StudentManagement/git/tags{/sha}","git_url":"git://github.com/mimobn/StudentManagement.git","issue_comment_url":"https://api.github.com/repos/mimobn/StudentManagement/issues/comments{/number}","issue_events_url":"https://api.github.com/repos/mimobn/StudentManagement/issues/events{/number}","issues_url":"https://api.github.com/repos/mimobn/StudentManagement/issues{/number}","keys_url":"https://api.github.com/repos/mimobn/StudentManagement/keys{/key_id}","labels_url":"https://api.github.com/repos/mimobn/StudentManagement/labels{/name}","languages_url":"https://api.github.com/repos/mimobn/StudentManagement/languages","merges_url":"https://api.github.com/repos/mimobn/StudentManagement/merges","milestones_url":"https://api.github.com/repos/mimobn/StudentManagement/milestones{/number}","notifications_url":"https://api.github.com/repos/mimobn/StudentManagement/notifications{?since,all,participating}","pulls_url":"https://api.github.com/repos/mimobn/StudentManagement/pulls{/number}","releases_url":"https://api.github.com/repos/mimobn/StudentManagement/releases{/id}","ssh_url":"git@github.com:mimobn/StudentManagement.git","stargazers_url":"https://api.github.com/repos/mimobn/StudentManagement/stargazers","statuses_url":"https://api.github.com/repos/mimobn/StudentManagement/statuses/{sha}","subscribers_url":"https://api.github.com/repos/mimobn/StudentManagement/subscribers","subscription_url":"https://api.github.com/repos/mimobn/StudentManagement/subscription","tags_url":"https://api.github.com/repos/mimobn/StudentManagement/tags","teams_url":"https://api.github.com/repos/mimobn/StudentManagement/teams","trees_url":"https://api.github.com/repos/mimobn/StudentManagement/git/trees{/sha}","clone_url":"https://github.com/mimobn/StudentManagement.git","mirror_url":null,"hooks_url":"https://api.github.com/repos/mimobn/StudentManagement/hooks","svn_url":"https://github.com/mimobn/StudentManagement"},"sha":"f32a6348af225838ca8603e6e3d68e621bad1d31","user":{"login":"mimobn","id":112497685,"node_id":"U_kgDOBrSUFQ","avatar_url":"https://avatars.githubusercontent.com/u/112497685?v=4","gravatar_id":"","url":"https://api.github.com/users/mimobn","html_url":"https://github.com/mimobn","followers_url":"https://api.github.com/users/mimobn/followers","following_url":"https://api.github.com/users/mimobn/following{/other_user}","gists_url":"https://api.github.com/users/mimobn/gists{/gist_id}","starred_url":"https://api.github.com/users/mimobn/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mimobn/subscriptions","organizations_url":"https://api.github.com/users/mimobn/orgs","repos_url":"https://api.github.com/users/mimobn/repos","events_url":"https://api.github.com/users/mimobn/events{/privacy}","received_events_url":"https://api.github.com/users/mimobn/received_events","type":"User","user_view_type":"public","site_admin":false}},"_links":{"comments":{"href":"https://api.github.com/repos/mimobn/StudentManagement/issues/1/comments"},"commits":{"href":"https://api.github.com/repos/mimobn/StudentManagement/pulls/1/commits"},"statuses":{"href":"https://api.github.com/repos/mimobn/StudentManagement/statuses/f4425aaec8508d6e2312362062dd15e8065ff551"},"html":{"href":"https://github.com/mimobn/StudentManagement/pull/1"},"issue":{"href":"https://api.github.com/repos/mimobn/StudentManagement/issues/1"},"review_comments":{"href":"https://api.github.com/repos/mimobn/StudentManagement/pulls/1/comments"},"review_comment":{"href":"https://api.github.com/repos/mimobn/StudentManagement/pulls/comments{/number}"},"self":{"href":"https://api.github.com/repos/mimobn/StudentManagement/pulls/1"}},"author_association":"OWNER","auto_merge":null,"draft":false,"merged":true,"mergeable":null,"rebaseable":null,"mergeable_state":"unknown","merged_by":{"login":"mimobn","id":112497685,"node_id":"U_kgDOBrSUFQ","avatar_url":"https://avatars.githubusercontent.com/u/112497685?v=4","gravatar_id":"","url":"https://api.github.com/users/mimobn","html_url":"https://github.com/mimobn","followers_url":"https://api.github.com/users/mimobn/followers","following_url":"https://api.github.com/users/mimobn/following{/other_user}","gists_url":"https://api.github.com/users/mimobn/gists{/gist_id}","starred_url":"https://api.github.com/users/mimobn/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mimobn/subscriptions","organizations_url":"https://api.github.com/users/mimobn/orgs","repos_url":"https://api.github.com/users/mimobn/repos","events_url":"https://api.github.com/users/mimobn/events{/privacy}","received_events_url":"https://api.github.com/users/mimobn/received_events","type":"User","user_view_type":"public","site_admin":false},"comments":0,"review_comments":1,"maintainer_can_modify":false,"commits":2,"additions":4,"deletions":0,"changed_files":1}
+$ gh pr create --repo mimobn/StudentManagement --base main --head feature/title-a --title Change the heading to Student Information System --body-file H:\noussour-s9\devops\TP\TP5\evidence\title-a-pr-body.md
+https://github.com/mimobn/StudentManagement/pull/2
+
+$ gh pr merge 2 --repo mimobn/StudentManagement --merge
+
+$ git pull --ff-only origin main
+From https://github.com/mimobn/StudentManagement
+ * branch            main       -> FETCH_HEAD
+   01c0811..e15a9dc  main       -> origin/main
+Updating 01c0811..e15a9dc
+Fast-forward
+ index.html | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+$ gh pr create --repo mimobn/StudentManagement --base main --head feature/title-b --title Resolve the competing application headings --body-file H:\noussour-s9\devops\TP\TP5\evidence\title-b-pr-body.md
+https://github.com/mimobn/StudentManagement/pull/3
+
+$ gh api repos/mimobn/StudentManagement/pulls/3
+{"url":"https://api.github.com/repos/mimobn/StudentManagement/pulls/3","id":5356971714,"node_id":"PR_kwDOVxr-Q88AAAABP0zmwg","html_url":"https://github.com/mimobn/StudentManagement/pull/3","diff_url":"https://github.com/mimobn/StudentManagement/pull/3.diff","patch_url":"https://github.com/mimobn/StudentManagement/pull/3.patch","issue_url":"https://api.github.com/repos/mimobn/StudentManagement/issues/3","commits_url":"https://api.github.com/repos/mimobn/StudentManagement/pulls/3/commits","review_comments_url":"https://api.github.com/repos/mimobn/StudentManagement/pulls/3/comments","review_comment_url":"https://api.github.com/repos/mimobn/StudentManagement/pulls/comments{/number}","comments_url":"https://api.github.com/repos/mimobn/StudentManagement/issues/3/comments","statuses_url":"https://api.github.com/repos/mimobn/StudentManagement/statuses/9c98a4d56dd1d87197483664ec17e99524ceca5d","number":3,"state":"open","locked":false,"title":"Resolve the competing application headings","user":{"login":"mimobn","id":112497685,"node_id":"U_kgDOBrSUFQ","avatar_url":"https://avatars.githubusercontent.com/u/112497685?v=4","gravatar_id":"","url":"https://api.github.com/users/mimobn","html_url":"https://github.com/mimobn","followers_url":"https://api.github.com/users/mimobn/followers","following_url":"https://api.github.com/users/mimobn/following{/other_user}","gists_url":"https://api.github.com/users/mimobn/gists{/gist_id}","starred_url":"https://api.github.com/users/mimobn/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mimobn/subscriptions","organizations_url":"https://api.github.com/users/mimobn/orgs","repos_url":"https://api.github.com/users/mimobn/repos","events_url":"https://api.github.com/users/mimobn/events{/privacy}","received_events_url":"https://api.github.com/users/mimobn/received_events","type":"User","user_view_type":"public","site_admin":false},"body":"Change the heading to University Student Portal.\r\n\r\nThis branch deliberately edits the same heading as PR #2. The conflict will be resolved by integrating main into this branch and selecting University Student Portal.\r\n","labels":[],"milestone":null,"active_lock_reason":null,"created_at":"2026-11-17T12:38:58Z","updated_at":"2026-11-17T12:38:58Z","closed_at":null,"merged_at":null,"merge_commit_sha":null,"assignee":null,"assignees":[],"requested_reviewers":[],"requested_teams":[],"head":{"label":"mimobn:feature/title-b","ref":"feature/title-b","repo":{"id":1461386819,"node_id":"R_kgDOVxr-Qw","name":"StudentManagement","full_name":"mimobn/StudentManagement","owner":{"login":"mimobn","id":112497685,"node_id":"U_kgDOBrSUFQ","avatar_url":"https://avatars.githubusercontent.com/u/112497685?v=4","gravatar_id":"","url":"https://api.github.com/users/mimobn","html_url":"https://github.com/mimobn","followers_url":"https://api.github.com/users/mimobn/followers","following_url":"https://api.github.com/users/mimobn/following{/other_user}","gists_url":"https://api.github.com/users/mimobn/gists{/gist_id}","starred_url":"https://api.github.com/users/mimobn/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mimobn/subscriptions","organizations_url":"https://api.github.com/users/mimobn/orgs","repos_url":"https://api.github.com/users/mimobn/repos","events_url":"https://api.github.com/users/mimobn/events{/privacy}","received_events_url":"https://api.github.com/users/mimobn/received_events","type":"User","user_view_type":"public","site_admin":false},"private":false,"fork":false,"archived":false,"disabled":false,"description":"USTHB TP5: Git and GitHub exercises with recorded history, review and release","homepage":null,"language":"HTML","visibility":"public","is_template":false,"topics":[],"forks_count":0,"forks":0,"stargazers_count":0,"watchers_count":0,"watchers":0,"open_issues_count":1,"open_issues":1,"size":0,"default_branch":"main","has_issues":true,"has_projects":true,"has_wiki":true,"has_pages":false,"has_downloads":false,"has_discussions":false,"has_pull_requests":true,"pushed_at":"2026-11-17T12:38:48Z","created_at":"2026-11-17T12:35:10Z","updated_at":"2026-11-17T12:35:23Z","allow_forking":true,"web_commit_signoff_required":false,"pull_request_creation_policy":"all","license":null,"url":"https://api.github.com/repos/mimobn/StudentManagement","html_url":"https://github.com/mimobn/StudentManagement","archive_url":"https://api.github.com/repos/mimobn/StudentManagement/{archive_format}{/ref}","assignees_url":"https://api.github.com/repos/mimobn/StudentManagement/assignees{/user}","blobs_url":"https://api.github.com/repos/mimobn/StudentManagement/git/blobs{/sha}","branches_url":"https://api.github.com/repos/mimobn/StudentManagement/branches{/branch}","collaborators_url":"https://api.github.com/repos/mimobn/StudentManagement/collaborators{/collaborator}","comments_url":"https://api.github.com/repos/mimobn/StudentManagement/comments{/number}","commits_url":"https://api.github.com/repos/mimobn/StudentManagement/commits{/sha}","compare_url":"https://api.github.com/repos/mimobn/StudentManagement/compare/{base}...{head}","contents_url":"https://api.github.com/repos/mimobn/StudentManagement/contents/{+path}","contributors_url":"https://api.github.com/repos/mimobn/StudentManagement/contributors","deployments_url":"https://api.github.com/repos/mimobn/StudentManagement/deployments","downloads_url":"https://api.github.com/repos/mimobn/StudentManagement/downloads","events_url":"https://api.github.com/repos/mimobn/StudentManagement/events","forks_url":"https://api.github.com/repos/mimobn/StudentManagement/forks","git_commits_url":"https://api.github.com/repos/mimobn/StudentManagement/git/commits{/sha}","git_refs_url":"https://api.github.com/repos/mimobn/StudentManagement/git/refs{/sha}","git_tags_url":"https://api.github.com/repos/mimobn/StudentManagement/git/tags{/sha}","git_url":"git://github.com/mimobn/StudentManagement.git","issue_comment_url":"https://api.github.com/repos/mimobn/StudentManagement/issues/comments{/number}","issue_events_url":"https://api.github.com/repos/mimobn/StudentManagement/issues/events{/number}","issues_url":"https://api.github.com/repos/mimobn/StudentManagement/issues{/number}","keys_url":"https://api.github.com/repos/mimobn/StudentManagement/keys{/key_id}","labels_url":"https://api.github.com/repos/mimobn/StudentManagement/labels{/name}","languages_url":"https://api.github.com/repos/mimobn/StudentManagement/languages","merges_url":"https://api.github.com/repos/mimobn/StudentManagement/merges","milestones_url":"https://api.github.com/repos/mimobn/StudentManagement/milestones{/number}","notifications_url":"https://api.github.com/repos/mimobn/StudentManagement/notifications{?since,all,participating}","pulls_url":"https://api.github.com/repos/mimobn/StudentManagement/pulls{/number}","releases_url":"https://api.github.com/repos/mimobn/StudentManagement/releases{/id}","ssh_url":"git@github.com:mimobn/StudentManagement.git","stargazers_url":"https://api.github.com/repos/mimobn/StudentManagement/stargazers","statuses_url":"https://api.github.com/repos/mimobn/StudentManagement/statuses/{sha}","subscribers_url":"https://api.github.com/repos/mimobn/StudentManagement/subscribers","subscription_url":"https://api.github.com/repos/mimobn/StudentManagement/subscription","tags_url":"https://api.github.com/repos/mimobn/StudentManagement/tags","teams_url":"https://api.github.com/repos/mimobn/StudentManagement/teams","trees_url":"https://api.github.com/repos/mimobn/StudentManagement/git/trees{/sha}","clone_url":"https://github.com/mimobn/StudentManagement.git","mirror_url":null,"hooks_url":"https://api.github.com/repos/mimobn/StudentManagement/hooks","svn_url":"https://github.com/mimobn/StudentManagement"},"sha":"9c98a4d56dd1d87197483664ec17e99524ceca5d","user":{"login":"mimobn","id":112497685,"node_id":"U_kgDOBrSUFQ","avatar_url":"https://avatars.githubusercontent.com/u/112497685?v=4","gravatar_id":"","url":"https://api.github.com/users/mimobn","html_url":"https://github.com/mimobn","followers_url":"https://api.github.com/users/mimobn/followers","following_url":"https://api.github.com/users/mimobn/following{/other_user}","gists_url":"https://api.github.com/users/mimobn/gists{/gist_id}","starred_url":"https://api.github.com/users/mimobn/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mimobn/subscriptions","organizations_url":"https://api.github.com/users/mimobn/orgs","repos_url":"https://api.github.com/users/mimobn/repos","events_url":"https://api.github.com/users/mimobn/events{/privacy}","received_events_url":"https://api.github.com/users/mimobn/received_events","type":"User","user_view_type":"public","site_admin":false}},"base":{"label":"mimobn:main","ref":"main","repo":{"id":1461386819,"node_id":"R_kgDOVxr-Qw","name":"StudentManagement","full_name":"mimobn/StudentManagement","owner":{"login":"mimobn","id":112497685,"node_id":"U_kgDOBrSUFQ","avatar_url":"https://avatars.githubusercontent.com/u/112497685?v=4","gravatar_id":"","url":"https://api.github.com/users/mimobn","html_url":"https://github.com/mimobn","followers_url":"https://api.github.com/users/mimobn/followers","following_url":"https://api.github.com/users/mimobn/following{/other_user}","gists_url":"https://api.github.com/users/mimobn/gists{/gist_id}","starred_url":"https://api.github.com/users/mimobn/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mimobn/subscriptions","organizations_url":"https://api.github.com/users/mimobn/orgs","repos_url":"https://api.github.com/users/mimobn/repos","events_url":"https://api.github.com/users/mimobn/events{/privacy}","received_events_url":"https://api.github.com/users/mimobn/received_events","type":"User","user_view_type":"public","site_admin":false},"private":false,"fork":false,"archived":false,"disabled":false,"description":"USTHB TP5: Git and GitHub exercises with recorded history, review and release","homepage":null,"language":"HTML","visibility":"public","is_template":false,"topics":[],"forks_count":0,"forks":0,"stargazers_count":0,"watchers_count":0,"watchers":0,"open_issues_count":1,"open_issues":1,"size":0,"default_branch":"main","has_issues":true,"has_projects":true,"has_wiki":true,"has_pages":false,"has_downloads":false,"has_discussions":false,"has_pull_requests":true,"pushed_at":"2026-11-17T12:38:48Z","created_at":"2026-11-17T12:35:10Z","updated_at":"2026-11-17T12:35:23Z","allow_forking":true,"web_commit_signoff_required":false,"pull_request_creation_policy":"all","license":null,"url":"https://api.github.com/repos/mimobn/StudentManagement","html_url":"https://github.com/mimobn/StudentManagement","archive_url":"https://api.github.com/repos/mimobn/StudentManagement/{archive_format}{/ref}","assignees_url":"https://api.github.com/repos/mimobn/StudentManagement/assignees{/user}","blobs_url":"https://api.github.com/repos/mimobn/StudentManagement/git/blobs{/sha}","branches_url":"https://api.github.com/repos/mimobn/StudentManagement/branches{/branch}","collaborators_url":"https://api.github.com/repos/mimobn/StudentManagement/collaborators{/collaborator}","comments_url":"https://api.github.com/repos/mimobn/StudentManagement/comments{/number}","commits_url":"https://api.github.com/repos/mimobn/StudentManagement/commits{/sha}","compare_url":"https://api.github.com/repos/mimobn/StudentManagement/compare/{base}...{head}","contents_url":"https://api.github.com/repos/mimobn/StudentManagement/contents/{+path}","contributors_url":"https://api.github.com/repos/mimobn/StudentManagement/contributors","deployments_url":"https://api.github.com/repos/mimobn/StudentManagement/deployments","downloads_url":"https://api.github.com/repos/mimobn/StudentManagement/downloads","events_url":"https://api.github.com/repos/mimobn/StudentManagement/events","forks_url":"https://api.github.com/repos/mimobn/StudentManagement/forks","git_commits_url":"https://api.github.com/repos/mimobn/StudentManagement/git/commits{/sha}","git_refs_url":"https://api.github.com/repos/mimobn/StudentManagement/git/refs{/sha}","git_tags_url":"https://api.github.com/repos/mimobn/StudentManagement/git/tags{/sha}","git_url":"git://github.com/mimobn/StudentManagement.git","issue_comment_url":"https://api.github.com/repos/mimobn/StudentManagement/issues/comments{/number}","issue_events_url":"https://api.github.com/repos/mimobn/StudentManagement/issues/events{/number}","issues_url":"https://api.github.com/repos/mimobn/StudentManagement/issues{/number}","keys_url":"https://api.github.com/repos/mimobn/StudentManagement/keys{/key_id}","labels_url":"https://api.github.com/repos/mimobn/StudentManagement/labels{/name}","languages_url":"https://api.github.com/repos/mimobn/StudentManagement/languages","merges_url":"https://api.github.com/repos/mimobn/StudentManagement/merges","milestones_url":"https://api.github.com/repos/mimobn/StudentManagement/milestones{/number}","notifications_url":"https://api.github.com/repos/mimobn/StudentManagement/notifications{?since,all,participating}","pulls_url":"https://api.github.com/repos/mimobn/StudentManagement/pulls{/number}","releases_url":"https://api.github.com/repos/mimobn/StudentManagement/releases{/id}","ssh_url":"git@github.com:mimobn/StudentManagement.git","stargazers_url":"https://api.github.com/repos/mimobn/StudentManagement/stargazers","statuses_url":"https://api.github.com/repos/mimobn/StudentManagement/statuses/{sha}","subscribers_url":"https://api.github.com/repos/mimobn/StudentManagement/subscribers","subscription_url":"https://api.github.com/repos/mimobn/StudentManagement/subscription","tags_url":"https://api.github.com/repos/mimobn/StudentManagement/tags","teams_url":"https://api.github.com/repos/mimobn/StudentManagement/teams","trees_url":"https://api.github.com/repos/mimobn/StudentManagement/git/trees{/sha}","clone_url":"https://github.com/mimobn/StudentManagement.git","mirror_url":null,"hooks_url":"https://api.github.com/repos/mimobn/StudentManagement/hooks","svn_url":"https://github.com/mimobn/StudentManagement"},"sha":"e15a9dca49754936123cd1f1fccfc1008bba7272","user":{"login":"mimobn","id":112497685,"node_id":"U_kgDOBrSUFQ","avatar_url":"https://avatars.githubusercontent.com/u/112497685?v=4","gravatar_id":"","url":"https://api.github.com/users/mimobn","html_url":"https://github.com/mimobn","followers_url":"https://api.github.com/users/mimobn/followers","following_url":"https://api.github.com/users/mimobn/following{/other_user}","gists_url":"https://api.github.com/users/mimobn/gists{/gist_id}","starred_url":"https://api.github.com/users/mimobn/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mimobn/subscriptions","organizations_url":"https://api.github.com/users/mimobn/orgs","repos_url":"https://api.github.com/users/mimobn/repos","events_url":"https://api.github.com/users/mimobn/events{/privacy}","received_events_url":"https://api.github.com/users/mimobn/received_events","type":"User","user_view_type":"public","site_admin":false}},"_links":{"comments":{"href":"https://api.github.com/repos/mimobn/StudentManagement/issues/3/comments"},"commits":{"href":"https://api.github.com/repos/mimobn/StudentManagement/pulls/3/commits"},"statuses":{"href":"https://api.github.com/repos/mimobn/StudentManagement/statuses/9c98a4d56dd1d87197483664ec17e99524ceca5d"},"html":{"href":"https://github.com/mimobn/StudentManagement/pull/3"},"issue":{"href":"https://api.github.com/repos/mimobn/StudentManagement/issues/3"},"review_comments":{"href":"https://api.github.com/repos/mimobn/StudentManagement/pulls/3/comments"},"review_comment":{"href":"https://api.github.com/repos/mimobn/StudentManagement/pulls/comments{/number}"},"self":{"href":"https://api.github.com/repos/mimobn/StudentManagement/pulls/3"}},"author_association":"OWNER","auto_merge":null,"draft":false,"merged":false,"mergeable":false,"rebaseable":false,"mergeable_state":"dirty","merged_by":null,"comments":0,"review_comments":0,"maintainer_can_modify":false,"commits":1,"additions":1,"deletions":1,"changed_files":1}
+$ git switch feature/title-b
+Your branch is up to date with 'origin/feature/title-b'.
+Switched to branch 'feature/title-b'
+
+$ git merge main -m Integrate main before resolving the heading conflict
+Auto-merging index.html
+CONFLICT (content): Merge conflict in index.html
+Automatic merge failed; fix conflicts and then commit the result.
+
+$ git status
+On branch feature/title-b
+Your branch is up to date with 'origin/feature/title-b'.
+
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+	both modified:   index.html
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+$ git diff --cc
+diff --cc index.html
+index 1f80b68,903530f..0000000
+--- a/index.html
++++ b/index.html
+@@@ -2,7 -2,7 +2,11 @@@
+  <html lang="en">
+  <head><meta charset="utf-8"><title>Student Management</title></head>
+  <body>
+++<<<<<<< HEAD
+ +  <h1>University Student Portal</h1>
+++=======
++   <h1>Student Information System</h1>
+++>>>>>>> main
+    <p>Register and manage student information in one place.</p>
+    <section id="registration">
+      <h2>Student registration</h2>
+
+$ git add index.html
+
+$ git commit -m Resolve the heading conflict as University Student Portal
+[feature/title-b 51cb7c6] Resolve the heading conflict as University Student Portal
+
+$ git -c credential.helper= -c credential.helper=!gh auth git-credential push origin feature/title-b
+To https://github.com/mimobn/StudentManagement.git
+   9c98a4d..51cb7c6  feature/title-b -> feature/title-b
+
+$ gh pr merge 3 --repo mimobn/StudentManagement --merge
+
+$ git switch main
+Your branch is up to date with 'origin/main'.
+Switched to branch 'main'
+
+$ git pull --ff-only origin main
+From https://github.com/mimobn/StudentManagement
+ * branch            main       -> FETCH_HEAD
+   e15a9dc..7cba8dc  main       -> origin/main
+Updating e15a9dc..7cba8dc
+Fast-forward
+ index.html | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+$ git pull --ff-only origin main
+From https://github.com/mimobn/StudentManagement
+ * branch            main       -> FETCH_HEAD
+   01c0811..7cba8dc  main       -> origin/main
+Updating 01c0811..7cba8dc
+Fast-forward
+ index.html | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+$ git log --oneline --graph --all
+*   7cba8dc Merge pull request #3 from mimobn/feature/title-b
+|\  
+| *   51cb7c6 Resolve the heading conflict as University Student Portal
+| |\  
+| |/  
+|/|   
+* |   e15a9dc Merge pull request #2 from mimobn/feature/title-a
+|\ \  
+| * | 10c5b7d Change application heading to student information
+* | |   01c0811 Merge pull request #1 from mimobn/feature/contact-section
+|\ \ \  
+| |/ /  
+|/| |   
+| * | f4425aa Make the demonstration contact address accessible
+| * | 6ac184e Add a student support contact section
+|/ /  
+| * 9c98a4d Change application heading to university student portal
+|/  
+* f32a634 Revert "Hide the heading for the shared undo exercise"
+* 96ebb16 Hide the heading for the shared undo exercise
+* 8b3b685 Explain fast-forward branch integration
+* 5d53d03 Explain temporary work storage with stash
+* 773b4ae Explain how to undo an unpublished experiment
+* ce4dcd4 Document focused commits and staged review
+*   ed39fcf Merge the student registration feature
+|\  
+| * b1ef5d0 Add a student registration form
+* | b36cd5d Document the registration feature
+|/  
+* 498c44f Clarify the student management welcome message
+* fdec0f7 Create initial student management structure
+
+$ git switch -c docs/lab-answers
+Switched to a new branch 'docs/lab-answers'
+
+$ git add ANSWERS.md .github/workflows/hello.yml
+
+$ git commit -m Document all TP5 answers and add the hello workflow
+[docs/lab-answers 99b9876] Document all TP5 answers and add the hello workflow
+ 2 files changed, 87 insertions(+)
+ create mode 100644 .github/workflows/hello.yml
+ create mode 100644 ANSWERS.md
+
+$ git -c credential.helper= -c credential.helper=!gh auth git-credential push -u origin docs/lab-answers
+remote: 
+remote: Create a pull request for 'docs/lab-answers' on GitHub by visiting:        
+remote:      https://github.com/mimobn/StudentManagement/pull/new/docs/lab-answers        
+remote: 
+branch 'docs/lab-answers' set up to track 'origin/docs/lab-answers'.
+To https://github.com/mimobn/StudentManagement.git
+ * [new branch]      docs/lab-answers -> docs/lab-answers
+
+$ gh pr create --repo mimobn/StudentManagement --base main --head docs/lab-answers --title Document TP5 answers and demonstrate GitHub Actions --body-file H:\noussour-s9\devops\TP\TP5\evidence\answers-pr-body.md
+https://github.com/mimobn/StudentManagement/pull/4
+
+$ gh pr merge 4 --repo mimobn/StudentManagement --merge
+
+$ git switch main
+Your branch is up to date with 'origin/main'.
+Switched to branch 'main'
+
+$ git pull --ff-only origin main
+From https://github.com/mimobn/StudentManagement
+ * branch            main       -> FETCH_HEAD
+   7cba8dc..123e040  main       -> origin/main
+Updating 7cba8dc..123e040
+Fast-forward
+ .github/workflows/hello.yml |  8 +++++
+ ANSWERS.md                  | 79 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 87 insertions(+)
+ create mode 100644 .github/workflows/hello.yml
+ create mode 100644 ANSWERS.md
+
+$ git tag -a v1.0.0 -m Release StudentManagement 1.0.0
+
+$ git -c credential.helper= -c credential.helper=!gh auth git-credential push origin v1.0.0
+To https://github.com/mimobn/StudentManagement.git
+ * [new tag]         v1.0.0 -> v1.0.0
+
+$ gh release create v1.0.0 --repo mimobn/StudentManagement --verify-tag --title StudentManagement v1.0.0 --notes-file H:\noussour-s9\devops\TP\TP5\evidence\release-notes.md
+https://github.com/mimobn/StudentManagement/releases/tag/v1.0.0
+
+$ git pull --ff-only origin main
+From https://github.com/mimobn/StudentManagement
+ * branch            main       -> FETCH_HEAD
+   7cba8dc..123e040  main       -> origin/main
+Updating 7cba8dc..123e040
+Fast-forward
+ .github/workflows/hello.yml |  8 +++++
+ ANSWERS.md                  | 79 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 87 insertions(+)
+ create mode 100644 .github/workflows/hello.yml
+ create mode 100644 ANSWERS.md
+
+$ gh pr list --repo mimobn/StudentManagement --state all --json number,title,state,url,mergeCommit,author
+[{"author":{"id":"U_kgDOBrSUFQ","is_bot":false,"login":"mimobn","name":""},"mergeCommit":{"oid":"123e04084ead89549ec790d7ee28ee53c62f2a5a"},"number":4,"state":"MERGED","title":"Document TP5 answers and demonstrate GitHub Actions","url":"https://github.com/mimobn/StudentManagement/pull/4"},{"author":{"id":"U_kgDOBrSUFQ","is_bot":false,"login":"mimobn","name":""},"mergeCommit":{"oid":"7cba8dc6eeeac79bd94ec998911da57dd82130b7"},"number":3,"state":"MERGED","title":"Resolve the competing application headings","url":"https://github.com/mimobn/StudentManagement/pull/3"},{"author":{"id":"U_kgDOBrSUFQ","is_bot":false,"login":"mimobn","name":""},"mergeCommit":{"oid":"e15a9dca49754936123cd1f1fccfc1008bba7272"},"number":2,"state":"MERGED","title":"Change the heading to Student Information System","url":"https://github.com/mimobn/StudentManagement/pull/2"},{"author":{"id":"U_kgDOBrSUFQ","is_bot":false,"login":"mimobn","name":""},"mergeCommit":{"oid":"01c0811be158fe4a240fd4926791129d680fcbbd"},"number":1,"state":"MERGED","title":"Add a student support contact section","url":"https://github.com/mimobn/StudentManagement/pull/1"}]
+
+$ gh run list --repo mimobn/StudentManagement --limit 10 --json databaseId,headSha,event,status,conclusion,url,headBranch
+[{"conclusion":"","databaseId":44085325132,"event":"push","headBranch":"v1.0.0","headSha":"123e04084ead89549ec790d7ee28ee53c62f2a5a","status":"in_progress","url":"https://github.com/mimobn/StudentManagement/actions/runs/44085325132"},{"conclusion":"success","databaseId":44085306522,"event":"push","headBranch":"main","headSha":"123e04084ead89549ec790d7ee28ee53c62f2a5a","status":"completed","url":"https://github.com/mimobn/StudentManagement/actions/runs/44085306522"},{"conclusion":"success","databaseId":44085285656,"event":"push","headBranch":"docs/lab-answers","headSha":"99b9876b54873b2fcf3a7cf88c04603b59bdc259","status":"completed","url":"https://github.com/mimobn/StudentManagement/actions/runs/44085285656"}]
+
+$ gh release view v1.0.0 --repo mimobn/StudentManagement --json tagName,name,url,publishedAt,body
+{"body":"First teaching release for USTHB TP5: Git and GitHub.\r\n\r\n- Static student registration form and accessible demonstration contact link.\r\n- Three-way registration merge, shared revert and recorded heading-conflict resolution.\r\n- ANSWERS.md covers all worksheet questions and the five undo scenarios.\r\n- Optional hello GitHub Actions workflow.\r\n\r\nSolo exercise using one GitHub account: PR comments and fixes are recorded; no independent review approval is claimed.\r\n","name":"StudentManagement v1.0.0","publishedAt":"2026-11-17T12:40:19Z","tagName":"v1.0.0","url":"https://github.com/mimobn/StudentManagement/releases/tag/v1.0.0"}
+
+$ gh api repos/mimobn/StudentManagement/branches/main/protection
+{"url":"https://api.github.com/repos/mimobn/StudentManagement/branches/main/protection","required_pull_request_reviews":{"url":"https://api.github.com/repos/mimobn/StudentManagement/branches/main/protection/required_pull_request_reviews","dismiss_stale_reviews":true,"require_code_owner_reviews":false,"require_last_push_approval":false,"required_approving_review_count":0},"required_signatures":{"url":"https://api.github.com/repos/mimobn/StudentManagement/branches/main/protection/required_signatures","enabled":false},"enforce_admins":{"url":"https://api.github.com/repos/mimobn/StudentManagement/branches/main/protection/enforce_admins","enabled":true},"required_linear_history":{"enabled":false},"allow_force_pushes":{"enabled":false},"allow_deletions":{"enabled":false},"block_creations":{"enabled":false},"required_conversation_resolution":{"enabled":false},"lock_branch":{"enabled":false},"allow_fork_syncing":{"enabled":false}}
+$ gh api repos/mimobn/StudentManagement/pulls/1/comments
+[{"url":"https://api.github.com/repos/mimobn/StudentManagement/pulls/comments/4599642865","pull_request_review_id":5938504400,"id":4599642865,"node_id":"PRRC_kwDOVxr-Q88AAAABEij68Q","diff_hunk":"@@ -14,5 +14,9 @@ <h2>Student registration</h2>\n       <button type=\"submit\">Register</button>\n     </form>\n   </section>\n+  <section id=\"contact\">\n+    <h2>Contact</h2>\n+    <p>student-support@example.invalid</p>\n+  </section>\n </body>","path":"index.html","commit_id":"f4425aaec8508d6e2312362062dd15e8065ff551","original_commit_id":"6ac184e7e32fa01072c89f1e8b5f08d3e7f5e16f","user":{"login":"mimobn","id":112497685,"node_id":"U_kgDOBrSUFQ","avatar_url":"https://avatars.githubusercontent.com/u/112497685?v=4","gravatar_id":"","url":"https://api.github.com/users/mimobn","html_url":"https://github.com/mimobn","followers_url":"https://api.github.com/users/mimobn/followers","following_url":"https://api.github.com/users/mimobn/following{/other_user}","gists_url":"https://api.github.com/users/mimobn/gists{/gist_id}","starred_url":"https://api.github.com/users/mimobn/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mimobn/subscriptions","organizations_url":"https://api.github.com/users/mimobn/orgs","repos_url":"https://api.github.com/users/mimobn/repos","events_url":"https://api.github.com/users/mimobn/events{/privacy}","received_events_url":"https://api.github.com/users/mimobn/received_events","type":"User","user_view_type":"public","site_admin":false},"body":"Wrap this address in a mailto link and identify it as a demonstration address so it is accessible and cannot be mistaken for real support.","created_at":"2026-11-17T12:37:15Z","updated_at":"2026-11-17T12:37:15Z","html_url":"https://github.com/mimobn/StudentManagement/pull/1#discussion_r4599642865","pull_request_url":"https://api.github.com/repos/mimobn/StudentManagement/pulls/1","_links":{"self":{"href":"https://api.github.com/repos/mimobn/StudentManagement/pulls/comments/4599642865"},"html":{"href":"https://github.com/mimobn/StudentManagement/pull/1#discussion_r4599642865"},"pull_request":{"href":"https://api.github.com/repos/mimobn/StudentManagement/pulls/1"}},"reactions":{"url":"https://api.github.com/repos/mimobn/StudentManagement/pulls/comments/4599642865/reactions","total_count":0,"+1":0,"-1":0,"laugh":0,"hooray":0,"confused":0,"heart":0,"rocket":0,"eyes":0},"start_line":null,"original_start_line":null,"start_side":null,"line":21,"original_line":21,"side":"RIGHT","author_association":"OWNER","original_position":8,"position":8,"subject_type":"line","is_copilot_code_review":false,"copilot_code_review_sources":[]}]
+$ git log --oneline --graph --all
+*   123e040 Merge pull request #4 from mimobn/docs/lab-answers
+|\  
+| * 99b9876 Document all TP5 answers and add the hello workflow
+|/  
+*   7cba8dc Merge pull request #3 from mimobn/feature/title-b
+|\  
+| *   51cb7c6 Resolve the heading conflict as University Student Portal
+| |\  
+| |/  
+|/|   
+* |   e15a9dc Merge pull request #2 from mimobn/feature/title-a
+|\ \  
+| * | 10c5b7d Change application heading to student information
+* | |   01c0811 Merge pull request #1 from mimobn/feature/contact-section
+|\ \ \  
+| |/ /  
+|/| |   
+| * | f4425aa Make the demonstration contact address accessible
+| * | 6ac184e Add a student support contact section
+|/ /  
+| * 9c98a4d Change application heading to university student portal
+|/  
+* f32a634 Revert "Hide the heading for the shared undo exercise"
+* 96ebb16 Hide the heading for the shared undo exercise
+* 8b3b685 Explain fast-forward branch integration
+* 5d53d03 Explain temporary work storage with stash
+* 773b4ae Explain how to undo an unpublished experiment
+* ce4dcd4 Document focused commits and staged review
+*   ed39fcf Merge the student registration feature
+|\  
+| * b1ef5d0 Add a student registration form
+* | b36cd5d Document the registration feature
+|/  
+* 498c44f Clarify the student management welcome message
+* fdec0f7 Create initial student management structure
+
+$ git log --oneline
+123e040 Merge pull request #4 from mimobn/docs/lab-answers
+99b9876 Document all TP5 answers and add the hello workflow
+7cba8dc Merge pull request #3 from mimobn/feature/title-b
+51cb7c6 Resolve the heading conflict as University Student Portal
+e15a9dc Merge pull request #2 from mimobn/feature/title-a
+01c0811 Merge pull request #1 from mimobn/feature/contact-section
+f4425aa Make the demonstration contact address accessible
+9c98a4d Change application heading to university student portal
+10c5b7d Change application heading to student information
+6ac184e Add a student support contact section
+f32a634 Revert "Hide the heading for the shared undo exercise"
+96ebb16 Hide the heading for the shared undo exercise
+8b3b685 Explain fast-forward branch integration
+5d53d03 Explain temporary work storage with stash
+773b4ae Explain how to undo an unpublished experiment
+ce4dcd4 Document focused commits and staged review
+ed39fcf Merge the student registration feature
+b36cd5d Document the registration feature
+b1ef5d0 Add a student registration form
+498c44f Clarify the student management welcome message
+fdec0f7 Create initial student management structure
+
+$ git show v1.0.0 --no-patch
+tag v1.0.0
+Tagger: mimobn <mimobn2004@gmail.com>
+Date:   Tue Nov 17 13:40:12 2026 +0100
+
+Release StudentManagement 1.0.0
+
+commit 123e04084ead89549ec790d7ee28ee53c62f2a5a
+Merge: 7cba8dc 99b9876
+Author: mimobn <112497685+mimobn@users.noreply.github.com>
+Date:   Tue Nov 17 13:40:09 2026 +0100
+
+    Merge pull request #4 from mimobn/docs/lab-answers
+    
+    Document TP5 answers and demonstrate GitHub Actions
+
+$ git status --short
+
+$ git fsck --no-dangling
+
+$ git bundle create H:\noussour-s9\devops\TP\TP5\StudentManagement.bundle --all
+
+$ git bundle verify H:\noussour-s9\devops\TP\TP5\StudentManagement.bundle
+The bundle contains these 12 refs:
+99b9876b54873b2fcf3a7cf88c04603b59bdc259 refs/heads/docs/lab-answers
+f4425aaec8508d6e2312362062dd15e8065ff551 refs/heads/feature/contact-section
+10c5b7d23caf474cf8b1c610ec2a3de25e900fdf refs/heads/feature/title-a
+51cb7c6be78cbd39ec83e7b78e5a465a4ef3ab95 refs/heads/feature/title-b
+123e04084ead89549ec790d7ee28ee53c62f2a5a refs/heads/main
+99b9876b54873b2fcf3a7cf88c04603b59bdc259 refs/remotes/origin/docs/lab-answers
+f4425aaec8508d6e2312362062dd15e8065ff551 refs/remotes/origin/feature/contact-section
+10c5b7d23caf474cf8b1c610ec2a3de25e900fdf refs/remotes/origin/feature/title-a
+51cb7c6be78cbd39ec83e7b78e5a465a4ef3ab95 refs/remotes/origin/feature/title-b
+123e04084ead89549ec790d7ee28ee53c62f2a5a refs/remotes/origin/main
+5117a555ce27a4a8fd295825877756cd9d9f22c8 refs/tags/v1.0.0
+123e04084ead89549ec790d7ee28ee53c62f2a5a HEAD
+The bundle records a complete history.
+The bundle uses this hash algorithm: sha1
+H:/noussour-s9/devops/TP/TP5/StudentManagement.bundle is okay
+
+$ gh run list --repo mimobn/StudentManagement --limit 10 --json databaseId,headSha,event,status,conclusion,url,headBranch
+[{"conclusion":"success","databaseId":44085325132,"event":"push","headBranch":"v1.0.0","headSha":"123e04084ead89549ec790d7ee28ee53c62f2a5a","status":"completed","url":"https://github.com/mimobn/StudentManagement/actions/runs/44085325132"},{"conclusion":"success","databaseId":44085306522,"event":"push","headBranch":"main","headSha":"123e04084ead89549ec790d7ee28ee53c62f2a5a","status":"completed","url":"https://github.com/mimobn/StudentManagement/actions/runs/44085306522"},{"conclusion":"success","databaseId":44085285656,"event":"push","headBranch":"docs/lab-answers","headSha":"99b9876b54873b2fcf3a7cf88c04603b59bdc259","status":"completed","url":"https://github.com/mimobn/StudentManagement/actions/runs/44085285656"}]
+
+$ gh run view 44085306522 --repo mimobn/StudentManagement --log
+hello	Set up job	﻿2026-11-17T12:40:16.0403973Z Current runner version: '2.338.2'
+hello	Set up job	2026-11-17T12:40:16.0425845Z ##[group]Runner Image Provisioner
+hello	Set up job	2026-11-17T12:40:16.0426587Z Hosted Compute Agent
+hello	Set up job	2026-11-17T12:40:16.0427112Z Version: 20261103.629
+hello	Set up job	2026-11-17T12:40:16.0427678Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+hello	Set up job	2026-11-17T12:40:16.0428267Z Build Date: 2026-11-03T17:26:59Z
+hello	Set up job	2026-11-17T12:40:16.0428854Z Worker ID: {6730547d-ef28-4850-80fb-09a301060b82}
+hello	Set up job	2026-11-17T12:40:16.0429732Z Region: westcentralus
+hello	Set up job	2026-11-17T12:40:16.0430268Z Cloud: Azure
+hello	Set up job	2026-11-17T12:40:16.0430718Z ##[endgroup]
+hello	Set up job	2026-11-17T12:40:16.0431894Z ##[group]Operating System
+hello	Set up job	2026-11-17T12:40:16.0432462Z Ubuntu
+hello	Set up job	2026-11-17T12:40:16.0432895Z 26.04.1
+hello	Set up job	2026-11-17T12:40:16.0433302Z LTS
+hello	Set up job	2026-11-17T12:40:16.0433808Z ##[endgroup]
+hello	Set up job	2026-11-17T12:40:16.0434272Z ##[group]Runner Image
+hello	Set up job	2026-11-17T12:40:16.0434785Z Image: ubuntu-26.04
+hello	Set up job	2026-11-17T12:40:16.0435296Z Version: 20261111.196.1
+hello	Set up job	2026-11-17T12:40:16.0436172Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261111.196/images/ubuntu/Ubuntu2604-Readme.md
+hello	Set up job	2026-11-17T12:40:16.0437559Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261111.196
+hello	Set up job	2026-11-17T12:40:16.0438408Z ##[endgroup]
+hello	Set up job	2026-11-17T12:40:16.0439619Z ##[group]GITHUB_TOKEN Permissions
+hello	Set up job	2026-11-17T12:40:16.0441522Z Contents: read
+hello	Set up job	2026-11-17T12:40:16.0442031Z Metadata: read
+hello	Set up job	2026-11-17T12:40:16.0442463Z Packages: read
+hello	Set up job	2026-11-17T12:40:16.0443288Z ##[endgroup]
+hello	Set up job	2026-11-17T12:40:16.0444968Z Secret source: Actions
+hello	Set up job	2026-11-17T12:40:16.0445804Z Cache mode: write
+hello	Set up job	2026-11-17T12:40:16.0446365Z Prepare workflow directory
+hello	Set up job	2026-11-17T12:40:16.0767632Z Prepare all required actions
+hello	Set up job	2026-11-17T12:40:16.0806068Z Getting action download info
+hello	Set up job	2026-11-17T12:40:16.3207287Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+hello	Set up job	2026-11-17T12:40:16.4804627Z Complete job name: hello
+hello	Run actions/checkout@v4	﻿2026-11-17T12:40:16.5587816Z ##[group]Run actions/checkout@v4
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.5588515Z with:
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.5588897Z   repository: mimobn/StudentManagement
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.5592200Z   token: ***
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.5592560Z   ssh-strict: true
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.5592923Z   ssh-user: git
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.5593288Z   persist-credentials: true
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.5593690Z   clean: true
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.5594053Z   sparse-checkout-cone-mode: true
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.5594473Z   fetch-depth: 1
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.5594826Z   fetch-tags: false
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.5595186Z   show-progress: true
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.5595549Z   lfs: false
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.5595891Z   submodules: false
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.5596257Z   set-safe-directory: true
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.5596671Z   allow-unsafe-pr-checkout: false
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.5597319Z ##[endgroup]
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7366969Z Syncing repository: mimobn/StudentManagement
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7368427Z ##[group]Getting Git version info
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7369085Z Working directory is '/home/runner/work/StudentManagement/StudentManagement'
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7444990Z [command]/usr/bin/git version
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7484204Z git version 2.56.1
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7499719Z ##[endgroup]
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7511990Z Temporarily overriding HOME='/home/runner/work/_temp/c528bf06-3c33-414e-a403-e0ba6b4f0a0a' before making global git config changes
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7513768Z Adding repository directory to the temporary git global config as a safe directory
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7516172Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/StudentManagement/StudentManagement
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7567363Z Deleting the contents of '/home/runner/work/StudentManagement/StudentManagement'
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7570109Z ##[group]Initializing the repository
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7574566Z [command]/usr/bin/git init /home/runner/work/StudentManagement/StudentManagement
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7643905Z hint: Using 'master' as the name for the initial branch. This default branch name
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7645396Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7646989Z hint: to use in all of your new repositories, which will suppress this warning,
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7648027Z hint: call:
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7648890Z hint:
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7649793Z hint: 	git config --global init.defaultBranch <name>
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7650678Z hint:
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7651497Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7652749Z hint: 'development'. The just-created branch can be renamed via this command:
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7653882Z hint:
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7654518Z hint: 	git branch -m <name>
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7655228Z hint:
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7656100Z hint: Disable this message with "git config set advice.defaultBranchName false"
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7657572Z Initialized empty Git repository in /home/runner/work/StudentManagement/StudentManagement/.git/
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7660507Z [command]/usr/bin/git remote add origin https://github.com/mimobn/StudentManagement
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7718743Z ##[endgroup]
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7720180Z ##[group]Disabling automatic garbage collection
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7721151Z [command]/usr/bin/git config --local gc.auto 0
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7741452Z ##[endgroup]
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7742185Z ##[group]Setting up auth
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7746734Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.7775176Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.8143177Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.8174088Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.8409093Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.8438083Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.8664754Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.8698833Z ##[endgroup]
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.8699990Z ##[group]Fetching the repository
+hello	Run actions/checkout@v4	2026-11-17T12:40:16.8705977Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +123e04084ead89549ec790d7ee28ee53c62f2a5a:refs/remotes/origin/main
+hello	Run actions/checkout@v4	2026-11-17T12:40:17.1906849Z From https://github.com/mimobn/StudentManagement
+hello	Run actions/checkout@v4	2026-11-17T12:40:17.1907830Z  * [new ref]         123e04084ead89549ec790d7ee28ee53c62f2a5a -> origin/main
+hello	Run actions/checkout@v4	2026-11-17T12:40:17.1911237Z ##[endgroup]
+hello	Run actions/checkout@v4	2026-11-17T12:40:17.1911912Z ##[group]Determining the checkout info
+hello	Run actions/checkout@v4	2026-11-17T12:40:17.1913518Z ##[endgroup]
+hello	Run actions/checkout@v4	2026-11-17T12:40:17.1918333Z [command]/usr/bin/git sparse-checkout disable
+hello	Run actions/checkout@v4	2026-11-17T12:40:17.1961288Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+hello	Run actions/checkout@v4	2026-11-17T12:40:17.1986625Z ##[group]Checking out the ref
+hello	Run actions/checkout@v4	2026-11-17T12:40:17.1989944Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+hello	Run actions/checkout@v4	2026-11-17T12:40:17.2044988Z Switched to a new branch 'main'
+hello	Run actions/checkout@v4	2026-11-17T12:40:17.2049515Z branch 'main' set up to track 'origin/main'.
+hello	Run actions/checkout@v4	2026-11-17T12:40:17.2053726Z ##[endgroup]
+hello	Run actions/checkout@v4	2026-11-17T12:40:17.2086628Z [command]/usr/bin/git log -1 --format=%H
+hello	Run actions/checkout@v4	2026-11-17T12:40:17.2107028Z 123e04084ead89549ec790d7ee28ee53c62f2a5a
+hello	Run echo "Hello from CI"	﻿2026-11-17T12:40:17.2305557Z ##[group]Run echo "Hello from CI"
+hello	Run echo "Hello from CI"	2026-11-17T12:40:17.2306146Z ^[[36;1mecho "Hello from CI"^[[0m
+hello	Run echo "Hello from CI"	2026-11-17T12:40:17.2354393Z shell: /usr/bin/bash -e {0}
+hello	Run echo "Hello from CI"	2026-11-17T12:40:17.2354886Z ##[endgroup]
+hello	Run echo "Hello from CI"	2026-11-17T12:40:17.2434152Z Hello from CI
+hello	Post Run actions/checkout@v4	﻿2026-11-17T12:40:17.2556617Z Post job cleanup.
+hello	Post Run actions/checkout@v4	2026-11-17T12:40:17.3263285Z [command]/usr/bin/git version
+hello	Post Run actions/checkout@v4	2026-11-17T12:40:17.3304234Z git version 2.56.1
+hello	Post Run actions/checkout@v4	2026-11-17T12:40:17.3337835Z Temporarily overriding HOME='/home/runner/work/_temp/c407489d-2c28-4615-a7e2-dddf488ef869' before making global git config changes
+hello	Post Run actions/checkout@v4	2026-11-17T12:40:17.3340715Z Adding repository directory to the temporary git global config as a safe directory
+hello	Post Run actions/checkout@v4	2026-11-17T12:40:17.3344467Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/StudentManagement/StudentManagement
+hello	Post Run actions/checkout@v4	2026-11-17T12:40:17.3378242Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+hello	Post Run actions/checkout@v4	2026-11-17T12:40:17.3407712Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+hello	Post Run actions/checkout@v4	2026-11-17T12:40:17.3653645Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+hello	Post Run actions/checkout@v4	2026-11-17T12:40:17.3678111Z http.https://github.com/.extraheader
+hello	Post Run actions/checkout@v4	2026-11-17T12:40:17.3691471Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+hello	Post Run actions/checkout@v4	2026-11-17T12:40:17.3722362Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+hello	Post Run actions/checkout@v4	2026-11-17T12:40:17.3976597Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+hello	Post Run actions/checkout@v4	2026-11-17T12:40:17.4006528Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+hello	Complete job	﻿2026-11-17T12:40:17.4367132Z Cleaning up orphan processes
+hello	Complete job	2026-11-17T12:40:17.4817361Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+
+$ git rev-list --count main
+21
+
+$ git rev-parse main
+123e04084ead89549ec790d7ee28ee53c62f2a5a
+
+$ git ls-remote origin refs/heads/main
+123e04084ead89549ec790d7ee28ee53c62f2a5a	refs/heads/main
+
+$ git cat-file -t v1.0.0
+tag
+
+$ git rev-parse v1.0.0^{}
+123e04084ead89549ec790d7ee28ee53c62f2a5a
+
+$ git show -s --format=%P ed39fcf
+b36cd5de9cbe8fc1c838a20bc101afad4fb69a00 b1ef5d045701c3f814c637bc0f2aba0a271f6c5c
+
+$ git show -s --format=%P 51cb7c6
+9c98a4d56dd1d87197483664ec17e99524ceca5d e15a9dca49754936123cd1f1fccfc1008bba7272
+
+$ git status --porcelain
+
+$ git fsck --no-dangling
+
+$ git bundle verify H:\noussour-s9\devops\TP\TP5\StudentManagement.bundle
+The bundle contains these 12 refs:
+99b9876b54873b2fcf3a7cf88c04603b59bdc259 refs/heads/docs/lab-answers
+f4425aaec8508d6e2312362062dd15e8065ff551 refs/heads/feature/contact-section
+10c5b7d23caf474cf8b1c610ec2a3de25e900fdf refs/heads/feature/title-a
+51cb7c6be78cbd39ec83e7b78e5a465a4ef3ab95 refs/heads/feature/title-b
+123e04084ead89549ec790d7ee28ee53c62f2a5a refs/heads/main
+99b9876b54873b2fcf3a7cf88c04603b59bdc259 refs/remotes/origin/docs/lab-answers
+f4425aaec8508d6e2312362062dd15e8065ff551 refs/remotes/origin/feature/contact-section
+10c5b7d23caf474cf8b1c610ec2a3de25e900fdf refs/remotes/origin/feature/title-a
+51cb7c6be78cbd39ec83e7b78e5a465a4ef3ab95 refs/remotes/origin/feature/title-b
+123e04084ead89549ec790d7ee28ee53c62f2a5a refs/remotes/origin/main
+5117a555ce27a4a8fd295825877756cd9d9f22c8 refs/tags/v1.0.0
+123e04084ead89549ec790d7ee28ee53c62f2a5a HEAD
+The bundle records a complete history.
+The bundle uses this hash algorithm: sha1
+H:/noussour-s9/devops/TP/TP5/StudentManagement.bundle is okay
+
+$ gh release upload v1.0.0 H:\noussour-s9\devops\TP\TP5\rapport.pdf H:\noussour-s9\devops\TP\TP5\TP5-submission.zip --repo mimobn/StudentManagement
+
