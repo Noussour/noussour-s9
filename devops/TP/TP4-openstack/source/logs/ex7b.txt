@@ -1,0 +1,9 @@
+stack@devstack:~$ ssh -i ~/.ssh/openstack_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=20 cirros@172.24.4.2 'lsblk; sudo dmesg | grep -i vdb | tail -3'
+Warning: Permanently added '172.24.4.2' (ED25519) to the list of known hosts.
+NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+vda     252:0    0    1G  0 disk 
+|-vda1  252:1    0 1015M  0 part /
+`-vda15 252:15   0    8M  0 part 
+vdb     252:16   0    1G  0 disk 
+[  138.687725] virtio_blk virtio5: [vdb] 2097152 512-byte logical blocks (1.07 GB/1.00 GiB)
+

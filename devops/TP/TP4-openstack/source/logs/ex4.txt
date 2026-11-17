@@ -1,0 +1,102 @@
+stack@devstack:~$ ssh-keygen -t ed25519 -f ~/.ssh/openstack_key -N "" | grep -v -i -E "randomart|^[|+]"
+Created directory '/opt/stack/.ssh'.
+Generating public/private ed25519 key pair.
+Your identification has been saved in /opt/stack/.ssh/openstack_key
+Your public key has been saved in /opt/stack/.ssh/openstack_key.pub
+The key fingerprint is:
+SHA256:rjEZ5g7wH6SXFkzBQ38RKtXIT1LSh5R8OkgSTsYKGs4 stack@ip-172-31-19-63
+
+stack@devstack:~$ openstack keypair create --public-key /opt/stack/.ssh/openstack_key.pub student-key
++-------------+-------------------------------------------------+
+| Field       | Value                                           |
++-------------+-------------------------------------------------+
+| created_at  | None                                            |
+| fingerprint | cc:fb:34:0a:e4:fe:e8:8a:31:66:80:b2:ce:6c:5d:a3 |
+| id          | student-key                                     |
+| is_deleted  | None                                            |
+| name        | student-key                                     |
+| type        | ssh                                             |
+| user_id     | 65113b46477e4b01abae44dd13b5fb23                |
++-------------+-------------------------------------------------+
+
+stack@devstack:~$ openstack keypair list
++-------------+-------------------------------------------------+------+
+| Name        | Fingerprint                                     | Type |
++-------------+-------------------------------------------------+------+
+| student-key | cc:fb:34:0a:e4:fe:e8:8a:31:66:80:b2:ce:6c:5d:a3 | ssh  |
++-------------+-------------------------------------------------+------+
+
+stack@devstack:~$ openstack security group create student-security
++-----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Field           | Value                                                                                                                                                                        |
++-----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| created_at      | 2026-11-17T12:23:08Z                                                                                                                                                         |
+| description     | student-security                                                                                                                                                             |
+| id              | 707acaff-b2fa-4d65-b19e-34938f26bdc1                                                                                                                                         |
+| is_shared       | False                                                                                                                                                                        |
+| name            | student-security                                                                                                                                                             |
+| project_id      | d62cc16c9a514011b1a706dfa0b5e7d5                                                                                                                                             |
+| revision_number | 1                                                                                                                                                                            |
+| rules           | created_at='2026-11-17T12:23:08Z', direction='egress', ethertype='IPv6', id='30e38bda-ebcc-461f-be12-97bd2d275add', standard_attr_id='46', updated_at='2026-11-17T12:23:08Z' |
+|                 | created_at='2026-11-17T12:23:08Z', direction='egress', ethertype='IPv4', id='524b58d4-f0d4-4253-829d-fa42fa281300', standard_attr_id='45', updated_at='2026-11-17T12:23:08Z' |
+| stateful        | True                                                                                                                                                                         |
+| tags            | []                                                                                                                                                                           |
+| updated_at      | 2026-11-17T12:23:08Z                                                                                                                                                         |
++-----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+stack@devstack:~$ openstack security group rule create --proto tcp --dst-port 22 student-security
++-------------------------+--------------------------------------+
+| Field                   | Value                                |
++-------------------------+--------------------------------------+
+| belongs_to_default_sg   | False                                |
+| created_at              | 2026-11-17T12:23:09Z                 |
+| description             |                                      |
+| direction               | ingress                              |
+| ether_type              | IPv4                                 |
+| id                      | a1be8e4f-be2a-4950-be1a-634d33a9a45b |
+| normalized_cidr         | 0.0.0.0/0                            |
+| port_range_max          | 22                                   |
+| port_range_min          | 22                                   |
+| project_id              | d62cc16c9a514011b1a706dfa0b5e7d5     |
+| protocol                | tcp                                  |
+| remote_address_group_id | None                                 |
+| remote_group_id         | None                                 |
+| remote_ip_prefix        | 0.0.0.0/0                            |
+| revision_number         | 0                                    |
+| security_group_id       | 707acaff-b2fa-4d65-b19e-34938f26bdc1 |
+| updated_at              | 2026-11-17T12:23:09Z                 |
++-------------------------+--------------------------------------+
+
+stack@devstack:~$ openstack security group rule create --proto icmp student-security
++-------------------------+--------------------------------------+
+| Field                   | Value                                |
++-------------------------+--------------------------------------+
+| belongs_to_default_sg   | False                                |
+| created_at              | 2026-11-17T12:23:11Z                 |
+| description             |                                      |
+| direction               | ingress                              |
+| ether_type              | IPv4                                 |
+| id                      | 5eeb6250-14cd-4c73-bf0f-6346d9347217 |
+| normalized_cidr         | 0.0.0.0/0                            |
+| port_range_max          | None                                 |
+| port_range_min          | None                                 |
+| project_id              | d62cc16c9a514011b1a706dfa0b5e7d5     |
+| protocol                | icmp                                 |
+| remote_address_group_id | None                                 |
+| remote_group_id         | None                                 |
+| remote_ip_prefix        | 0.0.0.0/0                            |
+| revision_number         | 0                                    |
+| security_group_id       | 707acaff-b2fa-4d65-b19e-34938f26bdc1 |
+| updated_at              | 2026-11-17T12:23:11Z                 |
++-------------------------+--------------------------------------+
+
+stack@devstack:~$ openstack security group rule list student-security
++--------------------------------------+-------------+-----------+-----------+------------+-----------+-----------------------+----------------------+
+| ID                                   | IP Protocol | Ethertype | IP Range  | Port Range | Direction | Remote Security Group | Remote Address Group |
++--------------------------------------+-------------+-----------+-----------+------------+-----------+-----------------------+----------------------+
+| 30e38bda-ebcc-461f-be12-97bd2d275add | None        | IPv6      | ::/0      |            | egress    | None                  | None                 |
+| 524b58d4-f0d4-4253-829d-fa42fa281300 | None        | IPv4      | 0.0.0.0/0 |            | egress    | None                  | None                 |
+| 5eeb6250-14cd-4c73-bf0f-6346d9347217 | icmp        | IPv4      | 0.0.0.0/0 |            | ingress   | None                  | None                 |
+| a1be8e4f-be2a-4950-be1a-634d33a9a45b | tcp         | IPv4      | 0.0.0.0/0 | 22:22      | ingress   | None                  | None                 |
++--------------------------------------+-------------+-----------+-----------+------------+-----------+-----------------------+----------------------+
+

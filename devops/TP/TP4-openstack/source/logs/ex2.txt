@@ -1,0 +1,73 @@
+stack@devstack:~$ openstack image list
++--------------------------------------+--------------------------+--------+
+| ID                                   | Name                     | Status |
++--------------------------------------+--------------------------+--------+
+| b7c37764-68fe-4551-8702-adec007fdf89 | cirros-0.6.3-x86_64-disk | active |
++--------------------------------------+--------------------------+--------+
+
+stack@devstack:~$ openstack image show cirros-0.6.3-x86_64-disk -c name -c disk_format -c container_format -c size -c status
++------------------+--------------------------+
+| Field            | Value                    |
++------------------+--------------------------+
+| container_format | bare                     |
+| disk_format      | qcow2                    |
+| name             | cirros-0.6.3-x86_64-disk |
+| size             | 21692416                 |
+| status           | active                   |
++------------------+--------------------------+
+
+stack@devstack:~$ openstack flavor list
++----+-----------+-------+------+-----------+-------+-----------+
+| ID | Name      |   RAM | Disk | Ephemeral | VCPUs | Is Public |
++----+-----------+-------+------+-----------+-------+-----------+
+| 1  | m1.tiny   |   512 |    1 |         0 |     1 | True      |
+| 2  | m1.small  |  2048 |   20 |         0 |     1 | True      |
+| 3  | m1.medium |  4096 |   40 |         0 |     2 | True      |
+| 4  | m1.large  |  8192 |   80 |         0 |     4 | True      |
+| 42 | m1.nano   |   192 |    1 |         0 |     1 | True      |
+| 5  | m1.xlarge | 16384 |  160 |         0 |     8 | True      |
+| 84 | m1.micro  |   256 |    1 |         0 |     1 | True      |
+| c1 | cirros256 |   256 |    1 |         0 |     1 | True      |
+| d1 | ds512M    |   512 |    5 |         0 |     1 | True      |
+| d2 | ds1G      |  1024 |   10 |         0 |     1 | True      |
+| d3 | ds2G      |  2048 |   10 |         0 |     2 | True      |
+| d4 | ds4G      |  4096 |   20 |         0 |     4 | True      |
++----+-----------+-------+------+-----------+-------+-----------+
+
+stack@devstack:~$ openstack flavor create student.small --vcpus 1 --ram 1024 --disk 5
++----------------------------+--------------------------------------+
+| Field                      | Value                                |
++----------------------------+--------------------------------------+
+| OS-FLV-DISABLED:disabled   | False                                |
+| OS-FLV-EXT-DATA:ephemeral  | 0                                    |
+| description                | None                                 |
+| disk                       | 5                                    |
+| id                         | 5751f6a7-8b03-408b-8c8e-47beb4680ae3 |
+| name                       | student.small                        |
+| os-flavor-access:is_public | True                                 |
+| properties                 |                                      |
+| ram                        | 1024                                 |
+| rxtx_factor                | 1.0                                  |
+| swap                       | 0                                    |
+| vcpus                      | 1                                    |
++----------------------------+--------------------------------------+
+
+stack@devstack:~$ openstack flavor show student.small
++----------------------------+--------------------------------------+
+| Field                      | Value                                |
++----------------------------+--------------------------------------+
+| OS-FLV-DISABLED:disabled   | False                                |
+| OS-FLV-EXT-DATA:ephemeral  | 0                                    |
+| access_project_ids         | None                                 |
+| description                | None                                 |
+| disk                       | 5                                    |
+| id                         | 5751f6a7-8b03-408b-8c8e-47beb4680ae3 |
+| name                       | student.small                        |
+| os-flavor-access:is_public | True                                 |
+| properties                 |                                      |
+| ram                        | 1024                                 |
+| rxtx_factor                | 1.0                                  |
+| swap                       | 0                                    |
+| vcpus                      | 1                                    |
++----------------------------+--------------------------------------+
+

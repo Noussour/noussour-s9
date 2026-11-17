@@ -1,0 +1,204 @@
+stack@devstack:~$ openstack image list
++--------------------------------------+--------------------------+--------+
+| ID                                   | Name                     | Status |
++--------------------------------------+--------------------------+--------+
+| b7c37764-68fe-4551-8702-adec007fdf89 | cirros-0.6.3-x86_64-disk | active |
++--------------------------------------+--------------------------+--------+
+
+stack@devstack:~$ openstack flavor list
++--------------------------------------+---------------+-------+------+-----------+-------+-----------+
+| ID                                   | Name          |   RAM | Disk | Ephemeral | VCPUs | Is Public |
++--------------------------------------+---------------+-------+------+-----------+-------+-----------+
+| 1                                    | m1.tiny       |   512 |    1 |         0 |     1 | True      |
+| 2                                    | m1.small      |  2048 |   20 |         0 |     1 | True      |
+| 3                                    | m1.medium     |  4096 |   40 |         0 |     2 | True      |
+| 4                                    | m1.large      |  8192 |   80 |         0 |     4 | True      |
+| 42                                   | m1.nano       |   192 |    1 |         0 |     1 | True      |
+| 5                                    | m1.xlarge     | 16384 |  160 |         0 |     8 | True      |
+| 5751f6a7-8b03-408b-8c8e-47beb4680ae3 | student.small |  1024 |    5 |         0 |     1 | True      |
+| 84                                   | m1.micro      |   256 |    1 |         0 |     1 | True      |
+| c1                                   | cirros256     |   256 |    1 |         0 |     1 | True      |
+| d1                                   | ds512M        |   512 |    5 |         0 |     1 | True      |
+| d2                                   | ds1G          |  1024 |   10 |         0 |     1 | True      |
+| d3                                   | ds2G          |  2048 |   10 |         0 |     2 | True      |
+| d4                                   | ds4G          |  4096 |   20 |         0 |     4 | True      |
++--------------------------------------+---------------+-------+------+-----------+-------+-----------+
+
+stack@devstack:~$ openstack network list
++--------------------------------------+-----------------+----------------------------------------------------------------------------+
+| ID                                   | Name            | Subnets                                                                    |
++--------------------------------------+-----------------+----------------------------------------------------------------------------+
+| 0877d922-db9e-4028-8171-8b0f5325a1f3 | student-network | 56c890dc-ff8a-4780-ae0b-04232fa68850                                       |
+| 412b3616-75d6-4b07-9b78-6c310390dcf7 | public          | 24998729-50d8-4c11-819d-3f9ffd8d9649, 3d71f69f-4536-498a-8802-484a80080f3c |
+| 86310b54-c00f-490e-983e-fb7afb4c09d7 | private         | 7948c9e2-6c72-420c-af91-ddb2933cd03a, e0fc6033-fa4a-4e5e-84fb-b8963da6df7c |
+| bfa3dc85-d0f7-446a-bdde-2f2ebca9f8bd | shared          | 1e0a881b-1939-4a37-8b10-92be23d856ae                                       |
++--------------------------------------+-----------------+----------------------------------------------------------------------------+
+
+stack@devstack:~$ openstack keypair list
++-------------+-------------------------------------------------+------+
+| Name        | Fingerprint                                     | Type |
++-------------+-------------------------------------------------+------+
+| student-key | cc:fb:34:0a:e4:fe:e8:8a:31:66:80:b2:ce:6c:5d:a3 | ssh  |
++-------------+-------------------------------------------------+------+
+
+stack@devstack:~$ openstack security group list
++--------------------------------------+------------------+------------------------+----------------------------------+------+--------+
+| ID                                   | Name             | Description            | Project                          | Tags | Shared |
++--------------------------------------+------------------+------------------------+----------------------------------+------+--------+
+| 2e4e9941-428b-4b8b-96b3-7f48549dd757 | default          | Default security group | b3627c8f9e0e417794b27f5ef4366d58 | []   | False  |
+| 707acaff-b2fa-4d65-b19e-34938f26bdc1 | student-security | student-security       | d62cc16c9a514011b1a706dfa0b5e7d5 | []   | False  |
+| c9d7236d-3649-4150-ae7f-9b44b60f3853 | default          | Default security group | d62cc16c9a514011b1a706dfa0b5e7d5 | []   | False  |
++--------------------------------------+------------------+------------------------+----------------------------------+------+--------+
+
+stack@devstack:~$ openstack server create --image cirros-0.6.3-x86_64-disk --flavor m1.tiny --network student-network --key-name student-key --security-group student-security student-vm
++-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Field                               | Value                                                                                                                                                                                                                    |
++-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| OS-DCF:diskConfig                   | MANUAL                                                                                                                                                                                                                   |
+| OS-EXT-AZ:availability_zone         | None                                                                                                                                                                                                                     |
+| OS-EXT-SRV-ATTR:host                | None                                                                                                                                                                                                                     |
+| OS-EXT-SRV-ATTR:hostname            | student-vm                                                                                                                                                                                                               |
+| OS-EXT-SRV-ATTR:hypervisor_hostname | None                                                                                                                                                                                                                     |
+| OS-EXT-SRV-ATTR:instance_name       | None                                                                                                                                                                                                                     |
+| OS-EXT-SRV-ATTR:kernel_id           | None                                                                                                                                                                                                                     |
+| OS-EXT-SRV-ATTR:launch_index        | None                                                                                                                                                                                                                     |
+| OS-EXT-SRV-ATTR:ramdisk_id          | None                                                                                                                                                                                                                     |
+| OS-EXT-SRV-ATTR:reservation_id      | r-70p7n9sk                                                                                                                                                                                                               |
+| OS-EXT-SRV-ATTR:root_device_name    | None                                                                                                                                                                                                                     |
+| OS-EXT-SRV-ATTR:user_data           | None                                                                                                                                                                                                                     |
+| OS-EXT-STS:power_state              | N/A                                                                                                                                                                                                                      |
+| OS-EXT-STS:task_state               | scheduling                                                                                                                                                                                                               |
+| OS-EXT-STS:vm_state                 | building                                                                                                                                                                                                                 |
+| OS-SRV-USG:launched_at              | None                                                                                                                                                                                                                     |
+| OS-SRV-USG:terminated_at            | None                                                                                                                                                                                                                     |
+| accessIPv4                          | None                                                                                                                                                                                                                     |
+| accessIPv6                          | None                                                                                                                                                                                                                     |
+| addresses                           | N/A                                                                                                                                                                                                                      |
+| adminPass                           | [redacted]                                                                                                                                                                                                             |
+| config_drive                        | None                                                                                                                                                                                                                     |
+| created                             | 2026-11-17T12:23:19Z                                                                                                                                                                                                     |
+| description                         | None                                                                                                                                                                                                                     |
+| flavor                              | description=, disk='1', ephemeral='0', extra_specs.hw_rng:allowed='True', id='m1.tiny', is_disabled=, is_public='True', location=, name='m1.tiny', original_name='m1.tiny', ram='512', rxtx_factor=, swap='0', vcpus='1' |
+| hostId                              | None                                                                                                                                                                                                                     |
+| host_status                         | None                                                                                                                                                                                                                     |
+| id                                  | 1dbba37e-a717-40b5-889b-69638dd6910e                                                                                                                                                                                     |
+| image                               | cirros-0.6.3-x86_64-disk (b7c37764-68fe-4551-8702-adec007fdf89)                                                                                                                                                          |
+| key_name                            | student-key                                                                                                                                                                                                              |
+| locked                              | None                                                                                                                                                                                                                     |
+| locked_reason                       | None                                                                                                                                                                                                                     |
+| name                                | student-vm                                                                                                                                                                                                               |
+| pinned_availability_zone            | None                                                                                                                                                                                                                     |
+| progress                            | None                                                                                                                                                                                                                     |
+| project_id                          | d62cc16c9a514011b1a706dfa0b5e7d5                                                                                                                                                                                         |
+| properties                          | None                                                                                                                                                                                                                     |
+| scheduler_hints                     |                                                                                                                                                                                                                          |
+| security_groups                     | name='707acaff-b2fa-4d65-b19e-34938f26bdc1'                                                                                                                                                                              |
+| server_groups                       | None                                                                                                                                                                                                                     |
+| status                              | BUILD                                                                                                                                                                                                                    |
+| tags                                |                                                                                                                                                                                                                          |
+| trusted_image_certificates          | None                                                                                                                                                                                                                     |
+| updated                             | 2026-11-17T12:23:19Z                                                                                                                                                                                                     |
+| user_id                             | 65113b46477e4b01abae44dd13b5fb23                                                                                                                                                                                         |
+| volumes_attached                    |                                                                                                                                                                                                                          |
++-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+stack@devstack:~$ openstack server list
++--------------------------------------+------------+--------+--------------------------------+--------------------------+---------+
+| ID                                   | Name       | Status | Networks                       | Image                    | Flavor  |
++--------------------------------------+------------+--------+--------------------------------+--------------------------+---------+
+| 1dbba37e-a717-40b5-889b-69638dd6910e | student-vm | ACTIVE | student-network=192.168.10.112 | cirros-0.6.3-x86_64-disk | m1.tiny |
++--------------------------------------+------------+--------+--------------------------------+--------------------------+---------+
+
+stack@devstack:~$ openstack server show student-vm
++-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Field                               | Value                                                                                                                                                                                                                    |
++-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| OS-DCF:diskConfig                   | MANUAL                                                                                                                                                                                                                   |
+| OS-EXT-AZ:availability_zone         | nova                                                                                                                                                                                                                     |
+| OS-EXT-SRV-ATTR:host                | ip-172-31-19-63                                                                                                                                                                                                          |
+| OS-EXT-SRV-ATTR:hostname            | student-vm                                                                                                                                                                                                               |
+| OS-EXT-SRV-ATTR:hypervisor_hostname | ip-172-31-19-63                                                                                                                                                                                                          |
+| OS-EXT-SRV-ATTR:instance_name       | instance-1dbba37e-a717-40b5-889b-69638dd6910e                                                                                                                                                                            |
+| OS-EXT-SRV-ATTR:kernel_id           |                                                                                                                                                                                                                          |
+| OS-EXT-SRV-ATTR:launch_index        | 0                                                                                                                                                                                                                        |
+| OS-EXT-SRV-ATTR:ramdisk_id          |                                                                                                                                                                                                                          |
+| OS-EXT-SRV-ATTR:reservation_id      | r-70p7n9sk                                                                                                                                                                                                               |
+| OS-EXT-SRV-ATTR:root_device_name    | /dev/vda                                                                                                                                                                                                                 |
+| OS-EXT-SRV-ATTR:user_data           | None                                                                                                                                                                                                                     |
+| OS-EXT-STS:power_state              | Running                                                                                                                                                                                                                  |
+| OS-EXT-STS:task_state               | None                                                                                                                                                                                                                     |
+| OS-EXT-STS:vm_state                 | active                                                                                                                                                                                                                   |
+| OS-SRV-USG:launched_at              | 2026-11-17T12:23:25.000000                                                                                                                                                                                               |
+| OS-SRV-USG:terminated_at            | None                                                                                                                                                                                                                     |
+| accessIPv4                          |                                                                                                                                                                                                                          |
+| accessIPv6                          |                                                                                                                                                                                                                          |
+| addresses                           | student-network=192.168.10.112                                                                                                                                                                                           |
+| config_drive                        |                                                                                                                                                                                                                          |
+| created                             | 2026-11-17T12:23:19Z                                                                                                                                                                                                     |
+| description                         | None                                                                                                                                                                                                                     |
+| flavor                              | description=, disk='1', ephemeral='0', extra_specs.hw_rng:allowed='True', id='m1.tiny', is_disabled=, is_public='True', location=, name='m1.tiny', original_name='m1.tiny', ram='512', rxtx_factor=, swap='0', vcpus='1' |
+| hostId                              | 0d6382aea4fa929e1d8fd03c0f15a95a03ee3c4adc1d55e93a3b9576                                                                                                                                                                 |
+| host_status                         | UP                                                                                                                                                                                                                       |
+| id                                  | 1dbba37e-a717-40b5-889b-69638dd6910e                                                                                                                                                                                     |
+| image                               | cirros-0.6.3-x86_64-disk (b7c37764-68fe-4551-8702-adec007fdf89)                                                                                                                                                          |
+| key_name                            | student-key                                                                                                                                                                                                              |
+| locked                              | False                                                                                                                                                                                                                    |
+| locked_reason                       | None                                                                                                                                                                                                                     |
+| name                                | student-vm                                                                                                                                                                                                               |
+| pinned_availability_zone            | None                                                                                                                                                                                                                     |
+| progress                            | 0                                                                                                                                                                                                                        |
+| project_id                          | d62cc16c9a514011b1a706dfa0b5e7d5                                                                                                                                                                                         |
+| properties                          |                                                                                                                                                                                                                          |
+| scheduler_hints                     |                                                                                                                                                                                                                          |
+| security_groups                     | name='student-security'                                                                                                                                                                                                  |
+| server_groups                       | None                                                                                                                                                                                                                     |
+| status                              | ACTIVE                                                                                                                                                                                                                   |
+| tags                                |                                                                                                                                                                                                                          |
+| trusted_image_certificates          | None                                                                                                                                                                                                                     |
+| updated                             | 2026-11-17T12:23:25Z                                                                                                                                                                                                     |
+| user_id                             | 65113b46477e4b01abae44dd13b5fb23                                                                                                                                                                                         |
+| volumes_attached                    |                                                                                                                                                                                                                          |
++-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+stack@devstack:~$ openstack console log show student-vm | tail -40
+### dmesg | tail
+[    7.990489] sctp: Hash tables configured (bind 256/256)
+[    8.243296] EXT4-fs (vda1): mounting ext3 file system using the ext4 subsystem
+[    8.260600] EXT4-fs (vda1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: none.
+[    8.342135] EXT4-fs (vda1): mounting ext3 file system using the ext4 subsystem
+[    8.365730] EXT4-fs (vda1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: none.
+[    9.598647] EXT4-fs (vda1): re-mounted. Opts: (null). Quota mode: none.
+[   10.237354] EXT4-fs (vda1): re-mounted. Opts: (null). Quota mode: none.
+[   14.161004] 8021q: adding VLAN 0 to HW filter on device eth0
+[   28.825467] EXT4-fs (vda1): resizing filesystem from 25600 to 259835 blocks
+[   28.859930] EXT4-fs (vda1): resized filesystem to 259835
+### tail -n 25 /var/log/messages
+Nov 17 12:23:37 cirros syslog.info syslogd started: BusyBox v1.35.0
+Nov 17 12:23:41 cirros daemon.info dhcpcd[250]: dhcpcd-9.4.1 starting
+Nov 17 12:23:41 cirros daemon.info dhcpcd[253]: DUID 00:04:1d:bb:a3:7e:a7:17:40:b5:88:9b:69:63:8d:d6:91:0e
+Nov 17 12:23:41 cirros daemon.info dhcpcd[253]: eth0: waiting for carrier
+Nov 17 12:23:41 cirros daemon.info dhcpcd[253]: eth0: carrier acquired
+Nov 17 12:23:41 cirros daemon.info dhcpcd[253]: eth0: IAID 3e:43:1b:98
+Nov 17 12:23:41 cirros daemon.info dhcpcd[253]: eth0: adding address fe80::f816:3eff:fe43:1b98
+Nov 17 12:23:42 cirros daemon.info dhcpcd[253]: eth0: soliciting an IPv6 router
+Nov 17 12:23:42 cirros daemon.info dhcpcd[253]: eth0: soliciting a DHCP lease
+Nov 17 12:23:42 cirros daemon.info dhcpcd[253]: eth0: offered 192.168.10.112 from 192.168.10.1
+Nov 17 12:23:42 cirros daemon.info dhcpcd[253]: eth0: probing address 192.168.10.112/24
+Nov 17 12:23:47 cirros daemon.info dhcpcd[253]: eth0: leased 192.168.10.112 for 43200 seconds
+Nov 17 12:23:47 cirros daemon.info dhcpcd[253]: eth0: adding route to 192.168.10.0/24
+Nov 17 12:23:47 cirros daemon.info dhcpcd[253]: eth0: adding host route to 169.254.169.254 via 192.168.10.2
+Nov 17 12:23:47 cirros daemon.info dhcpcd[253]: eth0: adding default route via 192.168.10.1
+Nov 17 12:23:51 cirros auth.notice su: + none root:cirros
+Nov 17 12:23:54 cirros daemon.warn dhcpcd[253]: eth0: no IPv6 Routers available
+Nov 17 12:23:54 cirros authpriv.info dropbear[398]: Running in background
+############ debug end   ##############
+  ____               ____  ____
+ / __/ __ ____ ____ / __ \/ __/
+/ /__ / // __// __// /_/ /\ \ 
+\___//_//_/  /_/   \____/___/ 
+   http://cirros-cloud.net
+
+
+login as 'cirros' user. default password: 'gocubsgo'. use 'sudo' for root.
+student-vm login: 
+

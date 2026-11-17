@@ -1,0 +1,160 @@
+stack@devstack:~$ openstack volume service list
++------------------+-----------------------------+------+---------+-------+----------------------------+---------+---------------+
+| Binary           | Host                        | Zone | Status  | State | Updated At                 | Cluster | Backend State |
++------------------+-----------------------------+------+---------+-------+----------------------------+---------+---------------+
+| cinder-scheduler | ip-172-31-19-63             | nova | enabled | up    | 2026-11-17T12:25:04.000000 | None    | None          |
+| cinder-volume    | ip-172-31-19-63@lvmdriver-1 | nova | enabled | up    | 2026-11-17T12:25:05.000000 | None    | None          |
++------------------+-----------------------------+------+---------+-------+----------------------------+---------+---------------+
+
+stack@devstack:~$ openstack volume type list
++--------------------------------------+-------------+-----------+
+| ID                                   | Name        | Is Public |
++--------------------------------------+-------------+-----------+
+| 2d2b4aaf-66a5-40ac-8c98-79500d40e26e | lvmdriver-1 | True      |
+| 6b635713-3099-430f-9476-c979e8f5d94d | __DEFAULT__ | True      |
++--------------------------------------+-------------+-----------+
+
+stack@devstack:~$ openstack volume list
+
+
+stack@devstack:~$ openstack volume create --size 1 student-volume
++--------------------------------+--------------------------------------+
+| Field                          | Value                                |
++--------------------------------+--------------------------------------+
+| attachments                    | []                                   |
+| availability_zone              | nova                                 |
+| backup_id                      | None                                 |
+| bootable                       | False                                |
+| cluster_name                   | None                                 |
+| consumes_quota                 | True                                 |
+| created_at                     | 2026-11-17T12:25:36.564749           |
+| description                    | None                                 |
+| encrypted                      | False                                |
+| group_id                       | None                                 |
+| id                             | 3ee415a1-8a59-4b38-981d-e354c1e101cf |
+| multiattach                    | False                                |
+| name                           | student-volume                       |
+| os-vol-host-attr:host          | None                                 |
+| os-vol-mig-status-attr:migstat | None                                 |
+| os-vol-mig-status-attr:name_id | None                                 |
+| os-vol-tenant-attr:tenant_id   | None                                 |
+| properties                     |                                      |
+| provider_id                    | None                                 |
+| replication_status             | None                                 |
+| service_uuid                   | None                                 |
+| shared_targets                 | True                                 |
+| size                           | 1                                    |
+| snapshot_id                    | None                                 |
+| source_volid                   | None                                 |
+| status                         | creating                             |
+| type                           | lvmdriver-1                          |
+| updated_at                     | None                                 |
+| user_id                        | 65113b46477e4b01abae44dd13b5fb23     |
+| volume_type_id                 | 2d2b4aaf-66a5-40ac-8c98-79500d40e26e |
++--------------------------------+--------------------------------------+
+
+stack@devstack:~$ openstack volume show student-volume
++--------------------------------+-----------------------------------------+
+| Field                          | Value                                   |
++--------------------------------+-----------------------------------------+
+| attachments                    | []                                      |
+| availability_zone              | nova                                    |
+| backup_id                      | None                                    |
+| bootable                       | False                                   |
+| cluster_name                   | None                                    |
+| consumes_quota                 | True                                    |
+| created_at                     | 2026-11-17T12:25:37.000000              |
+| description                    | None                                    |
+| encrypted                      | False                                   |
+| group_id                       | None                                    |
+| id                             | 3ee415a1-8a59-4b38-981d-e354c1e101cf    |
+| multiattach                    | False                                   |
+| name                           | student-volume                          |
+| os-vol-host-attr:host          | ip-172-31-19-63@lvmdriver-1#lvmdriver-1 |
+| os-vol-mig-status-attr:migstat | None                                    |
+| os-vol-mig-status-attr:name_id | None                                    |
+| os-vol-tenant-attr:tenant_id   | d62cc16c9a514011b1a706dfa0b5e7d5        |
+| properties                     |                                         |
+| provider_id                    | None                                    |
+| replication_status             | None                                    |
+| service_uuid                   | e0f6fce9-e4b2-4e66-b16c-36e7db3f7b9e    |
+| shared_targets                 | False                                   |
+| size                           | 1                                       |
+| snapshot_id                    | None                                    |
+| source_volid                   | None                                    |
+| status                         | available                               |
+| type                           | lvmdriver-1                             |
+| updated_at                     | 2026-11-17T12:25:37.000000              |
+| user_id                        | 65113b46477e4b01abae44dd13b5fb23        |
+| volume_type_id                 | 2d2b4aaf-66a5-40ac-8c98-79500d40e26e    |
++--------------------------------+-----------------------------------------+
+
+stack@devstack:~$ openstack server add volume student-vm student-volume
++-----------------------+--------------------------------------+
+| Field                 | Value                                |
++-----------------------+--------------------------------------+
+| ID                    | 3ee415a1-8a59-4b38-981d-e354c1e101cf |
+| Server ID             | 1dbba37e-a717-40b5-889b-69638dd6910e |
+| Volume ID             | 3ee415a1-8a59-4b38-981d-e354c1e101cf |
+| Device                | /dev/vdb                             |
+| Tag                   | None                                 |
+| Delete On Termination | False                                |
++-----------------------+--------------------------------------+
+
+stack@devstack:~$ openstack volume show student-volume -c name -c status -c size -c attachments
++-------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Field       | Value                                                                                                                                                                                                                                                                                                                  |
++-------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| attachments | [{'id': '3ee415a1-8a59-4b38-981d-e354c1e101cf', 'attachment_id': '2fd6d9ed-d588-4ee4-b2b6-17f36cc6a510', 'volume_id': '3ee415a1-8a59-4b38-981d-e354c1e101cf', 'server_id': '1dbba37e-a717-40b5-889b-69638dd6910e', 'host_name': 'ip-172-31-19-63', 'device': '/dev/vdb', 'attached_at': '2026-11-17T12:25:44.000000'}] |
+| name        | student-volume                                                                                                                                                                                                                                                                                                         |
+| size        | 1                                                                                                                                                                                                                                                                                                                      |
+| status      | in-use                                                                                                                                                                                                                                                                                                                 |
++-------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+stack@devstack:~$ ssh -i /opt/stack/.ssh/openstack_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=20 cirros@172.24.4.2 'lsblk'
+ssh: connect to host 172.24.4.2 port 22: Connection timed out
+
+stack@devstack:~$ openstack server image create --name student-vm-snapshot --wait student-vm
+
++------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
++------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| checksum         | 4731e583aea22d747e5d31526e522dc0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| container_format | bare                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| created_at       | 2026-11-17T12:26:13Z                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| disk_format      | qcow2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| file             | /v2/images/439fdf18-15df-4ddb-9a58-d6ac511b431c/file                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| id               | 439fdf18-15df-4ddb-9a58-d6ac511b431c                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| min_disk         | 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| min_ram          | 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| name             | student-vm-snapshot                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| owner            | d62cc16c9a514011b1a706dfa0b5e7d5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| properties       | base_image_ref='b7c37764-68fe-4551-8702-adec007fdf89', boot_roles='manager,admin,member,reader', hw_cdrom_bus='ide', hw_disk_bus='virtio', hw_machine_type='pc', hw_rng_model='virtio', hw_video_model='virtio', hw_vif_model='virtio', image_location='snapshot', image_state='available', image_type='snapshot', instance_uuid='1dbba37e-a717-40b5-889b-69638dd6910e', os_hash_algo='sha512', os_hash_value='f130404374a8327c5c752ab5f919a19e8152b2953bb82284ab660895fcda6fbcc0c7ac9772dd54d9fb5eb253e34bf3621d296ae9248fa5f94890a477ed14db16', os_hidden='False', owner_project_name='admin', owner_specified.openstack.md5='', owner_specified.openstack.object='images/cirros-0.6.3-x86_64-disk', owner_specified.openstack.sha256='', owner_user_name='admin', user_id='65113b46477e4b01abae44dd13b5fb23' |
+| protected        | False                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| schema           | /v2/schemas/image                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| size             | 53542912                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| status           | active                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| tags             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| updated_at       | 2026-11-17T12:26:16Z                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| virtual_size     | 1073741824                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| visibility       | private                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
++------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+stack@devstack:~$ openstack image list
++--------------------------------------+--------------------------+--------+
+| ID                                   | Name                     | Status |
++--------------------------------------+--------------------------+--------+
+| b7c37764-68fe-4551-8702-adec007fdf89 | cirros-0.6.3-x86_64-disk | active |
+| 439fdf18-15df-4ddb-9a58-d6ac511b431c | student-vm-snapshot      | active |
++--------------------------------------+--------------------------+--------+
+
+stack@devstack:~$ openstack image show student-vm-snapshot -c name -c status -c disk_format -c size
++-------------+---------------------+
+| Field       | Value               |
++-------------+---------------------+
+| disk_format | qcow2               |
+| name        | student-vm-snapshot |
+| size        | 53542912            |
+| status      | active              |
++-------------+---------------------+
+

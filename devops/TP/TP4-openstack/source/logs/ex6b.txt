@@ -1,0 +1,39 @@
+stack@devstack:~$ ip -4 addr show br-ex
+
+stack@devstack:~$ sudo ip link set br-ex up
+
+stack@devstack:~$ sudo ip addr add 172.24.4.1/24 dev br-ex
+
+stack@devstack:~$ ip -4 addr show br-ex
+5: br-ex: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
+    inet 172.24.4.1/24 scope global br-ex
+       valid_lft forever preferred_lft forever
+
+stack@devstack:~$ ip route | grep 172.24.4
+172.24.4.0/24 dev br-ex proto kernel scope link src 172.24.4.1 
+
+stack@devstack:~$ ping -c 4 172.24.4.2
+PING 172.24.4.2 (172.24.4.2) 56(84) bytes of data.
+64 bytes from 172.24.4.2: icmp_seq=1 ttl=63 time=6.89 ms
+64 bytes from 172.24.4.2: icmp_seq=2 ttl=63 time=1.29 ms
+64 bytes from 172.24.4.2: icmp_seq=3 ttl=63 time=0.851 ms
+64 bytes from 172.24.4.2: icmp_seq=4 ttl=63 time=0.723 ms
+
+--- 172.24.4.2 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3039ms
+rtt min/avg/max/mdev = 0.723/2.437/6.885/2.576 ms
+
+stack@devstack:~$ ssh -i ~/.ssh/openstack_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=20 cirros@172.24.4.2 'hostname; ip -4 addr show eth0; ping -c 2 192.168.10.1'
+Warning: Permanently added '172.24.4.2' (ED25519) to the list of known hosts.
+student-vm
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1442 qdisc pfifo_fast qlen 1000
+    inet 192.168.10.112/24 brd 192.168.10.255 scope global dynamic noprefixroute eth0
+       valid_lft 43004sec preferred_lft 37604sec
+PING 192.168.10.1 (192.168.10.1) 56(84) bytes of data.
+64 bytes from 192.168.10.1: icmp_seq=1 ttl=254 time=1.28 ms
+64 bytes from 192.168.10.1: icmp_seq=2 ttl=254 time=1.02 ms
+
+--- 192.168.10.1 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1002ms
+rtt min/avg/max/mdev = 1.024/1.151/1.278/0.127 ms
+

@@ -1,0 +1,157 @@
+stack@devstack:~$ openstack network list
++--------------------------------------+---------+----------------------------------------------------------------------------+
+| ID                                   | Name    | Subnets                                                                    |
++--------------------------------------+---------+----------------------------------------------------------------------------+
+| 412b3616-75d6-4b07-9b78-6c310390dcf7 | public  | 24998729-50d8-4c11-819d-3f9ffd8d9649, 3d71f69f-4536-498a-8802-484a80080f3c |
+| 86310b54-c00f-490e-983e-fb7afb4c09d7 | private | 7948c9e2-6c72-420c-af91-ddb2933cd03a, e0fc6033-fa4a-4e5e-84fb-b8963da6df7c |
+| bfa3dc85-d0f7-446a-bdde-2f2ebca9f8bd | shared  | 1e0a881b-1939-4a37-8b10-92be23d856ae                                       |
++--------------------------------------+---------+----------------------------------------------------------------------------+
+
+stack@devstack:~$ openstack subnet list
++--------------------------------------+---------------------+--------------------------------------+--------------------+
+| ID                                   | Name                | Network                              | Subnet             |
++--------------------------------------+---------------------+--------------------------------------+--------------------+
+| 1e0a881b-1939-4a37-8b10-92be23d856ae | shared-subnet       | bfa3dc85-d0f7-446a-bdde-2f2ebca9f8bd | 192.168.233.0/24   |
+| 24998729-50d8-4c11-819d-3f9ffd8d9649 | public-subnet       | 412b3616-75d6-4b07-9b78-6c310390dcf7 | 172.24.4.0/24      |
+| 3d71f69f-4536-498a-8802-484a80080f3c | ipv6-public-subnet  | 412b3616-75d6-4b07-9b78-6c310390dcf7 | 2001:db8::/64      |
+| 7948c9e2-6c72-420c-af91-ddb2933cd03a | ipv6-private-subnet | 86310b54-c00f-490e-983e-fb7afb4c09d7 | fd50:4b99:1fa::/64 |
+| e0fc6033-fa4a-4e5e-84fb-b8963da6df7c | private-subnet      | 86310b54-c00f-490e-983e-fb7afb4c09d7 | 10.0.0.0/26        |
++--------------------------------------+---------------------+--------------------------------------+--------------------+
+
+stack@devstack:~$ openstack router list
++--------------------------------------+---------+--------+-------+----------------------------------+------+
+| ID                                   | Name    | Status | State | Project                          | HA   |
++--------------------------------------+---------+--------+-------+----------------------------------+------+
+| d912a015-3b30-4861-ab25-97c24bcb326a | router1 | ACTIVE | UP    | b3627c8f9e0e417794b27f5ef4366d58 | True |
++--------------------------------------+---------+--------+-------+----------------------------------+------+
+
+stack@devstack:~$ openstack network create student-network
++---------------------------+--------------------------------------+
+| Field                     | Value                                |
++---------------------------+--------------------------------------+
+| admin_state_up            | UP                                   |
+| availability_zone_hints   |                                      |
+| availability_zones        |                                      |
+| created_at                | 2026-11-17T12:22:59Z                 |
+| description               |                                      |
+| dns_domain                | None                                 |
+| id                        | 0877d922-db9e-4028-8171-8b0f5325a1f3 |
+| ipv4_address_scope        | None                                 |
+| ipv6_address_scope        | None                                 |
+| is_default                | False                                |
+| is_vlan_qinq              | None                                 |
+| is_vlan_transparent       | False                                |
+| mtu                       | 1442                                 |
+| name                      | student-network                      |
+| port_security_enabled     | True                                 |
+| project_id                | d62cc16c9a514011b1a706dfa0b5e7d5     |
+| provider:network_type     | geneve                               |
+| provider:physical_network |                                      |
+| provider:segmentation_id  | 21920                                |
+| pvlan                     | None                                 |
+| qinq                      | False                                |
+| qos_policy_id             | None                                 |
+| revision_number           | 1                                    |
+| router:external           | Internal                             |
+| segments                  | None                                 |
+| shared                    | False                                |
+| status                    | ACTIVE                               |
+| subnets                   |                                      |
+| tags                      |                                      |
+| updated_at                | 2026-11-17T12:22:59Z                 |
++---------------------------+--------------------------------------+
+
+stack@devstack:~$ openstack subnet create student-subnet --network student-network --subnet-range 192.168.10.0/24 --gateway 192.168.10.1 --dns-nameserver 8.8.8.8
++----------------------+--------------------------------------+
+| Field                | Value                                |
++----------------------+--------------------------------------+
+| allocation_pools     | 192.168.10.2-192.168.10.254          |
+| cidr                 | 192.168.10.0/24                      |
+| created_at           | 2026-11-17T12:23:01Z                 |
+| description          |                                      |
+| dns_nameservers      | 8.8.8.8                              |
+| dns_publish_fixed_ip | None                                 |
+| enable_dhcp          | True                                 |
+| gateway_ip           | 192.168.10.1                         |
+| host_routes          |                                      |
+| id                   | 56c890dc-ff8a-4780-ae0b-04232fa68850 |
+| ip_version           | 4                                    |
+| ipv6_address_mode    | None                                 |
+| ipv6_ra_mode         | None                                 |
+| name                 | student-subnet                       |
+| network_id           | 0877d922-db9e-4028-8171-8b0f5325a1f3 |
+| project_id           | d62cc16c9a514011b1a706dfa0b5e7d5     |
+| revision_number      | 0                                    |
+| router:external      | False                                |
+| segment_id           | None                                 |
+| service_types        |                                      |
+| subnetpool_id        | None                                 |
+| tags                 |                                      |
+| updated_at           | 2026-11-17T12:23:01Z                 |
++----------------------+--------------------------------------+
+
+stack@devstack:~$ openstack network show student-network
++---------------------------+--------------------------------------+
+| Field                     | Value                                |
++---------------------------+--------------------------------------+
+| admin_state_up            | UP                                   |
+| availability_zone_hints   |                                      |
+| availability_zones        |                                      |
+| created_at                | 2026-11-17T12:22:59Z                 |
+| description               |                                      |
+| dns_domain                | None                                 |
+| id                        | 0877d922-db9e-4028-8171-8b0f5325a1f3 |
+| ipv4_address_scope        | None                                 |
+| ipv6_address_scope        | None                                 |
+| is_default                | None                                 |
+| is_vlan_qinq              | None                                 |
+| is_vlan_transparent       | False                                |
+| mtu                       | 1442                                 |
+| name                      | student-network                      |
+| port_security_enabled     | True                                 |
+| project_id                | d62cc16c9a514011b1a706dfa0b5e7d5     |
+| provider:network_type     | geneve                               |
+| provider:physical_network |                                      |
+| provider:segmentation_id  | 21920                                |
+| pvlan                     | None                                 |
+| qinq                      | False                                |
+| qos_policy_id             | None                                 |
+| revision_number           | 2                                    |
+| router:external           | Internal                             |
+| segments                  | None                                 |
+| shared                    | False                                |
+| status                    | ACTIVE                               |
+| subnets                   | 56c890dc-ff8a-4780-ae0b-04232fa68850 |
+| tags                      |                                      |
+| updated_at                | 2026-11-17T12:23:01Z                 |
++---------------------------+--------------------------------------+
+
+stack@devstack:~$ openstack subnet show student-subnet
++----------------------+--------------------------------------+
+| Field                | Value                                |
++----------------------+--------------------------------------+
+| allocation_pools     | 192.168.10.2-192.168.10.254          |
+| cidr                 | 192.168.10.0/24                      |
+| created_at           | 2026-11-17T12:23:01Z                 |
+| description          |                                      |
+| dns_nameservers      | 8.8.8.8                              |
+| dns_publish_fixed_ip | None                                 |
+| enable_dhcp          | True                                 |
+| gateway_ip           | 192.168.10.1                         |
+| host_routes          |                                      |
+| id                   | 56c890dc-ff8a-4780-ae0b-04232fa68850 |
+| ip_version           | 4                                    |
+| ipv6_address_mode    | None                                 |
+| ipv6_ra_mode         | None                                 |
+| name                 | student-subnet                       |
+| network_id           | 0877d922-db9e-4028-8171-8b0f5325a1f3 |
+| project_id           | d62cc16c9a514011b1a706dfa0b5e7d5     |
+| revision_number      | 0                                    |
+| router:external      | False                                |
+| segment_id           | None                                 |
+| service_types        |                                      |
+| subnetpool_id        | None                                 |
+| tags                 |                                      |
+| updated_at           | 2026-11-17T12:23:01Z                 |
++----------------------+--------------------------------------+
+

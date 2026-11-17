@@ -1,0 +1,79 @@
+stack@devstack:~$ openstack server show student-vm -c name -c status
++--------+------------+
+| Field  | Value      |
++--------+------------+
+| name   | student-vm |
+| status | ACTIVE     |
++--------+------------+
+
+stack@devstack:~$ openstack server stop student-vm
+
+stack@devstack:~$ openstack server show student-vm -c name -c status
++--------+------------+
+| Field  | Value      |
++--------+------------+
+| name   | student-vm |
+| status | SHUTOFF    |
++--------+------------+
+
+stack@devstack:~$ openstack server remove volume student-vm student-volume
+
+stack@devstack:~$ openstack server remove floating ip student-vm 172.24.4.2
+
+stack@devstack:~$ openstack floating ip delete 172.24.4.2
+
+stack@devstack:~$ openstack server delete --wait student-vm
+
+stack@devstack:~$ openstack volume delete student-volume
+
+stack@devstack:~$ openstack image delete student-vm-snapshot
+
+stack@devstack:~$ openstack router remove subnet router1 student-subnet
+
+stack@devstack:~$ openstack subnet delete student-subnet
+
+stack@devstack:~$ openstack network delete student-network
+
+stack@devstack:~$ openstack security group delete student-security
+
+stack@devstack:~$ openstack keypair delete student-key
+
+stack@devstack:~$ openstack flavor delete student.small
+
+stack@devstack:~$ openstack server list
+
+
+stack@devstack:~$ openstack volume list
+
+
+stack@devstack:~$ openstack image list
++--------------------------------------+--------------------------+--------+
+| ID                                   | Name                     | Status |
++--------------------------------------+--------------------------+--------+
+| b7c37764-68fe-4551-8702-adec007fdf89 | cirros-0.6.3-x86_64-disk | active |
++--------------------------------------+--------------------------+--------+
+
+stack@devstack:~$ openstack network list
++--------------------------------------+---------+----------------------------------------------------------------------------+
+| ID                                   | Name    | Subnets                                                                    |
++--------------------------------------+---------+----------------------------------------------------------------------------+
+| 412b3616-75d6-4b07-9b78-6c310390dcf7 | public  | 24998729-50d8-4c11-819d-3f9ffd8d9649, 3d71f69f-4536-498a-8802-484a80080f3c |
+| 86310b54-c00f-490e-983e-fb7afb4c09d7 | private | 7948c9e2-6c72-420c-af91-ddb2933cd03a, e0fc6033-fa4a-4e5e-84fb-b8963da6df7c |
+| bfa3dc85-d0f7-446a-bdde-2f2ebca9f8bd | shared  | 1e0a881b-1939-4a37-8b10-92be23d856ae                                       |
++--------------------------------------+---------+----------------------------------------------------------------------------+
+
+stack@devstack:~$ openstack security group list
++--------------------------------------+---------+------------------------+----------------------------------+------+--------+
+| ID                                   | Name    | Description            | Project                          | Tags | Shared |
++--------------------------------------+---------+------------------------+----------------------------------+------+--------+
+| 2e4e9941-428b-4b8b-96b3-7f48549dd757 | default | Default security group | b3627c8f9e0e417794b27f5ef4366d58 | []   | False  |
+| c9d7236d-3649-4150-ae7f-9b44b60f3853 | default | Default security group | d62cc16c9a514011b1a706dfa0b5e7d5 | []   | False  |
+| e1d899a2-cf6f-459e-8b3f-14ab37233546 | default | Default security group | d6b3fa55cfec410baa283f90de6b48e7 | []   | False  |
++--------------------------------------+---------+------------------------+----------------------------------+------+--------+
+
+stack@devstack:~$ openstack keypair list
+
+
+stack@devstack:~$ openstack floating ip list
+
+
