@@ -152,20 +152,9 @@ S = []  # report sections
 
 S.append(f"""
 <header class="cover">
-  <div class="school">USTHB, Computer Science Department<br>5th Year Software Engineering, 2026/2027<br>Module: DevOps and Cloud Computing</div>
-  <h1>OpenStack: Cloud Resource Management and Virtual Machine Deployment</h1>
-  <p class="sub">TP4 Homework Report</p>
-  <table class="meta">
-    <tr><th>Student</th><td>Bechar Walid</td></tr>
-    <tr><th>Group</th><td>______________________________</td></tr>
-    <tr><th>Date</th><td>17 November 2026</td></tr>
-  </table>
-<nav class="toc"><h3>Contents</h3><ol>
-<li>Explore the OpenStack environment</li><li>Inspect images and flavors</li>
-<li>Create a private network and subnet</li><li>Configure a key pair and security group</li>
-<li>Launch a virtual machine</li><li>Test connectivity and floating IP</li>
-<li>Explore block storage and snapshots</li><li>Resource lifecycle and cleanup</li>
-</ol></nav>
+  <div class="school">USTHB, Computer Science Department. 5th Year Software Engineering, 2026/2027. DevOps and Cloud Computing</div>
+  <h1>TP4: OpenStack, Cloud Resource Management and VM Deployment</h1>
+  <div class="who">BECHAR Walid, Group 2</div>
 </header>
 
 <h2>Environment</h2>
@@ -540,15 +529,15 @@ CSS = """
 @page { size: A4; margin: 16mm 14mm; }
 :root { --ink:#1d2330; --muted:#5b6475; --line:#d9dee7; --accent:#c8102e; --term:#14181f; }
 body { font: 10.5pt/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--ink); background: #fff; }
-h1 { font-size: 20pt; line-height: 1.25; margin: 26mm 0 4mm; }
+h1 { font-size: 17pt; line-height: 1.25; margin: 3mm 0 2mm; }
 h2 { font-size: 14pt; margin: 9mm 0 3mm; padding-bottom: 1.5mm; border-bottom: 2px solid var(--accent); break-after: avoid; }
 h3 { font-size: 11pt; margin: 5mm 0 2mm; break-after: avoid; }
 p, li { text-align: justify; }
 ul { padding-left: 5mm; } li { margin-bottom: 1.5mm; }
 code { font: 9pt "SF Mono", Menlo, Consolas, monospace; background: #f1f3f7; padding: 0 3px; border-radius: 3px; }
-.cover { break-after: page; }
+.cover { border-bottom: 1px solid var(--line); padding-bottom: 4mm; }
 .school { color: var(--muted); font-size: 10pt; }
-.sub { font-size: 13pt; color: var(--accent); margin: 0 0 14mm; font-weight: 600; }
+.who { font-size: 11pt; font-weight: 600; }
 table.meta th { text-align: left; padding: 3mm 8mm 3mm 0; color: var(--muted); font-weight: 600; }
 table.grid { border-collapse: collapse; margin: 2mm 0 3mm; font-size: 9.5pt; }
 table.grid th, table.grid td { border: 1px solid var(--line); padding: 1.3mm 3mm; text-align: left; vertical-align: top; }
