@@ -1,9 +1,9 @@
-# TP4: OpenStack (DevStack)
+# TP4: OpenStack (DevStack), solution Bechar Walid
 
 | File | Content |
 |------|---------|
-| `TP4_Openstack.pdf` | Subject: DevStack installation guide (Ubuntu 24.04) |
-| `TP4_OpenStack_Assignment.pdf` | Subject: homework, 8 exercises (services, images/flavors, network, security, VM, floating IP, Cinder, cleanup) |
+| `../TP4_Openstack.pdf` | Subject: DevStack installation guide (Ubuntu 24.04) |
+| `../TP4_OpenStack_Assignment.pdf` | Subject: homework, 8 exercises (services, images/flavors, network, security, VM, floating IP, Cinder, cleanup) |
 | `TP4_OpenStack_Report.pdf` | Report: commands, real outputs, Horizon screenshots, answers to every question |
 
 ## Environment
