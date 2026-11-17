@@ -549,7 +549,7 @@ figure.term { margin: 2.5mm 0 3.5mm; border-radius: 6px; overflow: hidden; backg
 .bar span { color: #aab2c0; font: 7.5pt Menlo, monospace; margin-left: 2mm; }
 figure.term pre { margin: 0; padding: 2.5mm 3mm; color: #d7dce4; font: 6.6pt/1.35 "SF Mono", Menlo, Consolas, monospace; white-space: pre; overflow: hidden; }
 .p { color: #6fd08c; font-weight: 700; } .c { color: #ffffff; font-weight: 700; } .dim { color: #7d8594; font-style: italic; }
-figure.shot { margin: 3mm 0 5mm; border: 1px solid #cfd5df; border-radius: 7px; overflow: hidden; break-inside: avoid; box-shadow: 0 1px 4px rgba(20,24,31,.12); }
+figure.shot { margin: 3mm 0 5mm; border: 1px solid #cfd5df; border-radius: 7px; overflow: hidden; break-inside: avoid; }
 figure.shot img { display: block; width: 100%; }
 .url { background: #eceff3; border-bottom: 1px solid #d6dbe3; padding: 1.4mm 3mm; display: flex; align-items: center; gap: 1.4mm; }
 .url i { width: 2.4mm; height: 2.4mm; border-radius: 50%; background: #ff5f57; display: inline-block; }
