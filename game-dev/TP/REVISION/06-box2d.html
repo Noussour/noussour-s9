@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>06 - Box2DWeb template</title>
+<!-- the library is the one of the course -->
+<script src="../../COURS/Chapter3-Demo/Box2d.min.js"></script>
+</head>
+<body onload="init()">
+<canvas id="canvas" width="800" height="400" style="border:1px solid black"></canvas>
+<p>Click: spawn a random circle or box. Left/Right arrows push the red ball, Up makes it jump. Message turns red on any contact.</p>
+<script>
+function init() {
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    var scale = 20;                                   // 20 pixels = 1 meter
+
+    // 0. Shortcuts (Box2D names are long)
+    var Vec2 = Box2D.Common.Math.b2Vec2;
+    var BodyDef = Box2D.Dynamics.b2BodyDef;
+    var Body = Box2D.Dynamics.b2Body;
+    var FixtureDef = Box2D.Dynamics.b2FixtureDef;
+    var World = Box2D.Dynamics.b2World;
+    var Polygon = Box2D.Collision.Shapes.b2PolygonShape;
+    var Circle = Box2D.Collision.Shapes.b2CircleShape;
+    var ContactListener = Box2D.Dynamics.b2ContactListener;
+
+    // 1. WORLD: gravity (0, 10) = 10 m/s^2 downward (y points DOWN on a canvas); true = allow sleeping
+    var world = new World(new Vec2(0, 10), true);
+
+    // 2. FIXTURE definition (physical material), reused for every body
+    var fixDef = new FixtureDef();
+    fixDef.density = 1;          // mass = density * area
+    fixDef.friction = 0.4;
+    fixDef.restitution = 0.3;    // bounciness 0..1
+
+    // 3. A body = BodyDef (type + position) -> world.CreateBody -> CreateFixture(shape)
+    function makeBox(xPx, yPx, wPx, hPx, isStatic) {
+        var def = new BodyDef();
+        def.type = isStatic ? Body.b2_staticBody : Body.b2_dynamicBody;
+        def.position.Set(xPx / scale, yPx / scale);           // CENTER of the body, in meters
+        var shape = new Polygon();
+        shape.SetAsBox(wPx / 2 / scale, hPx / 2 / scale);     // HALF width, HALF height
+        fixDef.shape = shape;
+        var body = world.CreateBody(def);
+        body.CreateFixture(fixDef);
+        return { body: body, kind: "box", w: wPx, h: hPx, color: isStatic ? "#6d4c41" : "#ffb300" };
+    }
+    function makeBall(xPx, yPx, rPx, color) {
+        var def = new BodyDef();
+        def.type = Body.b2_dynamicBody;
+        def.position.Set(xPx / scale, yPx / scale);
+        fixDef.shape = new Circle(rPx / scale);
+        var body = world.CreateBody(def);
+        body.CreateFixture(fixDef);
+        return { body: body, kind: "circle", r: rPx, color: color };
+    }
+
+    var things = [];                                           // everything we draw
+    things.push(makeBox(400, 390, 800, 20, true));             // floor
+    things.push(makeBox(5, 200, 10, 400, true));               // left wall
+    things.push(makeBox(795, 200, 10, 400, true));             // right wall
+    things.push(makeBox(400, 280, 200, 20, true));             // platform
+    var hero = makeBall(150, 300, 25, "red");
+    things.push(hero);
+
+    // 4. CONTACT LISTENER: code that runs when two fixtures start / stop touching
+    var contacts = 0;
+    var listener = new ContactListener();
+    listener.BeginContact = function (contact) { contacts++; };
+    listener.EndContact = function (contact) { contacts--; };
+    world.SetContactListener(listener);
+    // To know WHO touched:  contact.GetFixtureA().GetBody()  and  contact.GetFixtureB().GetBody()
+
+    // 5. Click = spawn a body
+    canvas.addEventListener("click", function (e) {
+        var rect = canvas.getBoundingClientRect();
+        var x = e.clientX - rect.left, y = e.clientY - rect.top;
+        if (Math.random() < 0.5) things.push(makeBall(x, y, 10 + Math.random() * 20, "#42a5f5"));
+        else things.push(makeBox(x, y, 20 + Math.random() * 40, 20 + Math.random() * 40, false));
+    });
+
+    // 6. Keyboard: ApplyImpulse(impulseVector, pointOfApplication)
+    document.addEventListener("keydown", function (e) {
+        var c = hero.body.GetWorldCenter();
+        if (e.key === "ArrowLeft")  hero.body.ApplyImpulse(new Vec2(-8, 0), c);
+        if (e.key === "ArrowRight") hero.body.ApplyImpulse(new Vec2(8, 0), c);
+        if (e.key === "ArrowUp")    hero.body.ApplyImpulse(new Vec2(0, -25), c);
+        e.preventDefault();
+    });
+
+    // 7. DRAW: Box2D gives position (meters) and angle (radians). Convert and rotate.
+    function drawThing(t) {
+        var p = t.body.GetPosition();
+        ctx.save();
+        ctx.translate(p.x * scale, p.y * scale);
+        ctx.rotate(t.body.GetAngle());
+        ctx.fillStyle = t.color;
+        ctx.strokeStyle = "black";
+        ctx.beginPath();
+        if (t.kind === "circle") { ctx.arc(0, 0, t.r, 0, 2 * Math.PI); ctx.moveTo(0, 0); ctx.lineTo(t.r, 0); }
+        else ctx.rect(-t.w / 2, -t.h / 2, t.w, t.h);
+        ctx.fill(); ctx.stroke();
+        ctx.restore();
+    }
+
+    // 8. LOOP: Step(timeStep, velocityIterations, positionIterations)
+    function loop() {
+        world.Step(1 / 60, 10, 10);
+        world.ClearForces();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (var k = 0; k < things.length; k++) drawThing(things[k]);
+        ctx.fillStyle = contacts > 0 ? "red" : "black";
+        ctx.font = "bold 22px Arial";
+        ctx.fillText(contacts > 0 ? "Collision!" : "No collision", 20, 40);
+        requestAnimationFrame(loop);
+    }
+    loop();
+}
+</script>
+</body>
+</html>

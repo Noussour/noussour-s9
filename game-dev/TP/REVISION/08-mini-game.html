@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>08 - Complete mini game</title>
+</head>
+<body>
+<canvas id="c" width="640" height="400" style="border:1px solid black"></canvas>
+<p>Collect the yellow coins, avoid the red enemies. Arrow keys to move, Enter to restart. This is the pattern for an exam game: state, input, update, collisions, draw, game over.</p>
+<script>
+var canvas = document.getElementById('c');
+var ctx = canvas.getContext('2d');
+
+// ---------- STATE ----------
+var player, coins, enemies, score, lives, gameOver, invincible;
+
+function rand(min, max) { return min + Math.random() * (max - min); }
+
+function reset() {
+    player = { x: 300, y: 180, w: 32, h: 32, speed: 220 };
+    coins = [];
+    enemies = [];
+    for (var i = 0; i < 6; i++) coins.push({ x: rand(20, 600), y: rand(20, 360), r: 10 });
+    for (var k = 0; k < 4; k++) enemies.push({ x: rand(0, 600), y: rand(0, 360), w: 30, h: 30,
+                                                 vx: rand(-120, 120), vy: rand(-120, 120) });
+    score = 0; lives = 3; gameOver = false; invincible = 0;
+}
+reset();
+
+// ---------- INPUT ----------
+var keys = {};
+document.addEventListener("keydown", function (e) {
+    keys[e.key] = true;
+    if (e.key === "Enter" && gameOver) reset();
+    if (e.key.indexOf("Arrow") === 0) e.preventDefault();
+});
+document.addEventListener("keyup", function (e) { keys[e.key] = false; });
+
+// ---------- COLLISIONS ----------
+function rectRect(a, b) {
+    return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+}
+function circleRect(c, r) {
+    var nx = Math.max(r.x, Math.min(c.x, r.x + r.w));
+    var ny = Math.max(r.y, Math.min(c.y, r.y + r.h));
+    var dx = c.x - nx, dy = c.y - ny;
+    return dx * dx + dy * dy < c.r * c.r;
+}
+
+// ---------- UPDATE ----------
+function update(dt) {
+    if (gameOver) return;
+
+    // move the player
+    if (keys["ArrowLeft"])  player.x -= player.speed * dt;
+    if (keys["ArrowRight"]) player.x += player.speed * dt;
+    if (keys["ArrowUp"])    player.y -= player.speed * dt;
+    if (keys["ArrowDown"])  player.y += player.speed * dt;
+    player.x = Math.max(0, Math.min(player.x, canvas.width - player.w));
+    player.y = Math.max(0, Math.min(player.y, canvas.height - player.h));
+
+    // move the enemies and bounce on the borders
+    enemies.forEach(function (en) {
+        en.x += en.vx * dt; en.y += en.vy * dt;
+        if (en.x < 0 || en.x + en.w > canvas.width)  en.vx = -en.vx;
+        if (en.y < 0 || en.y + en.h > canvas.height) en.vy = -en.vy;
+    });
+
+    // collect coins (iterate backwards when removing from an array)
+    for (var i = coins.length - 1; i >= 0; i--) {
+        if (circleRect(coins[i], player)) {
+            coins.splice(i, 1);
+            score += 10;
+            coins.push({ x: rand(20, 600), y: rand(20, 360), r: 10 });   // a new coin appears
+        }
+    }
+
+    // touch an enemy: lose a life, then a short invincibility so it does not repeat 60 times/s
+    if (invincible > 0) invincible -= dt;
+    else {
+        for (var k = 0; k < enemies.length; k++) {
+            if (rectRect(player, enemies[k])) {
+                lives--; invincible = 1.5;
+                if (lives <= 0) gameOver = true;
+                break;
+            }
+        }
+    }
+}
+
+// ---------- DRAW ----------
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    coins.forEach(function (c) {
+        ctx.fillStyle = "gold";
+        ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, 2 * Math.PI); ctx.fill();
+    });
+    enemies.forEach(function (en) { ctx.fillStyle = "red"; ctx.fillRect(en.x, en.y, en.w, en.h); });
+
+    // blink while invincible
+    if (invincible <= 0 || Math.floor(invincible * 10) % 2 === 0) {
+        ctx.fillStyle = "dodgerblue";
+        ctx.fillRect(player.x, player.y, player.w, player.h);
+    }
+
+    ctx.fillStyle = "black";
+    ctx.font = "20px Arial";
+    ctx.textAlign = "left";
+    ctx.fillText("Score: " + score + "   Lives: " + lives, 10, 25);
+
+    if (gameOver) {
+        ctx.fillStyle = "rgba(0,0,0,0.6)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "white";
+        ctx.font = "bold 40px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("GAME OVER", canvas.width / 2, 180);
+        ctx.font = "20px Arial";
+        ctx.fillText("Score " + score + " - press Enter", canvas.width / 2, 220);
+    }
+}
+
+// ---------- LOOP ----------
+var last = 0;
+function loop(now) {
+    var dt = Math.min((now - last) / 1000, 0.1);
+    last = now;
+    update(dt);
+    draw();
+    requestAnimationFrame(loop);
+}
+requestAnimationFrame(function (t) { last = t; loop(t); });
+</script>
+</body>
+</html>

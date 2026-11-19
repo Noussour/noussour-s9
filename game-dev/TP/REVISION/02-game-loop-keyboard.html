@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>02 - Game loop and keyboard</title>
+</head>
+<body>
+<canvas id="c" width="600" height="300" style="border:1px solid black"></canvas>
+<p>Arrow keys move the square. It cannot leave the canvas.</p>
+<script>
+var canvas = document.getElementById('c');
+var ctx = canvas.getContext('2d');
+
+// ---------- STATE: everything that changes lives in objects ----------
+var player = { x: 280, y: 130, w: 40, h: 40, speed: 200 };   // speed in pixels PER SECOND
+
+// ---------- INPUT: keydown sets true, keyup sets false ----------
+// Remember the state of each key instead of moving inside the event:
+// this allows smooth movement and several keys at once (diagonals).
+var keys = {};
+document.addEventListener("keydown", function (e) { keys[e.key] = true; });
+document.addEventListener("keyup",   function (e) { keys[e.key] = false; });
+
+// ---------- UPDATE: change the state ----------
+// dt = seconds since the last frame, so speed does not depend on the screen refresh rate
+function update(dt) {
+    if (keys["ArrowLeft"])  player.x -= player.speed * dt;
+    if (keys["ArrowRight"]) player.x += player.speed * dt;
+    if (keys["ArrowUp"])    player.y -= player.speed * dt;
+    if (keys["ArrowDown"])  player.y += player.speed * dt;
+
+    // keep inside the canvas (clamp)
+    player.x = Math.max(0, Math.min(player.x, canvas.width - player.w));
+    player.y = Math.max(0, Math.min(player.y, canvas.height - player.h));
+}
+
+// ---------- DRAW: only draw, never change the state ----------
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);   // erase the previous frame
+    ctx.fillStyle = "crimson";
+    ctx.fillRect(player.x, player.y, player.w, player.h);
+}
+
+// ---------- LOOP: update, draw, ask for the next frame ----------
+var last = 0;
+function gameLoop(now) {                       // 'now' = time in ms given by the browser
+    var dt = (now - last) / 1000;              // seconds
+    last = now;
+    if (dt > 0.1) dt = 0.1;                    // avoid a huge jump after a tab switch
+    update(dt);
+    draw();
+    requestAnimationFrame(gameLoop);
+}
+requestAnimationFrame(function (t) { last = t; gameLoop(t); });
+
+// Alternative from TP0: setInterval(function(){ update(1/60); draw(); }, 1000/60);
+</script>
+</body>
+</html>

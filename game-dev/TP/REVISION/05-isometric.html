@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>05 - Isometric map</title>
+</head>
+<body>
+<canvas id="c" width="480" height="260" style="border:1px solid black"></canvas>
+<p>Arrow keys move the character on the grid. Hover a tile: its (i, j) is found with the INVERSE formula. See ../TP3 for the real tileset version.</p>
+<p id="info">hover a tile</p>
+<script>
+var canvas = document.getElementById('c');
+var ctx = canvas.getContext('2d');
+
+// ---------- Isometric formulas (learn by heart) ----------
+//   x = (i - j) * tileW / 2 + offsetX
+//   y = (i + j) * tileH / 2
+// i = row, j = column. tileH = HALF of the real tile height (TP3: "height on the map = half").
+// offsetX = (nbColumns - 1) * tileW / 2 so that the left-most tile starts at x = 0.
+var tileW = 64, tileH = 32;
+var N = 8;                                   // 8 x 8 map
+var offsetX = (N - 1) * tileW / 2;
+var mapArray = [];
+for (var i = 0; i < N; i++) {
+    mapArray[i] = [];
+    for (var j = 0; j < N; j++) mapArray[i][j] = ((i + j) % 2 === 0) ? 1 : 2;  // two kinds of tile
+}
+mapArray[3][4] = 3;                          // a different tile (water)
+
+var colors = { 1: "#8bc34a", 2: "#689f38", 3: "#4fc3f7" };
+
+// (i, j) -> screen position of the top-left corner of the tile's box
+function toScreen(i, j) {
+    return { x: (i - j) * tileW / 2 + offsetX, y: (i + j) * tileH / 2 };
+}
+
+// draw one diamond tile whose box top-left is (x, y)
+function drawTile(x, y, color, highlight) {
+    ctx.beginPath();
+    ctx.moveTo(x + tileW / 2, y);              // top
+    ctx.lineTo(x + tileW, y + tileH / 2);      // right
+    ctx.lineTo(x + tileW / 2, y + tileH);      // bottom
+    ctx.lineTo(x, y + tileH / 2);              // left
+    ctx.closePath();
+    ctx.fillStyle = highlight ? "#ffeb3b" : color;
+    ctx.fill();
+    ctx.strokeStyle = "#33691e";
+    ctx.stroke();
+}
+
+// Character: position on the GRID (row, column)
+var hero = { i: 0, j: 0 };
+var hover = null;
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Order matters: back to front = i then j increasing. The hero is drawn right after his own
+    // tile, so tiles in front of him (drawn later) cover him correctly.
+    for (var i = 0; i < N; i++) {
+        for (var j = 0; j < N; j++) {
+            var p = toScreen(i, j);
+            drawTile(p.x, p.y, colors[mapArray[i][j]], hover && hover.i === i && hover.j === j);
+            if (hero.i === i && hero.j === j) {
+                // feet on the center of the diamond
+                ctx.fillStyle = "crimson";
+                ctx.fillRect(p.x + tileW / 2 - 8, p.y + tileH / 2 - 28, 16, 28);
+            }
+        }
+    }
+}
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowDown"  && hero.i < N - 1) hero.i++;   // down-right on screen
+    if (e.key === "ArrowUp"    && hero.i > 0)     hero.i--;   // up-left
+    if (e.key === "ArrowLeft"  && hero.j < N - 1) hero.j++;   // down-left
+    if (e.key === "ArrowRight" && hero.j > 0)     hero.j--;   // up-right
+    draw();
+});
+
+// ---------- INVERSE: mouse (screen) -> grid (i, j) ----------
+// Take the CENTER of the tile: cx = (i - j) * tileW/2 + offsetX + tileW/2 ; cy = (i + j) * tileH/2 + tileH/2
+// so  i - j = (cx - offsetX - tileW/2) / (tileW/2)   and   i + j = (cy - tileH/2) / (tileH/2)
+function toGrid(mx, my) {
+    var d = (mx - offsetX - tileW / 2) / (tileW / 2);     // i - j
+    var s = (my - tileH / 2) / (tileH / 2);               // i + j
+    return { i: Math.round((s + d) / 2), j: Math.round((s - d) / 2) };
+}
+canvas.addEventListener("mousemove", function (e) {
+    var rect = canvas.getBoundingClientRect();
+    var g = toGrid(e.clientX - rect.left, e.clientY - rect.top);
+    hover = (g.i >= 0 && g.i < N && g.j >= 0 && g.j < N) ? g : null;
+    document.getElementById("info").textContent = hover ? "tile i=" + g.i + " j=" + g.j : "outside the map";
+    draw();
+});
+
+draw();
+</script>
+</body>
+</html>

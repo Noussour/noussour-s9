@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>01 - Canvas basics</title>
+</head>
+<body>
+<canvas id="c" width="600" height="300" style="border:1px solid black"></canvas>
+<script>
+// 1. Get the canvas and its 2D context (ALWAYS the first two lines)
+var canvas = document.getElementById('c');
+var ctx = canvas.getContext('2d');
+
+// 2. Rectangle: fillRect(x, y, w, h) = filled, strokeRect = border only
+ctx.fillStyle = "rgb(200, 50, 50)";        // colour of the NEXT fills
+ctx.fillRect(20, 20, 100, 60);
+ctx.strokeStyle = "blue";                   // colour of the NEXT strokes
+ctx.lineWidth = 4;
+ctx.strokeRect(140, 20, 100, 60);
+
+// 3. Circle: beginPath, arc(x, y, radius, startAngle, endAngle), fill/stroke
+ctx.fillStyle = "rgba(0, 150, 0, 0.5)";    // alpha 0 = transparent, 1 = opaque
+ctx.beginPath();
+ctx.arc(300, 50, 30, 0, 2 * Math.PI);
+ctx.fill();
+ctx.stroke();
+
+// 4. Line (a path): moveTo, lineTo, stroke
+ctx.beginPath();
+ctx.moveTo(360, 20);
+ctx.lineTo(450, 80);
+ctx.stroke();
+
+// 5. Text
+ctx.fillStyle = "black";
+ctx.font = "bold 20px Arial";
+ctx.textAlign = "left";
+ctx.fillText("Score: 10", 470, 40);
+
+// 6. save / restore: protect the settings (colour, transform) of other drawings
+ctx.save();
+ctx.translate(100, 200);            // move the origin to (100,200)
+ctx.rotate(Math.PI / 6);            // rotate 30 degrees (radians!) around the origin
+ctx.fillStyle = "orange";
+ctx.fillRect(-40, -20, 80, 40);     // drawn CENTERED on the new origin
+ctx.restore();                      // everything is back to normal here
+
+// 7. Image: wait for onload!
+var img = new Image();
+img.src = "does-not-exist.png";     // replace with a real path in the exam
+img.onload = function () {
+    ctx.drawImage(img, 250, 150);                     // whole image at (250,150)
+    ctx.drawImage(img, 0, 0, 32, 32, 350, 150, 64, 64); // piece (0,0,32,32) drawn 2x bigger
+};
+
+// 8. Erase: clearRect(x, y, w, h)  -> whole canvas: clearRect(0, 0, canvas.width, canvas.height)
+</script>
+</body>
+</html>

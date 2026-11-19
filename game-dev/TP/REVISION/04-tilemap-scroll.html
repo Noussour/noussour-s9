@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>04 - Tilemap, scrolling, camera</title>
+</head>
+<body>
+<canvas id="c" width="320" height="192" style="border:1px solid black"></canvas>
+<p>Arrow keys move the character, the camera follows. Brown tiles are solid (logical grid).</p>
+<script>
+var canvas = document.getElementById('c');
+var ctx = canvas.getContext('2d');
+
+// ---------- TILESET: one image, tiles of TILE x TILE ----------
+// In the exam: var tileset = new Image(); tileset.src = "tiles.png";
+// Here generated: tile ids 0 = sky, 1 = grass, 2 = dirt (3 tiles in a row)
+var TILE = 32;
+var tileset = document.createElement("canvas");
+tileset.width = TILE * 3; tileset.height = TILE;
+(function () {
+    var t = tileset.getContext("2d");
+    t.fillStyle = "#81d4fa"; t.fillRect(0, 0, TILE, TILE);
+    t.fillStyle = "#795548"; t.fillRect(TILE, 0, TILE, TILE);
+    t.fillStyle = "#4caf50"; t.fillRect(TILE, 0, TILE, 8);
+    t.fillStyle = "#795548"; t.fillRect(TILE * 2, 0, TILE, TILE);
+    t.fillStyle = "#5d4037"; t.fillRect(TILE * 2 + 6, 10, 6, 6);
+})();
+var TILESET_COLS = 3;
+
+// ---------- MAP: 2D array, mapArray[row][column]. Tiled CSV ids start at 1 (0 = empty) ----------
+// Here we use 0-based ids to keep it simple:   0 sky  1 grass  2 dirt
+var mapArray = [];
+var MAP_COLS = 40, MAP_ROWS = 12;
+for (var r = 0; r < MAP_ROWS; r++) {
+    mapArray[r] = [];
+    for (var c = 0; c < MAP_COLS; c++) {
+        var id = 0;
+        if (r === 9) id = 1;                       // ground line
+        if (r >= 10) id = 2;                       // underground
+        if (r === 6 && c >= 8 && c <= 11) id = 1;  // floating platform
+        if (r === 7 && c >= 20 && c <= 22) id = 1;
+        if (c === 30 && r >= 7 && r < 9) id = 2;   // a wall
+        mapArray[r][c] = id;
+    }
+}
+// LOGICAL grid: which ids block the player? (not decided by the picture)
+function isSolid(col, row) {
+    if (row < 0 || row >= MAP_ROWS || col < 0 || col >= MAP_COLS) return true;  // outside = wall
+    return mapArray[row][col] !== 0;
+}
+
+// ---------- WORLD size ----------
+var WORLD_W = MAP_COLS * TILE, WORLD_H = MAP_ROWS * TILE;
+
+// ---------- Player: position in WORLD pixels ----------
+var player = { x: 64, y: 260, w: 20, h: 28, speed: 150 };
+var keys = {};
+document.addEventListener("keydown", function (e) { keys[e.key] = true; e.preventDefault(); });
+document.addEventListener("keyup",   function (e) { keys[e.key] = false; });
+
+// Does the rectangle (x,y,w,h) touch a solid tile? Check the tiles under its 4 corners.
+function hitsSolid(x, y, w, h) {
+    var left = Math.floor(x / TILE), right = Math.floor((x + w - 1) / TILE);
+    var top = Math.floor(y / TILE),  bottom = Math.floor((y + h - 1) / TILE);
+    for (var row = top; row <= bottom; row++)
+        for (var col = left; col <= right; col++)
+            if (isSolid(col, row)) return true;
+    return false;
+}
+
+function update(dt) {
+    var dx = 0, dy = 0;
+    if (keys["ArrowLeft"])  dx -= player.speed * dt;
+    if (keys["ArrowRight"]) dx += player.speed * dt;
+    if (keys["ArrowUp"])    dy -= player.speed * dt;
+    if (keys["ArrowDown"])  dy += player.speed * dt;
+    // move one axis at a time: only keep the move if the new place is free
+    if (!hitsSolid(player.x + dx, player.y, player.w, player.h)) player.x += dx;
+    if (!hitsSolid(player.x, player.y + dy, player.w, player.h)) player.y += dy;
+}
+
+// ---------- CAMERA ----------
+// screenX = worldX - cameraX    (the camera = top-left corner of what we see)
+var camera = { x: 0, y: 0 };
+function updateCamera() {
+    camera.x = player.x + player.w / 2 - canvas.width / 2;     // center on the player
+    camera.y = player.y + player.h / 2 - canvas.height / 2;
+    camera.x = Math.max(0, Math.min(camera.x, WORLD_W - canvas.width));   // stay inside the world
+    camera.y = Math.max(0, Math.min(camera.y, WORLD_H - canvas.height));
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // draw ONLY the visible tiles (+1 to include partly visible ones at the edges)
+    var firstCol = Math.floor(camera.x / TILE);
+    var firstRow = Math.floor(camera.y / TILE);
+    var lastCol = Math.min(MAP_COLS - 1, firstCol + Math.ceil(canvas.width / TILE));
+    var lastRow = Math.min(MAP_ROWS - 1, firstRow + Math.ceil(canvas.height / TILE));
+    for (var row = firstRow; row <= lastRow; row++) {
+        for (var col = firstCol; col <= lastCol; col++) {
+            var id = mapArray[row][col];
+            var sx = (id % TILESET_COLS) * TILE;                 // piece of the tileset
+            var sy = Math.floor(id / TILESET_COLS) * TILE;
+            ctx.drawImage(tileset, sx, sy, TILE, TILE,
+                col * TILE - camera.x, row * TILE - camera.y, TILE, TILE);   // world -> screen
+        }
+    }
+
+    // player: world position minus camera
+    ctx.fillStyle = "crimson";
+    ctx.fillRect(player.x - camera.x, player.y - camera.y, player.w, player.h);
+}
+
+var last = 0;
+function loop(now) {
+    var dt = Math.min((now - last) / 1000, 0.1);
+    last = now;
+    update(dt);
+    updateCamera();
+    draw();
+    requestAnimationFrame(loop);
+}
+requestAnimationFrame(function (t) { last = t; loop(t); });
+</script>
+</body>
+</html>

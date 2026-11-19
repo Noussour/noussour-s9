@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>07 - Collision detection by hand</title>
+</head>
+<body>
+<canvas id="c" width="600" height="300" style="border:1px solid black"></canvas>
+<p>Move the mouse: the blue square (AABB) and the circle follow it. Obstacles turn red when touched.</p>
+<script>
+var canvas = document.getElementById('c');
+var ctx = canvas.getContext('2d');
+
+// ---------- 1. AABB vs AABB (axis-aligned rectangles) ----------
+// They overlap if they overlap on the X axis AND on the Y axis.
+function rectRect(a, b) {
+    return a.x < b.x + b.w &&
+           a.x + a.w > b.x &&
+           a.y < b.y + b.h &&
+           a.y + a.h > b.y;
+}
+
+// ---------- 2. Circle vs circle ----------
+// distance between centers < sum of radii  (compare squares: no sqrt needed)
+function circleCircle(a, b) {
+    var dx = a.x - b.x, dy = a.y - b.y, r = a.r + b.r;
+    return dx * dx + dy * dy < r * r;
+}
+
+// ---------- 3. Circle vs rectangle ----------
+// find the point of the rectangle closest to the circle center (clamp), then test its distance
+function circleRect(c, r) {
+    var nx = Math.max(r.x, Math.min(c.x, r.x + r.w));
+    var ny = Math.max(r.y, Math.min(c.y, r.y + r.h));
+    var dx = c.x - nx, dy = c.y - ny;
+    return dx * dx + dy * dy < c.r * c.r;
+}
+
+// ---------- 4. Point in rectangle (mouse click on a button) ----------
+function pointInRect(px, py, r) {
+    return px >= r.x && px <= r.x + r.w && py >= r.y && py <= r.y + r.h;
+}
+
+var box = { x: 0, y: 0, w: 40, h: 40 };
+var ball = { x: 0, y: 0, r: 20 };
+var mouse = { x: 300, y: 150 };
+canvas.addEventListener("mousemove", function (e) {
+    var rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left; mouse.y = e.clientY - rect.top;
+});
+
+var wallRect = { x: 100, y: 100, w: 120, h: 60, hit: false };
+var wallBall = { x: 400, y: 100, r: 40, hit: false };
+var wallBall2 = { x: 400, y: 220, r: 30, hit: false };
+
+function update() {
+    box.x = mouse.x - box.w / 2;  box.y = mouse.y - box.h / 2;
+    ball.x = mouse.x + 80;        ball.y = mouse.y;
+
+    wallRect.hit = rectRect(box, wallRect);
+    wallBall.hit = circleCircle(ball, wallBall);
+    wallBall2.hit = circleRect(wallBall2, box);           // circle vs rectangle
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = wallRect.hit ? "red" : "gray";
+    ctx.fillRect(wallRect.x, wallRect.y, wallRect.w, wallRect.h);
+
+    ctx.fillStyle = wallBall.hit ? "red" : "gray";
+    ctx.beginPath(); ctx.arc(wallBall.x, wallBall.y, wallBall.r, 0, 2 * Math.PI); ctx.fill();
+
+    ctx.fillStyle = wallBall2.hit ? "red" : "gray";
+    ctx.beginPath(); ctx.arc(wallBall2.x, wallBall2.y, wallBall2.r, 0, 2 * Math.PI); ctx.fill();
+
+    ctx.fillStyle = "dodgerblue";
+    ctx.fillRect(box.x, box.y, box.w, box.h);
+    ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, 2 * Math.PI); ctx.fill();
+}
+
+function loop() { update(); draw(); requestAnimationFrame(loop); }
+loop();
+</script>
+</body>
+</html>
