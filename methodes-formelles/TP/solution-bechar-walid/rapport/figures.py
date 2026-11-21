@@ -1,4 +1,7 @@
 import math, sys
+import html
+import xml.etree.ElementTree as ET
+from pathlib import Path
 OUT = sys.argv[1]
 INK, MUTED, ACCENT = "#141413", "#87867f", "#c96442"
 
@@ -17,57 +20,46 @@ def trim_rect(c, hw, hh, p):
     return (c[0]+dx*s, c[1]+dy*s)
 
 # ---------- Reseau de Petri ----------
-R, HW, HH = 22, 7, 20
 def petri():
-    P, T = {}, {}
-    P["Libres"] = (450, 80); P["Occupees"] = (450, 440)
-    for i, m in ((1, lambda x: x), (2, lambda x: 900-x)):
-        P[f"Attente_U{i}"] = (m(110), 80); T[f"reserver_U{i}"] = (m(280), 80)
-        T[f"abandonner_U{i}"] = (m(110), 200); P[f"Confirmee_U{i}"] = (m(280), 200)
-        P[f"Annulee_U{i}"] = (m(110), 320); T[f"annuler_U{i}"] = (m(280), 320)
-        T[f"refuser_U{i}"] = (m(110), 440); P[f"Refusee_U{i}"] = (m(110), 545)
-    def node_trim(n, toward):
-        return trim_circle(P[n], R, toward) if n in P else trim_rect(T[n], HW, HH, toward)
-    def pos(n): return P.get(n) or T[n]
-    b = []
-    def arc(a, z, via=(), dash=False, off=(0, 0)):
-        pts = [pos(a)] + list(via) + [pos(z)]
-        pts = [(x+off[0], y+off[1]) for x, y in pts]
-        s = node_trim(a, pts[1]) if not off[1] else (pts[0][0] + (R if pts[1][0] > pts[0][0] else -R) * (1 if a in P else HW/R), pts[0][1])
-        e = node_trim(z, pts[-2]) if not off[1] else (pts[-1][0] + (-R if pts[-2][0] < pts[-1][0] else R) * (1 if z in P else HW/R), pts[-1][1])
-        pts[0], pts[-1] = s, e
+    """Render the current PIPE model, including its layout and inhibitor arcs."""
+    net = ET.parse(Path(__file__).resolve().parent.parent / "3-petri/reservation.pnml").getroot().find("net")
+    places = {n.attrib["id"]: n for n in net.findall("place")}
+    transitions = {n.attrib["id"]: n for n in net.findall("transition")}
+    nodes = {**places, **transitions}
+    centers = {}
+    for name, node in nodes.items():
+        p = node.find("graphics/position")
+        centers[name] = (float(p.attrib["x"]) + (15 if name in places else 5),
+                         float(p.attrib["y"]) + 15)
+    b = ['<defs><marker id="inhibitor" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto"><circle cx="6" cy="6" r="4" fill="#fff" stroke="'+INK+'" stroke-width="1.4"/></marker></defs><g transform="translate(-80,-20)">']
+    for arc in net.findall("arc"):
+        a, z = arc.attrib["source"], arc.attrib["target"]
+        pts = [(float(p.attrib["x"]), float(p.attrib["y"])) for p in arc.findall("arcpath")]
+        pts[0], pts[-1] = centers[a], centers[z]
+        pts[0] = trim_circle(centers[a], 15, pts[1]) if a in places else trim_rect(centers[a], 5, 15, pts[1])
+        pts[-1] = trim_circle(centers[z], 15, pts[-2]) if z in places else trim_rect(centers[z], 5, 15, pts[-2])
+        marker = "inhibitor" if arc.find("type").attrib["value"] == "inhibitor" else "ar"
         d = "M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in pts)
-        b.append(f'<path d="{d}" fill="none" stroke="{INK}" stroke-width="1.4" marker-end="url(#ar)"/>')
-    for i, sgn in ((1, 1), (2, -1)):
-        A, C, X, Rf = (f"{p}_U{i}" for p in ("Attente", "Confirmee", "Annulee", "Refusee"))
-        res, ab, an, rf = (f"{t}_U{i}" for t in ("reserver", "abandonner", "annuler", "refuser"))
-        xl = 40 if i == 1 else 860
-        arc(A, res); arc("Libres", res); arc(res, C); arc(res, "Occupees")
-        arc(A, ab); arc(ab, X)
-        arc(C, an); arc("Occupees", an); arc(an, X); arc(an, "Libres")
-        arc(A, rf, via=[(xl, 80), (xl, 440)]); arc(rf, Rf)
-        arc("Occupees", rf, off=(0, -6)); arc(rf, "Occupees", off=(0, 6))
-        b.append(f'<text x="{450 - sgn*170}" y="425" font-size="12" font-style="italic" fill="{INK}" text-anchor="middle">N</text>')
-    for n, (x, y) in P.items():
-        b.append(f'<circle cx="{x}" cy="{y}" r="{R}" fill="#fff" stroke="{INK}" stroke-width="1.6"/>')
-    for n, tok in (("Libres", 1), ("Attente_U1", 1), ("Attente_U2", 1)):
-        x, y = P[n]; b.append(f'<circle cx="{x}" cy="{y}" r="5" fill="{INK}"/>')
-    for n, (x, y) in T.items():
-        b.append(f'<rect x="{x-HW}" y="{y-HH}" width="{2*HW}" height="{2*HH}" fill="{INK}"/>')
-    def label(t, x, y, anchor="middle", color=INK, size=12):
-        b.append(f'<text x="{x}" y="{y}" font-size="{size}" fill="{color}" text-anchor="{anchor}">{t}</text>')
-    label("Libres", 450, 46); label("Occupees", 450, 482)
-    for i, m in ((1, lambda x: x), (2, lambda x: 900-x)):
-        L = "start" if i == 1 else "end"; Lr = "end" if i == 1 else "start"
-        label(f"Attente_U{i}", m(110), 46)
-        label(f"reserver_U{i}", m(280), 50, color=ACCENT, size=11)
-        label(f"abandonner_U{i}", m(124), 186, L, ACCENT, 11)
-        label(f"Confirmee_U{i}", m(254), 236, Lr)
-        label(f"Annulee_U{i}", m(110), 358)
-        label(f"annuler_U{i}", m(280), 358, color=ACCENT, size=11)
-        label(f"refuser_U{i}", m(124), 476, L, ACCENT, 11)
-        label(f"Refusee_U{i}", m(110), 583)
-    return svg(900, 600, "".join(b))
+        b.append(f'<path data-source="{a}" data-target="{z}" d="{d}" fill="none" stroke="{INK}" stroke-width="1.4" marker-end="url(#{marker})"/>')
+    for name, node in nodes.items():
+        x, y = centers[name]
+        if name in places:
+            b.append(f'<circle cx="{x}" cy="{y}" r="15" fill="#fff" stroke="{INK}" stroke-width="1.6"/>')
+            tokens = int(node.findtext("initialMarking/value").split(",")[-1])
+            if tokens == 1:
+                b.append(f'<circle cx="{x}" cy="{y}" r="4" fill="{INK}"/>')
+            elif tokens:
+                b.append(f'<text x="{x}" y="{y+5}" text-anchor="middle">{tokens}</text>')
+            label_y = y - 28 if name.startswith(("Attente", "Occupees")) else y + 39
+            if name == "Libres": label_y = y - 72
+            color = INK
+        else:
+            b.append(f'<rect x="{x-5}" y="{y-15}" width="10" height="30" fill="{INK}"/>')
+            label_y, color = y + 34, ACCENT
+        label = html.escape(node.findtext("name/value", name))
+        b.append(f'<text x="{x}" y="{label_y}" font-size="14" fill="{color}" stroke="#faf9f5" stroke-width="5" paint-order="stroke" stroke-linejoin="round" text-anchor="middle">{label}</text>')
+    b.append('</g>')
+    return svg(1040, 600, "".join(b))
 
 # ---------- Automate JFLAP ----------
 def automate():
