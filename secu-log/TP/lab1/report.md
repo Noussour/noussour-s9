@@ -14,8 +14,8 @@ Practice three classical ciphers (Caesar, Playfair, Vigenere) with an online too
 
 **Notes**
 
-- Digits are not part of the 26-letter alphabet, so the ciphers leave them out. Only the letters are encrypted.
-- Spaces are removed from the messages before using the tools.
+- Only the 26 letters are encrypted. Spaces and digits are not part of the alphabet: the tools do not show them in their output, so in the results below they are put back from the input (same format as the lab's results table).
+- Messages are written in capital letters.
 - In Playfair, J is merged with I.
 
 ---
@@ -24,21 +24,21 @@ Practice three classical ciphers (Caesar, Playfair, Vigenere) with an online too
 
 Rule: each letter is moved 3 places forward in the alphabet to encrypt, and 3 places back to decrypt.
 
-### a) Encrypt `benaliamohamed31520920`
+### a) Encrypt `BENALIA MOHAMED 31520920`
 
 | Plain | B | E | N | A | L | I | A | M | O | H | A | M | E | D |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Cipher | E | H | Q | D | O | L | D | P | R | K | D | P | H | G |
 
-**Result: `EHQDOLDPRKDPHG`** (the digits `31520920` are ignored)
+**Result: `EHQDOLD PRKDPHG 31520920`** (the digits stay unchanged)
 
 ![Caesar encryption](screenshots/03-caesar-encrypt.jpg)
 
-### b) Decrypt `dojhuld irrwedoo whdp lv qrw jrrg qrz`
+### b) Decrypt `DOJHULD IRRWEDOO WHDP LV QRW JRRG QRZ`
 
-Each letter is moved 3 places back: d to a, o to l, j to g, h to e, u to r, l to i, d to a, and so on.
+Each letter is moved 3 places back: D to A, O to L, J to G, H to E, U to R, L to I, D to A, and so on.
 
-**Result: `algeria football team is not good now`**
+**Result: `ALGERIA FOOTBALL TEAM IS NOT GOOD NOW`**
 
 ![Caesar decryption](screenshots/01-caesar-decrypt.jpg)
 
@@ -56,7 +56,7 @@ The manual result and the tool result are the same.
 4. Same column: take the letter below (to encrypt) or above (to decrypt).
 5. Otherwise (rectangle): each letter is replaced by the one in its own row and in the column of the other letter.
 
-### a) Encrypt `benaliamohamed` with the key `king`
+### a) Encrypt `BENALIA MOHAMED` with the key `KING`
 
 Grid:
 
@@ -85,7 +85,7 @@ Pairs: `BE NA LI AM OH AM ED`
 
 ![Playfair encryption result](screenshots/04b-playfair-encrypt-result.jpg)
 
-### b) Decrypt `OMDXFNOMFQHUDLEK` with the key `sun`
+### b) Decrypt `OMDXFNOMFQHUDLEK` with the key `SUN`
 
 Grid:
 
@@ -109,7 +109,7 @@ Pairs: `OM DX FN OM FQ HU DL EK`, decrypted with the reverse rules (left and abo
 | DL | rectangle | FI |
 | EK | rectangle | NE |
 
-**Result: `THEWEATHERISFINE`**, that is "the weather is fine".
+**Result: `THE WEATHER IS FINE`** (the tool shows `THEWEATHERISFINE`, the spaces are put back).
 
 ![Playfair decryption](screenshots/02-playfair-decrypt.jpg)
 
@@ -119,9 +119,9 @@ The manual result and the tool result are the same.
 
 ## 3. Vigenere cipher
 
-### a) Encrypt `benaliamohamed31520920` with the key `usthb`
+### a) Encrypt `BENALIA MOHAMED 31520920` with the key `USTHB`
 
-Rule: each letter is shifted by the matching letter of the key (A = 0, B = 1, ..., Z = 25). The key `USTHB` is repeated along the message.
+Rule: each letter is shifted by the matching letter of the key (A = 0, B = 1, ..., Z = 25). The key `USTHB` is repeated along the letters of the message (spaces and digits do not use up a key letter).
 
 | Plain | B | E | N | A | L | I | A | M | O | H | A | M | E | D |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -131,7 +131,7 @@ Rule: each letter is shifted by the matching letter of the key (A = 0, B = 1, ..
 
 Example: B (1) + U (20) = 21 = V. N (13) + T (19) = 32, minus 26 = 6 = G.
 
-**Result: `VWGHMCSFVIUEXK`** (the digits are ignored)
+**Result: `VWGHMCS FVIUEXK 31520920`** (the digits stay unchanged)
 
 ![Vigenere encryption](screenshots/05-vigenere-encrypt.jpg)
 
@@ -141,12 +141,12 @@ The manual result and the tool result are the same.
 
 ## Summary
 
-| Task | Input | Key | Output |
-|---|---|---|---|
-| Caesar encrypt | benaliamohamed31520920 | 3 | EHQDOLDPRKDPHG |
-| Caesar decrypt | dojhuld irrwedoo whdp lv qrw jrrg qrz | 3 | algeria football team is not good now |
-| Playfair encrypt | benaliamohamed | king | CFGKRCNPPLNPFE |
-| Playfair decrypt | OMDXFNOMFQHUDLEK | sun | THEWEATHERISFINE |
-| Vigenere encrypt | benaliamohamed31520920 | usthb | VWGHMCSFVIUEXK |
+| Exercise | Key | Verified output |
+|---|---|---|
+| Caesar encryption | 3 | EHQDOLD PRKDPHG 31520920 |
+| Caesar decryption | 3 | ALGERIA FOOTBALL TEAM IS NOT GOOD NOW |
+| Playfair encryption | KING | CFGKRCNPPLNPFE |
+| Playfair decryption | SUN | THE WEATHER IS FINE |
+| Vigenere encryption | USTHB | VWGHMCS FVIUEXK 31520920 |
 
 In every case the manual calculation matches the tool output.
