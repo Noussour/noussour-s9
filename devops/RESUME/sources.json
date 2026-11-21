@@ -53,7 +53,7 @@
     },
     {
       "module": "devops",
-      "source": "devops/TP/TP4.pdf",
+      "source": "devops/TP/TP4/TP4.pdf",
       "sha256": "0dc05d72a9bf24b4bd05e733141343b724c839069996eabd95823d468ebbf6b0",
       "pages": 6
     }
