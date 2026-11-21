@@ -1,5 +1,0 @@
-.venv/
-tmp/
-__pycache__/
-output/*.zip
-output/evidence_manifest.json
