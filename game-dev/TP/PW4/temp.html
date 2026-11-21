@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>temping</title>
+</head>
+<body>
+<canvas id="c" width="800" height="600" style="border: 1px solid #000;"></canvas>
+    
+<script>
+    var ctx = document.getElementById('c').getContext('2d');
+
+    ctx.fillStyle = 'blue';
+    ctx.fillRect(100, 100, 200, 150);
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 5;
+    ctx.strokeRect(140, 140, 200, 150);
+
+
+    var player = { 
+        x: 50, 
+        y: 50, 
+        width: 50, 
+        height: 50, 
+        speed: 5 
+    };
+    var keys = {};
+    document.addEventListener('keydown', function(e) {
+        keys[e.key] = true;
+    });
+    document.addEventListener('keyup', function(e) {
+        keys[e.key] = false;
+    });
+    function update(dt){
+        if (keys['ArrowUp']) player.y -= player.speed * dt;
+        if (keys['ArrowDown']) player.y += player.speed * dt;
+        if (keys['ArrowLeft']) player.x -= player.speed * dt;
+        if (keys['ArrowRight']) player.x += player.speed * dt;
+
+            player.x = Math.max(0, Math.min(player.x, 800 - player.width));
+    }
+    function draw(){
+
+
+        Ctx.clearRect(0, 0, 800, 600);
+        Ctx.fillStyle = 'green';
+        Ctx.fillRect(player.x, player.y, player.width, player.height);
+    }
+    var last = 0;
+     function loop(now){
+        var dt = (now - last) / 1000;
+        last = now;
+        update(dt);
+        draw();
+        requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+</script>
+</body>
+</html>
