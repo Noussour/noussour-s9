@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>PW 2 Homework - Game Scene (Adel HADJ ARAB)</title>
+	<style>
+		body { font-family: sans-serif; }
+		canvas { border: 1px solid black; }
+	</style>
+</head>
+<body>
+	<h2>PW 2 Homework - Sprite moving in the tilemap</h2>
+	<p>Arrow keys move the character. The camera follows him and stops at the map edges. Water, trees, rocks and walls block him.</p>
+	<canvas id="game" width="480" height="320"></canvas>
+	<p><a href="index.html">Back to PW 2 steps</a></p>
+
+	<script src="map.js"></script>
+	<script>
+var canvas = document.getElementById("game");
+var ctx = canvas.getContext("2d");
+
+// ---- tilemap (same code as PW 2) ----
+var TILE = 32, TILESET_COLS = 4;
+var map = MAP_CSV.trim().split("\n").map(function (l) { return l.split(",").map(Number); });
+var ROWS = map.length, COLS = map[0].length;
+var SOLID = [3, 4, 5, 7];   // ids of water, tree, rock, wall
+
+// ---- sprite (same spritesheet as PW 1) ----
+var FRAME = 32, NB_FRAMES = 4;
+var ROW_OF = { down: 0, left: 1, right: 2, up: 3 };
+
+var tileset = new Image(); tileset.src = "tileset.png";
+var hero = new Image(); hero.src = "hero_spritesheet.png";
+
+// Player in map pixels (top-left of the 32x32 frame)
+var player = { x: 2 * TILE, y: 13 * TILE, speed: 2, dir: "down", frame: 0, moving: false };
+var keys = {};           // keys currently held down
+var camX = 0, camY = 0;
+var lastFrameChange = 0;
+
+document.addEventListener("keydown", function (e) {
+	if (e.key.indexOf("Arrow") === 0) { keys[e.key] = true; e.preventDefault(); }
+});
+document.addEventListener("keyup", function (e) { keys[e.key] = false; });
+
+// A point is blocked if it is outside the map or on a solid tile
+function blocked(px, py) {
+	var c = Math.floor(px / TILE), r = Math.floor(py / TILE);
+	if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return true;
+	return SOLID.indexOf(map[r][c]) !== -1;
+}
+// Test the feet of the character (small box at the bottom of the frame)
+function canMoveTo(x, y) {
+	return !blocked(x + 8, y + 22) && !blocked(x + 24, y + 22) &&
+	       !blocked(x + 8, y + 31) && !blocked(x + 24, y + 31);
+}
+
+function update(time) {
+	var dx = 0, dy = 0;
+	if (keys.ArrowLeft)  { dx = -player.speed; player.dir = "left"; }
+	if (keys.ArrowRight) { dx =  player.speed; player.dir = "right"; }
+	if (keys.ArrowUp)    { dy = -player.speed; player.dir = "up"; }
+	if (keys.ArrowDown)  { dy =  player.speed; player.dir = "down"; }
+	player.moving = dx !== 0 || dy !== 0;
+
+	// move each axis separately so the player slides along walls
+	if (canMoveTo(player.x + dx, player.y)) player.x += dx;
+	if (canMoveTo(player.x, player.y + dy)) player.y += dy;
+
+	// animation: next frame every 120 ms while moving, frame 0 when standing
+	if (!player.moving) player.frame = 0;
+	else if (time - lastFrameChange > 120) {
+		player.frame = (player.frame + 1) % NB_FRAMES;
+		lastFrameChange = time;
+	}
+
+	// camera centred on the player, clamped to the map
+	camX = Math.max(0, Math.min(player.x + FRAME / 2 - canvas.width / 2, COLS * TILE - canvas.width));
+	camY = Math.max(0, Math.min(player.y + FRAME / 2 - canvas.height / 2, ROWS * TILE - canvas.height));
+}
+
+function draw() {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	var c0 = Math.floor(camX / TILE), r0 = Math.floor(camY / TILE);
+	for (var r = r0; r <= r0 + canvas.height / TILE && r < ROWS; r++)
+		for (var c = c0; c <= c0 + canvas.width / TILE && c < COLS; c++) {
+			var i = map[r][c] - 1;
+			if (i < 0) continue;
+			ctx.drawImage(tileset, (i % TILESET_COLS) * TILE, Math.floor(i / TILESET_COLS) * TILE, TILE, TILE,
+			              c * TILE - camX, r * TILE - camY, TILE, TILE);
+		}
+	// the player is drawn after the map (on top), also shifted by the camera
+	ctx.drawImage(hero, player.frame * FRAME, ROW_OF[player.dir] * FRAME, FRAME, FRAME,
+	              Math.round(player.x - camX), Math.round(player.y - camY), FRAME, FRAME);
+}
+
+// game loop: update, draw, repeat
+function gameLoop(time) {
+	update(time);
+	draw();
+	requestAnimationFrame(gameLoop);
+}
+
+// start when both images are loaded
+var loaded = 0;
+tileset.onload = hero.onload = function () { if (++loaded === 2) requestAnimationFrame(gameLoop); };
+	</script>
+</body>
+</html>

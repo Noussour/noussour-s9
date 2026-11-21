@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>PW 2 - Tiles and Game Scene (Adel HADJ ARAB)</title>
+	<style>
+		body { font-family: sans-serif; }
+		canvas { border: 1px solid black; }
+	</style>
+</head>
+<body>
+	<h2>PW 2 - Tiles and Game Scene</h2>
+	<p>Tileset <code>tileset.png</code> (8 tiles of 32x32, 4 per row) and map <code>map.csv</code> (40x30 tiles) exported from Tiled.
+	Homework (sprite + tilemap): <a href="scene.html">scene.html</a>.</p>
+
+	<p>3. Whole map (drawn at half size to fit the page)</p>
+	<canvas id="full" width="640" height="480"></canvas>
+
+	<p>4-5. Small canvas showing a portion of the map. Arrow keys scroll it.</p>
+	<canvas id="game" width="320" height="224"></canvas>
+
+	<script src="map.js"></script>
+	<script>
+var TILE = 32;          // tile size in the tileset and on the map
+var TILESET_COLS = 4;   // tiles per row in the tileset
+
+// Parse the CSV: one row per line, ids separated by commas -> 2D array map[row][col]
+var map = MAP_CSV.trim().split("\n").map(function (line) {
+	return line.split(",").map(Number);
+});
+var ROWS = map.length, COLS = map[0].length;
+
+var tileset = new Image();
+tileset.src = "tileset.png";
+
+// Draw tile number id at (x, y): take its 32x32 portion from the tileset
+function drawTile(ctx, id, x, y, size) {
+	if (id === 0) return;                         // 0 = empty cell
+	var index = id - 1;                           // Tiled ids start at 1
+	var sx = (index % TILESET_COLS) * TILE;       // column in the tileset
+	var sy = Math.floor(index / TILESET_COLS) * TILE; // row in the tileset
+	ctx.drawImage(tileset, sx, sy, TILE, TILE, x, y, size, size);
+}
+
+// 3. Display the whole map
+function drawFullMap() {
+	var ctx = document.getElementById("full").getContext("2d");
+	for (var r = 0; r < ROWS; r++)
+		for (var c = 0; c < COLS; c++)
+			drawTile(ctx, map[r][c], c * TILE / 2, r * TILE / 2, TILE / 2);
+}
+
+// 4-5. Camera = top-left corner of the visible part, in map pixels
+var canvas = document.getElementById("game");
+var ctx = canvas.getContext("2d");
+var camX = 0, camY = 0;
+var SPEED = 8;   // pixels per key press
+
+function drawView() {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	// only the tiles that are (partly) visible
+	var firstCol = Math.floor(camX / TILE), lastCol = Math.ceil((camX + canvas.width) / TILE);
+	var firstRow = Math.floor(camY / TILE), lastRow = Math.ceil((camY + canvas.height) / TILE);
+	for (var r = firstRow; r < Math.min(lastRow, ROWS); r++)
+		for (var c = firstCol; c < Math.min(lastCol, COLS); c++)
+			// screen position = map position - camera position
+			drawTile(ctx, map[r][c], c * TILE - camX, r * TILE - camY, TILE);
+}
+
+document.addEventListener("keydown", function (e) {
+	if (e.key === "ArrowLeft") camX -= SPEED;
+	else if (e.key === "ArrowRight") camX += SPEED;
+	else if (e.key === "ArrowUp") camY -= SPEED;
+	else if (e.key === "ArrowDown") camY += SPEED;
+	else return;
+	e.preventDefault();
+	// keep the camera inside the map
+	camX = Math.max(0, Math.min(camX, COLS * TILE - canvas.width));
+	camY = Math.max(0, Math.min(camY, ROWS * TILE - canvas.height));
+	drawView();
+});
+
+tileset.onload = function () {
+	drawFullMap();
+	drawView();
+};
+	</script>
+</body>
+</html>
