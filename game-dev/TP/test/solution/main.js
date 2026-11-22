@@ -1,18 +1,26 @@
 // ============================================================================
 // Angry Birds-style game with HTML5 Canvas and Box2DWeb
+// VERSION 1: the answer to the midterm subject (key 1)
 //
 // AI USED: this whole file was written with Claude Code (AI assistant).
 // Prompt used: "read the newly added test for game dev, i want you to go on and
 //               solve it entirely for me"
+// Then modified with the prompt: "improve on it so when clicking 2 an entirely new
+//   version of the game is shown [...] and also make it that when hitting f the
+//   canvas is in full screen" (start/stop so keys 1 and 2 can switch versions,
+//   mouse position that also works in fullscreen)
+// And: "make it [...] not that pixelated" (logical 800 x 450 size, applyView in draw)
 // ============================================================================
 
 function init() {
 
+    var active = false;   // true while version 1 is the one on screen
+
     // ---------- Canvas ----------
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
-    var W = canvas.width;
-    var H = canvas.height;
+    var W = VIEW_W;     // logical size (800 x 450), see shell.js
+    var H = VIEW_H;
 
     // scale to translate from box2d meters to pixels (1 meter = 30 pixels)
     var scale = 30;
@@ -169,17 +177,14 @@ function init() {
     // 5. Launch the bird by clicking and dragging the mouse
     // ------------------------------------------------------------------------
 
-    // mouse position in canvas pixels
+    // mouse position in canvas pixels (canvasPoint is in shell.js, it also works in fullscreen)
     function mousePos(e) {
-        var rect = canvas.getBoundingClientRect();
-        return {
-            x: (e.clientX - rect.left) * W / rect.width,
-            y: (e.clientY - rect.top) * H / rect.height
-        };
+        return canvasPoint(e);
     }
 
     // mouse down on the bird: start pulling it
     canvas.addEventListener("mousedown", function (e) {
+        if (!active) return;
         var m = mousePos(e);
         var p = bird.GetPosition();
         var dx = m.x - p.x * scale, dy = m.y - p.y * scale;
@@ -191,7 +196,7 @@ function init() {
 
     // mouse move: the bird follows the mouse, but not too far from where it started
     document.addEventListener("mousemove", function (e) {
-        if (!drag) return;
+        if (!active || !drag) return;
         var m = mousePos(e);
         var dx = m.x - drag.ax, dy = m.y - drag.ay;
         var len = Math.sqrt(dx * dx + dy * dy);
@@ -207,7 +212,7 @@ function init() {
     // mouse up: the bird is launched with a speed proportional to the pull,
     // in the direction opposite to the pull
     document.addEventListener("mouseup", function () {
-        if (!drag) return;
+        if (!active || !drag) return;
         var vx = (drag.ax - drag.x) / scale * PULL_TO_SPEED;
         var vy = (drag.ay - drag.y) / scale * PULL_TO_SPEED;
         bird.SetLinearVelocity(new Vec2(vx, vy));
@@ -217,7 +222,7 @@ function init() {
 
     // R restarts the scene
     document.addEventListener("keydown", function (e) {
-        if (e.key === "r" || e.key === "R") buildScene();
+        if (active && (e.key === "r" || e.key === "R")) buildScene();
     });
 
     // ------------------------------------------------------------------------
@@ -236,6 +241,7 @@ function init() {
     }
 
     function draw() {
+        applyView(ctx);      // sharp drawing at the real screen resolution (shell.js)
         ctx.clearRect(0, 0, W, H);
 
         // ground (static body)
@@ -277,6 +283,8 @@ function init() {
     // Game loop
     // ------------------------------------------------------------------------
     function gameLoop() {
+        // stop the loop when another version is shown
+        if (!active) { looping = false; return; }
         // before the launch the bird stays on the slingshot, and while dragging
         // it is held at the pulled position
         if (drag || ready) {
@@ -293,7 +301,18 @@ function init() {
         requestAnimationFrame(gameLoop);
     }
 
-    // load all the images, then start the game
+    // start / stop, used by shell.js to switch between versions 1 and 2
+    var looping = false;
+    function start() {
+        active = true;
+        buildScene();
+        if (!looping) { looping = true; requestAnimationFrame(gameLoop); }
+    }
+    function stop() {
+        active = false;
+    }
+
+    // load all the images, then register this version (shell.js starts it)
     var names = Object.keys(imageFiles);
     var loaded = 0;
     names.forEach(function (name) {
@@ -301,8 +320,7 @@ function init() {
         img.onload = function () {
             loaded++;
             if (loaded === names.length) {
-                buildScene();
-                gameLoop();
+                registerVersion(1, { start: start, stop: stop });
             }
         };
         img.src = imageFiles[name];
