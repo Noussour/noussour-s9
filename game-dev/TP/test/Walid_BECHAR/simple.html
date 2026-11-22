@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Practical Midterm - Box2DWeb</title>
+	<style>
+		html, body { margin: 0; height: 100%; }
+		body { background: #1c2a3a; display: flex; justify-content: center; align-items: center; }
+		canvas {
+			display: block;
+			width: min(calc(100vw - 32px), calc((100vh - 32px) * 2));   /* keep the 2:1 shape */
+			aspect-ratio: 2 / 1;
+			border-radius: 10px;
+			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+			touch-action: none;
+		}
+	</style>
+	<script src="Box2d.min.js"></script>
+</head>
+<body>
+	<canvas id="game"></canvas>
+
+	<script>
+/*
+ * AI USAGE (required by the exam rules)
+ * AI tool: Claude (Anthropic). The whole file was generated with it.
+ * Prompts used:
+ *  1) "Build the practical midterm in test.pdf: a basic slingshot game with
+ *     JavaScript, HTML5 Canvas, a game loop and Box2DWeb. Box2D world with gravity
+ *     and a static ground, a dynamic red bird (circle) and a dynamic green pig target,
+ *     at least 5 obstacles, sprites red.png / target.png / materials drawn on the
+ *     bodies and following position and rotation, launch the bird by click-and-drag,
+ *     detect when the target touches the ground and show a message, add side walls.
+ *     Keep it simple and straight to the point of what the teacher asked."
+ *  2) "The aiming line and the world look ugly. Keep it simple but make the launch
+ *     work like a real slingshot and make the world look clean."
+ *  3) "Make the game able to restart, after a win or at any time."
+ */
+
+// Box2D class shortcuts
+var b2Vec2 = Box2D.Common.Math.b2Vec2;
+var b2World = Box2D.Dynamics.b2World;
+var b2BodyDef = Box2D.Dynamics.b2BodyDef;
+var b2Body = Box2D.Dynamics.b2Body;
+var b2FixtureDef = Box2D.Dynamics.b2FixtureDef;
+var b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
+var b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
+var b2ContactListener = Box2D.Dynamics.b2ContactListener;
+
+// The game uses a 1000 x 500 virtual space. The canvas gets the real screen
+// pixels (CSS size x devicePixelRatio) so the drawing stays sharp.
+var W = 1000, H = 500;
+var SCALE = 30;                    // pixels per meter (Box2D works in meters)
+var GROUND_TOP = 450;              // y of the top of the ground (px)
+var SLING = { x: 180, y: 360 };    // where the bird waits in the slingshot
+var MAX_PULL = 100;                // max pull of the elastic (px)
+var POWER = 0.18;                  // launch speed (m/s) per pixel of pull
+
+var canvas = document.getElementById("game");
+var ctx = canvas.getContext("2d");
+var RES = 1;
+function resize() {
+	RES = canvas.getBoundingClientRect().width * (window.devicePixelRatio || 1) / W;
+	canvas.width = Math.round(W * RES);
+	canvas.height = Math.round(H * RES);
+}
+resize();
+window.addEventListener("resize", resize);
+
+// images
+function loadImage(src) { var img = new Image(); img.src = src; return img; }
+var birdImg = loadImage("sprites/red.png");
+var pigImg = loadImage("sprites/target.png");
+var woodBar = loadImage("materials/wood_bar.png");
+var woodBox = loadImage("materials/wood_box.png");
+var iceBox = loadImage("materials/ice_box.png");
+var rockBox = loadImage("materials/rock_box.png");
+
+// helper: create a body. x, y = centre in pixels. shape = {r} circle or {w, h} box
+function createBody(x, y, type, shape, density, data) {
+	var bodyDef = new b2BodyDef();
+	bodyDef.type = type;
+	bodyDef.position.Set(x / SCALE, y / SCALE);
+
+	var fixDef = new b2FixtureDef();
+	fixDef.density = density;
+	fixDef.friction = 0.6;
+	fixDef.restitution = 0.2;
+	if (shape.r) {
+		fixDef.shape = new b2CircleShape(shape.r / SCALE);
+	} else {
+		fixDef.shape = new b2PolygonShape();
+		fixDef.shape.SetAsBox(shape.w / 2 / SCALE, shape.h / 2 / SCALE);   // half sizes
+	}
+
+	var body = world.CreateBody(bodyDef);
+	body.CreateFixture(fixDef);
+	data.r = shape.r; data.w = shape.w; data.h = shape.h;   // pixel size, for drawing
+	body.SetUserData(data);
+	return body;
+}
+var STATIC = b2Body.b2_staticBody, DYNAMIC = b2Body.b2_dynamicBody;
+
+// ------------------------------------------------------------
+// The whole scene is built in buildLevel(), so it can be rebuilt
+// from zero to restart the game.
+// ------------------------------------------------------------
+var world, pig, bird, pigOnGround;
+
+function buildLevel() {
+	// ------------------------------------------------------------
+	// 1. Physics world with gravity + static ground
+	// ------------------------------------------------------------
+	world = new b2World(new b2Vec2(0, 9.8), true);
+	createBody(W / 2, (GROUND_TOP + H) / 2, STATIC, { w: W, h: H - GROUND_TOP }, 1, { kind: "ground" });
+
+	// ------------------------------------------------------------
+	// 7. Static walls on the left and right sides.
+	//    They go high above the screen so a high shot still falls back inside.
+	// ------------------------------------------------------------
+	createBody(8, -300, STATIC, { w: 16, h: 1500 }, 1, { kind: "wall" });
+	createBody(W - 8, -300, STATIC, { w: 16, h: 1500 }, 1, { kind: "wall" });
+
+	// ------------------------------------------------------------
+	// 3. Obstacles: dynamic boxes so the bird can knock them over
+	// ------------------------------------------------------------
+	function addObstacle(x, y, w, h, img, density) {
+		createBody(x, y, DYNAMIC, { w: w, h: h }, density || 1, { kind: "obstacle", img: img });
+	}
+	var G = GROUND_TOP;
+	addObstacle(660, G - 50, 14, 100, woodBar);     // level 1: two posts + plank
+	addObstacle(780, G - 50, 14, 100, woodBar);
+	addObstacle(720, G - 107, 160, 14, woodBar);
+	addObstacle(680, G - 154, 14, 80, woodBar);     // level 2: two posts + plank
+	addObstacle(760, G - 154, 14, 80, woodBar);
+	addObstacle(720, G - 201, 120, 14, woodBar);
+	addObstacle(580, G - 20, 40, 40, woodBox);      // blocks around the tower
+	addObstacle(580, G - 58, 36, 36, iceBox);
+	addObstacle(870, G - 22, 44, 44, rockBox, 3);   // rock is heavier
+
+	// ------------------------------------------------------------
+	// 2. Dynamic bodies: the player and the target, both circles
+	// ------------------------------------------------------------
+	pig = createBody(720, G - 230, DYNAMIC, { r: 22 }, 1, { kind: "pig", img: pigImg });
+	bird = createBody(SLING.x, SLING.y, DYNAMIC, { r: 18 }, 3, { kind: "bird", img: birdImg });
+	bird.SetBullet(true);   // fast body: avoid passing through thin planks
+
+	// ------------------------------------------------------------
+	// 6. Collision detection: pig touches the ground -> message
+	// ------------------------------------------------------------
+	pigOnGround = false;
+	var listener = new b2ContactListener();
+	listener.BeginContact = function (contact) {
+		var a = contact.GetFixtureA().GetBody().GetUserData();
+		var b = contact.GetFixtureB().GetBody().GetUserData();
+		if (!a || !b) return;
+		if ((a.kind === "pig" && b.kind === "ground") || (a.kind === "ground" && b.kind === "pig")) {
+			pigOnGround = true;
+		}
+	};
+	world.SetContactListener(listener);
+
+	state = "ready";   // the bird waits in the slingshot
+	pull = null;
+}
+
+// ------------------------------------------------------------
+// 5. Launch by click and drag (slingshot)
+//    "ready"  : the bird waits in the slingshot
+//    "aiming" : the mouse is pulling the bird back
+//    "flying" : launched, physics moves it
+// ------------------------------------------------------------
+var state;
+var pull = null;          // pulled bird position while aiming (px)
+var flyTime = 0, stillTime = 0;
+
+function mousePos(e) {
+	var r = canvas.getBoundingClientRect();
+	return { x: (e.clientX - r.left) * W / r.width, y: (e.clientY - r.top) * H / r.height };
+}
+function clampPull(m) {
+	var dx = m.x - SLING.x, dy = m.y - SLING.y, len = Math.hypot(dx, dy);
+	if (len > MAX_PULL) { dx *= MAX_PULL / len; dy *= MAX_PULL / len; }
+	return { x: SLING.x + dx, y: Math.min(SLING.y + dy, GROUND_TOP - 18) };
+}
+function launchSpeed(p) {   // pull back = shoot forward
+	return { x: (SLING.x - p.x) * POWER, y: (SLING.y - p.y) * POWER };
+}
+function holdBird(x, y) {   // keep the bird still at (x, y) while it is in the slingshot
+	bird.SetPosition(new b2Vec2(x / SCALE, y / SCALE));
+	bird.SetLinearVelocity(new b2Vec2(0, 0));
+	bird.SetAngularVelocity(0);
+	bird.SetAngle(0);
+}
+
+canvas.addEventListener("pointerdown", function (e) {
+	var m = mousePos(e);
+	if (inside(m, RESTART_BTN) || (pigOnGround && inside(m, AGAIN_BTN))) { buildLevel(); return; }
+	if (pigOnGround) return;   // game won: only the buttons work
+	if (state === "ready" && Math.hypot(m.x - SLING.x, m.y - SLING.y) < 40) {
+		state = "aiming";
+		pull = clampPull(m);
+	}
+});
+canvas.addEventListener("pointermove", function (e) {
+	if (state === "aiming") pull = clampPull(mousePos(e));
+});
+window.addEventListener("pointerup", function () {
+	if (state !== "aiming") return;
+	if (Math.hypot(pull.x - SLING.x, pull.y - SLING.y) < 10) { state = "ready"; return; }   // too small
+	var v = launchSpeed(pull);
+	holdBird(pull.x, pull.y);
+	bird.SetAwake(true);                          // a sleeping body ignores velocity
+	bird.SetLinearVelocity(new b2Vec2(v.x, v.y)); // initial speed (m/s)
+	state = "flying";
+	flyTime = 0; stillTime = 0;
+});
+
+// ------------------------------------------------------------
+// Restart: button top right, "Play again" button after a win, or the R key
+// ------------------------------------------------------------
+var RESTART_BTN = { x: W - 140, y: 14, w: 110, h: 32 };
+var AGAIN_BTN = { x: W / 2 - 90, y: H / 2 - 24, w: 180, h: 48 };
+function inside(m, b) { return m.x >= b.x && m.x <= b.x + b.w && m.y >= b.y && m.y <= b.y + b.h; }
+window.addEventListener("keydown", function (e) {
+	if (e.key === "r" || e.key === "R") buildLevel();
+});
+
+// after a shot, when the bird has stopped (or after 7 s), put it back in the slingshot
+function updateBird(dt) {
+	if (state === "ready") holdBird(SLING.x, SLING.y);
+	if (state === "aiming") holdBird(pull.x, pull.y);
+	if (state === "flying") {
+		flyTime += dt;
+		stillTime = bird.GetLinearVelocity().Length() < 0.3 ? stillTime + dt : 0;
+		if ((flyTime > 1 && stillTime > 1) || flyTime > 7) { holdBird(SLING.x, SLING.y); state = "ready"; }
+	}
+}
+
+// ------------------------------------------------------------
+// 4. Drawing: each sprite follows its body position and rotation
+// ------------------------------------------------------------
+function drawBody(body) {
+	var d = body.GetUserData();
+	if (!d || !d.img) return;   // ground and walls are drawn by drawWorld()
+	var pos = body.GetPosition();
+	ctx.save();
+	ctx.translate(pos.x * SCALE, pos.y * SCALE);   // meters -> pixels
+	ctx.rotate(body.GetAngle());                   // radians
+	if (d.r) {
+		// the image fills its whole square, so draw it exactly at the body size
+		// (bigger would make the pig look on the ground when its body is not)
+		ctx.drawImage(d.img, -d.r, -d.r, d.r * 2, d.r * 2);
+	} else if (d.h > d.w) {
+		ctx.rotate(Math.PI / 2);                    // vertical post: turn the bar image
+		ctx.drawImage(d.img, -d.h / 2, -d.w / 2, d.h, d.w);
+	} else {
+		ctx.drawImage(d.img, -d.w / 2, -d.h / 2, d.w, d.h);
+	}
+	ctx.restore();
+}
+
+// sky, hills, ground and walls
+function drawWorld() {
+	var sky = ctx.createLinearGradient(0, 0, 0, GROUND_TOP);
+	sky.addColorStop(0, "#6ec1f2"); sky.addColorStop(1, "#e4f5ff");
+	ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+
+	ctx.fillStyle = "#a6dc8c";   // hills
+	ctx.beginPath(); ctx.moveTo(0, GROUND_TOP);
+	for (var x = 0; x <= W; x += 10) ctx.lineTo(x, 390 - 30 * Math.sin(x / 120) - 12 * Math.sin(x / 47));
+	ctx.lineTo(W, GROUND_TOP); ctx.fill();
+
+	ctx.fillStyle = "#7a4e2a"; ctx.fillRect(0, GROUND_TOP, W, H - GROUND_TOP);   // dirt
+	ctx.fillStyle = "#5cb83a"; ctx.fillRect(0, GROUND_TOP, W, 12);               // grass
+	ctx.fillStyle = "#86dc55"; ctx.fillRect(0, GROUND_TOP, W, 4);
+
+	ctx.fillStyle = "#7d8894";   // walls
+	ctx.fillRect(0, 0, 16, GROUND_TOP);
+	ctx.fillRect(W - 16, 0, 16, GROUND_TOP);
+}
+
+// wooden slingshot. front = false: trunk, back arm and both elastic bands
+// (drawn BEFORE the bird, so no band crosses it). front = true: front arm.
+var BACK_TIP = { x: 166, y: 354 }, FRONT_TIP = { x: 194, y: 356 };
+function drawSlingshot(front) {
+	ctx.lineCap = "round";
+	ctx.strokeStyle = "#7a4a22"; ctx.lineWidth = 11;
+	if (front) {
+		ctx.beginPath(); ctx.moveTo(180, 397); ctx.lineTo(FRONT_TIP.x, FRONT_TIP.y); ctx.stroke();
+		return;
+	}
+	ctx.lineWidth = 12;   // trunk + back arm
+	ctx.beginPath(); ctx.moveTo(180, GROUND_TOP); ctx.lineTo(180, 397); ctx.lineTo(BACK_TIP.x, BACK_TIP.y); ctx.stroke();
+
+	// elastic bands go to the back of the bird; straight when the slingshot is empty
+	var p = state === "aiming" ? pull : state === "ready" ? SLING : null;
+	ctx.strokeStyle = "#3b2314"; ctx.lineWidth = 5;
+	ctx.beginPath();
+	if (p) {
+		var back = { x: p.x - 12, y: p.y + 4 };
+		ctx.moveTo(BACK_TIP.x, BACK_TIP.y); ctx.lineTo(back.x, back.y); ctx.lineTo(FRONT_TIP.x, FRONT_TIP.y);
+	} else {
+		ctx.moveTo(BACK_TIP.x, BACK_TIP.y); ctx.lineTo(FRONT_TIP.x, FRONT_TIP.y);
+	}
+	ctx.stroke();
+}
+
+// dotted preview of the path while aiming
+function drawTrajectory() {
+	if (state !== "aiming") return;
+	var v = launchSpeed(pull), x = pull.x / SCALE, y = pull.y / SCALE, vx = v.x, vy = v.y;
+	ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+	for (var i = 1; i <= 60; i++) {
+		vy += 9.8 / 60; x += vx / 60; y += vy / 60;   // same integration as Box2D
+		if (y * SCALE > GROUND_TOP) break;
+		if (i % 4 === 0) { ctx.beginPath(); ctx.arc(x * SCALE, y * SCALE, 4 - i / 25, 0, Math.PI * 2); ctx.fill(); }
+	}
+}
+
+// 6. the message, top left
+function drawMessage() {
+	var text = pigOnGround ? "Bravo !" : "No targets on the ground yet";
+	ctx.font = "bold 16px Arial";
+	var w = ctx.measureText(text).width + 24;
+	ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+	ctx.beginPath(); ctx.roundRect(28, 14, w, 32, 16); ctx.fill();
+	ctx.fillStyle = pigOnGround ? "red" : "#222";
+	ctx.fillText(text, 40, 36);
+}
+
+function drawButton(b, text, bg, color, size) {
+	ctx.fillStyle = bg;
+	ctx.beginPath(); ctx.roundRect(b.x, b.y, b.w, b.h, b.h / 2); ctx.fill();
+	ctx.fillStyle = color; ctx.font = "bold " + size + "px Arial";
+	ctx.textAlign = "center"; ctx.textBaseline = "middle";
+	ctx.fillText(text, b.x + b.w / 2, b.y + b.h / 2 + 1);
+	ctx.textAlign = "start"; ctx.textBaseline = "alphabetic";
+}
+
+function draw() {
+	ctx.setTransform(RES, 0, 0, RES, 0, 0);   // virtual 1000 x 500 -> real pixels
+	drawWorld();
+	drawSlingshot(false);
+	for (var b = world.GetBodyList(); b; b = b.GetNext()) drawBody(b);
+	drawSlingshot(true);
+	drawTrajectory();
+	if (pigOnGround) {   // after a win: dim the scene and offer to play again
+		ctx.fillStyle = "rgba(0, 0, 0, 0.25)"; ctx.fillRect(0, 0, W, H);
+		drawButton(AGAIN_BTN, "Play again", "#ff7a1a", "#fff", 20);
+	}
+	drawMessage();
+	drawButton(RESTART_BTN, "Restart (R)", "rgba(255, 255, 255, 0.9)", "#222", 15);
+}
+
+// ------------------------------------------------------------
+// Game loop: fixed 1/60 s physics step, same speed on every screen
+// ------------------------------------------------------------
+var DT = 1 / 60, last = performance.now(), acc = 0;
+function gameLoop(now) {
+	acc += Math.min(0.1, (now - last) / 1000);
+	last = now;
+	while (acc >= DT) {
+		updateBird(DT);
+		world.Step(DT, 10, 10);   // time step, velocity iterations, position iterations
+		world.ClearForces();
+		acc -= DT;
+	}
+	draw();
+	requestAnimationFrame(gameLoop);
+}
+buildLevel();
+requestAnimationFrame(gameLoop);
+	</script>
+</body>
+</html>

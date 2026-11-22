@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Slingshot Siege</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<script src="Box2d.min.js"></script>
+	<style>
+		:root {
+			--ink: #1b2a41;
+			--panel: rgba(255, 255, 255, 0.92);
+			--accent: #ff7a1a;
+			--accent-dark: #d85e05;
+			--good: #2fa84f;
+			--bad: #e04848;
+			--font: "Fredoka", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+		}
+		* { box-sizing: border-box; }
+		html, body { margin: 0; }
+		body {
+			min-height: 100vh;
+			font-family: var(--font);
+			color: #fff;
+			background:
+				radial-gradient(1200px 600px at 50% -10%, #2f5d8a 0%, transparent 60%),
+				linear-gradient(180deg, #13243b 0%, #0b1626 100%);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 16px;
+			justify-content: center;
+		}
+		header { text-align: center; margin-bottom: 8px; }
+		header h1 {
+			margin: 0;
+			font-size: clamp(24px, 3vw, 36px);
+			font-weight: 700;
+			letter-spacing: 0.5px;
+			background: linear-gradient(180deg, #ffd36b, #ff8a2a);
+			-webkit-background-clip: text;
+			background-clip: text;
+			color: transparent;
+			text-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+		}
+		header p { margin: 4px 0 0; color: #b9cbe3; font-size: 15px; }
+
+		/* ---------- game frame ---------- */
+		.stage {
+			position: relative;
+			/* as big as the window allows, keeping the 1100:560 shape */
+			width: min(100%, calc((100vh - 32px) * 1100 / 560));
+			aspect-ratio: 1100 / 560;
+			border-radius: 18px;
+			overflow: hidden;
+			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 4px rgba(255, 255, 255, 0.08);
+			user-select: none;
+			-webkit-user-select: none;
+			touch-action: none;
+		}
+		canvas { display: block; width: 100%; height: 100%; cursor: default; }
+		canvas.grab { cursor: grab; }
+		canvas.grabbing { cursor: grabbing; }
+
+		/* ---------- HUD ---------- */
+		.hud {
+			position: absolute; left: 0; right: 0; top: 0;
+			display: flex; align-items: flex-start; justify-content: space-between;
+			padding: 12px 30px; pointer-events: none; gap: 10px;
+		}
+		.chip {
+			pointer-events: auto;
+			display: flex; align-items: center; gap: 8px;
+			background: var(--panel); color: var(--ink);
+			padding: 6px 12px; border-radius: 999px;
+			box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+			font-weight: 600; font-size: 15px;
+		}
+		.birds img { width: 26px; height: 26px; transition: opacity .3s, transform .3s; }
+		.birds img.used { opacity: 0.2; transform: scale(0.8); filter: grayscale(1); }
+		.status { transition: background .3s, color .3s, transform .3s; }
+		.status .dot { width: 10px; height: 10px; border-radius: 50%; background: #f0a500; box-shadow: 0 0 0 3px rgba(240,165,0,.25); }
+		.status.win { background: var(--good); color: #fff; transform: scale(1.12); }
+		.status.win .dot { background: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.35); }
+		.right { display: flex; gap: 8px; align-items: center; }
+		.score b { font-size: 18px; min-width: 56px; text-align: right; font-variant-numeric: tabular-nums; }
+		.icon-btn {
+			pointer-events: auto; border: 0; cursor: pointer;
+			width: 36px; height: 36px; border-radius: 50%;
+			background: var(--panel); color: var(--ink);
+			display: grid; place-items: center;
+			box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+			transition: transform .15s;
+		}
+		.icon-btn:hover { transform: scale(1.08); }
+		.icon-btn svg { width: 18px; height: 18px; }
+
+		/* contextual hint at the bottom of the stage */
+		.hint {
+			position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+			background: rgba(20, 30, 45, 0.72); color: #fff;
+			padding: 7px 16px; border-radius: 999px; font-size: 15px; font-weight: 500;
+			white-space: nowrap; pointer-events: none; transition: opacity .3s;
+			backdrop-filter: blur(4px);
+		}
+
+		/* ---------- overlays (intro / win / lose) ---------- */
+		.overlay {
+			position: absolute; inset: 0;
+			display: grid; place-items: center;
+			background: rgba(10, 20, 35, 0.45);
+			backdrop-filter: blur(3px);
+			opacity: 0; pointer-events: none; transition: opacity .35s;
+			padding: 16px;
+		}
+		.overlay.show { opacity: 1; pointer-events: auto; }
+		.card {
+			background: #fff; color: var(--ink);
+			border-radius: 22px; padding: 26px 30px;
+			width: min(640px, 100%);
+			text-align: center;
+			box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+			transform: translateY(14px) scale(.97); transition: transform .35s cubic-bezier(.2,1.4,.4,1);
+			max-height: 100%; overflow: auto;
+		}
+		.overlay.show .card { transform: none; }
+		.card h2 { margin: 0; font-size: 34px; font-weight: 700; }
+		.card .lead { margin: 6px 0 18px; color: #4a5a72; font-size: 16px; }
+		.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+		.step { background: #f3f7fc; border-radius: 16px; padding: 14px 10px 12px; position: relative; }
+		.step .num {
+			position: absolute; top: -10px; left: -6px;
+			width: 28px; height: 28px; border-radius: 50%;
+			background: var(--accent); color: #fff; font-weight: 700;
+			display: grid; place-items: center; box-shadow: 0 3px 8px rgba(255,122,26,.4);
+		}
+		.step svg { width: 100%; height: 70px; }
+		.step h3 { margin: 6px 0 2px; font-size: 17px; }
+		.step p { margin: 0; font-size: 13.5px; color: #55657c; line-height: 1.35; }
+		.goal {
+			background: #fff6ea; border: 2px dashed #ffbf80; border-radius: 14px;
+			padding: 10px 14px; font-size: 15px; margin-bottom: 18px; color: #7a4a14;
+		}
+		.btn {
+			border: 0; cursor: pointer; font-family: var(--font);
+			background: linear-gradient(180deg, #ff9a3c, var(--accent));
+			color: #fff; font-size: 20px; font-weight: 700;
+			padding: 12px 40px; border-radius: 999px;
+			box-shadow: 0 6px 0 var(--accent-dark), 0 10px 20px rgba(255,122,26,.35);
+			transition: transform .1s, box-shadow .1s;
+		}
+		.btn:hover { transform: translateY(-1px); }
+		.btn:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--accent-dark); }
+		.keys { margin-top: 14px; font-size: 13px; color: #6a7a90; }
+		kbd {
+			font-family: var(--font); background: #eef2f7; border: 1px solid #d5dde8;
+			border-bottom-width: 3px; border-radius: 6px; padding: 1px 7px; font-size: 12px; color: var(--ink);
+		}
+		.stars { display: flex; justify-content: center; gap: 10px; margin: 10px 0 6px; }
+		.stars svg { width: 56px; height: 56px; transform: scale(0); }
+		.overlay.show .stars svg { animation: pop .45s cubic-bezier(.2,1.6,.4,1) forwards; }
+		.overlay.show .stars svg:nth-child(2) { animation-delay: .2s; width: 70px; height: 70px; margin-top: -10px; }
+		.overlay.show .stars svg:nth-child(3) { animation-delay: .4s; }
+		@keyframes pop { to { transform: scale(1); } }
+		.tally { margin: 6px auto 18px; width: min(320px, 100%); font-size: 16px; }
+		.tally div { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed #dde4ee; }
+		.tally div:last-child { border: 0; font-weight: 700; font-size: 19px; }
+		.win-title { color: var(--good); }
+		.lose-title { color: var(--bad); }
+
+		footer { margin-top: 14px; color: #8ea3c0; font-size: 13.5px; text-align: center; }
+		footer kbd { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.15); color: #dbe6f5; }
+
+		@media (max-width: 720px) {
+			.steps { grid-template-columns: 1fr; }
+			.hud { padding: 8px 12px; }
+			.chip { font-size: 12px; padding: 4px 9px; }
+			.birds img { width: 18px; height: 18px; }
+			.hint { font-size: 12px; }
+			.card { padding: 18px; }
+			.card h2 { font-size: 26px; }
+		}
+	</style>
+</head>
+<body>
+
+	<div class="stage" id="stage">
+		<canvas id="game"></canvas>
+
+		<!-- HUD: birds left, status message (requirement 6), score, buttons -->
+		<div class="hud">
+			<div class="chip birds" id="birds" title="Birds left"></div>
+			<div class="chip status" id="status"><span class="dot"></span><span id="statusText">No targets on the ground yet</span></div>
+			<div class="right">
+				<div class="chip score">Score <b id="score">0</b></div>
+				<button class="icon-btn" id="btnHelp" title="How to play (H)" aria-label="How to play">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><circle cx="12" cy="17.5" r=".6" fill="currentColor"/></svg>
+				</button>
+				<button class="icon-btn" id="btnSound" title="Sound on/off (M)" aria-label="Toggle sound">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path id="soundWaves" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+				</button>
+				<button class="icon-btn" id="btnRestart" title="Restart (R)" aria-label="Restart">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 3v6h6"/></svg>
+				</button>
+			</div>
+		</div>
+		<div class="hint" id="hint">Press on the bird and drag back to aim</div>
+
+		<!-- Intro / how to play -->
+		<div class="overlay show" id="introOverlay">
+			<div class="card">
+				<h2>How to play</h2>
+				<p class="lead">Knock the crowned target off its tower and down to the ground.</p>
+				<div class="steps">
+					<div class="step">
+						<span class="num">1</span>
+						<svg viewBox="0 0 120 70"><path d="M40 68V40M40 40l-12-22M40 40l12-22" stroke="#8a5523" stroke-width="7" stroke-linecap="round" fill="none"/><circle cx="40" cy="22" r="11" fill="#e2373a" stroke="#7a1416" stroke-width="2"/><path d="M78 30c0-6 10-6 10 0v14" stroke="#1b2a41" stroke-width="3" fill="#ffd9b8" stroke-linejoin="round"/><path d="M60 34l-12-8" stroke="#ff7a1a" stroke-width="3" stroke-dasharray="3 4" stroke-linecap="round"/></svg>
+						<h3>Grab</h3>
+						<p>Press on the bird sitting in the slingshot.</p>
+					</div>
+					<div class="step">
+						<span class="num">2</span>
+						<svg viewBox="0 0 120 70"><path d="M70 68V40M70 40l-12-22M70 40l12-22" stroke="#8a5523" stroke-width="7" stroke-linecap="round" fill="none"/><path d="M58 18L36 38M82 18L36 38" stroke="#4a2a12" stroke-width="2.5"/><circle cx="34" cy="40" r="11" fill="#e2373a" stroke="#7a1416" stroke-width="2"/><g fill="#ff7a1a"><circle cx="82" cy="12" r="2.6"/><circle cx="94" cy="8" r="2.3"/><circle cx="106" cy="7" r="2"/><circle cx="116" cy="9" r="1.7"/></g></svg>
+						<h3>Pull &amp; aim</h3>
+						<p>Drag backwards. Farther = more power. The dotted line previews the path.</p>
+					</div>
+					<div class="step">
+						<span class="num">3</span>
+						<svg viewBox="0 0 120 70"><path d="M22 68V40M22 40l-10-22M22 40l10-22" stroke="#8a5523" stroke-width="7" stroke-linecap="round" fill="none"/><path d="M30 40Q60 -4 92 34" stroke="#9fb2c9" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round" fill="none"/><circle cx="96" cy="40" r="11" fill="#e2373a" stroke="#7a1416" stroke-width="2"/><path d="M104 30l8-6M106 40h9M104 50l8 6" stroke="#ff7a1a" stroke-width="3" stroke-linecap="round"/></svg>
+						<h3>Release</h3>
+						<p>Let go to launch. You have 3 birds to topple the tower.</p>
+					</div>
+				</div>
+				<div class="goal">You win when the target touches the ground: <b>Bravo !</b></div>
+				<button class="btn" id="btnPlay">Play</button>
+				<div class="keys"><kbd>R</kbd> restart &nbsp; <kbd>H</kbd> help &nbsp; <kbd>M</kbd> sound</div>
+			</div>
+		</div>
+
+		<!-- Win -->
+		<div class="overlay" id="winOverlay">
+			<div class="card">
+				<h2 class="win-title">Bravo !</h2>
+				<div class="stars" id="stars"></div>
+				<p class="lead" id="winText">The target hit the ground.</p>
+				<div class="tally" id="winTally"></div>
+				<button class="btn" id="btnAgainWin">Play again</button>
+			</div>
+		</div>
+
+		<!-- Lose -->
+		<div class="overlay" id="loseOverlay">
+			<div class="card">
+				<h2 class="lose-title">Out of birds</h2>
+				<p class="lead">The target is still standing. Tip: pull harder and aim at the base of the tower.</p>
+				<div class="tally" id="loseTally"></div>
+				<button class="btn" id="btnAgainLose">Try again</button>
+			</div>
+		</div>
+	</div>
+
+
+	<script>
+/*
+ * =====================================================================
+ * AI USAGE (required by the exam rules)
+ * AI tool: Claude (Anthropic). The whole file was generated with it.
+ * Prompts used:
+ *  1) "Build the practical midterm in test.pdf: a basic slingshot game with
+ *     JavaScript, HTML5 Canvas, a game loop and Box2DWeb. Box2D world with
+ *     gravity and a static ground, a dynamic red bird (circle) and a dynamic
+ *     green pig target, at least 5 obstacles, sprites red.png / target.png /
+ *     materials drawn on the bodies and following position and rotation,
+ *     launch the bird by click-and-drag, detect when the target touches the
+ *     ground and show a message, add side walls."
+ *  2) "Make the game look great: clean UI and world, eye catching. Make the
+ *     simulation, physics, user experience, game flow and game logic correct,
+ *     and make it clear how to play and what happens at each step."
+ * =====================================================================
+ *
+ * Map of the exam requirements in this file:
+ *   [1] physics world + static ground ......... buildLevel()
+ *   [2] dynamic bird + dynamic pig ............. spawnBird(), buildLevel()
+ *   [3] obstacles (11 dynamic boxes) ........... buildTower()
+ *   [4] sprites follow position + rotation ..... drawBody()
+ *   [5] launch by click and drag ............... pointer events + launchBird()
+ *   [6] pig touches ground -> message .......... contact listener + onWin()
+ *   [7] side walls ............................. buildLevel()
+ */
+
+// ---------------------------------------------------------------------
+// Box2D class shortcuts
+// ---------------------------------------------------------------------
+var b2Vec2 = Box2D.Common.Math.b2Vec2;
+var b2World = Box2D.Dynamics.b2World;
+var b2BodyDef = Box2D.Dynamics.b2BodyDef;
+var b2Body = Box2D.Dynamics.b2Body;
+var b2FixtureDef = Box2D.Dynamics.b2FixtureDef;
+var b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
+var b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
+var b2ContactListener = Box2D.Dynamics.b2ContactListener;
+var b2WorldManifold = Box2D.Collision.b2WorldManifold;
+
+// ---------------------------------------------------------------------
+// Constants. The canvas is always drawn in a 1100 x 560 "virtual" space,
+// CSS scales it to fit the screen.
+// ---------------------------------------------------------------------
+var W = 1100, H = 560;
+var SCALE = 30;                 // pixels per meter (Box2D works in meters)
+var DT = 1 / 60;                // fixed physics time step (seconds)
+var GRAVITY = 9.8;              // m/s², +y is down on the canvas
+var GROUND_TOP = 490;           // y (px) of the top of the ground
+var WALL_W = 18;                // side wall thickness (px)
+var SLING = { x: 212, y: 386 }; // where the bird rests in the slingshot
+var BIRD_R = 20, PIG_R = 24;    // collision radii (px)
+var MAX_PULL = 120;             // longest pull of the elastic (px)
+var POWER = 0.17;               // launch speed (m/s) per pixel of pull -> max ~20 m/s
+var BIRDS_PER_GAME = 3;
+
+var canvas = document.getElementById("game");
+var ctx = canvas.getContext("2d");
+// Resolution: the game logic always uses the 1100 x 560 virtual space, but
+// the canvas gets as many real pixels as it has on screen (x devicePixelRatio).
+// RES = real pixels per virtual pixel. Recomputed on every window resize.
+var RES = 1;
+
+// ---------------------------------------------------------------------
+// Images: the provided sprites and materials
+// ---------------------------------------------------------------------
+function loadImage(src) { var i = new Image(); i.src = src; return i; }
+var IMG = {
+	bird: loadImage("sprites/red.png"),
+	pig: loadImage("sprites/target.png"),
+	woodBar: loadImage("materials/wood_bar.png"),
+	iceBar: loadImage("materials/ice_bar.png"),
+	rockBar: loadImage("materials/rock_bar.png"),
+	woodBox: loadImage("materials/wood_box.png"),
+	iceBox: loadImage("materials/ice_box.png"),
+	rockBox: loadImage("materials/rock_box.png")
+};
+
+// Physical properties per material.
+//  density: heavier material = harder to push
+//  friction: ice slides, rock grips
+//  restitution: bounciness
+//  colors: debris particle colors when it gets hit
+var MAT = {
+	wood: { density: 0.8, friction: 0.7, restitution: 0.1, bar: IMG.woodBar, box: IMG.woodBox, colors: ["#c8873a", "#e0a659", "#8a5523"] },
+	ice:  { density: 0.6, friction: 0.15, restitution: 0.05, bar: IMG.iceBar, box: IMG.iceBox, colors: ["#bfe8ff", "#eefaff", "#86c9ee"] },
+	rock: { density: 2.5, friction: 0.9, restitution: 0.02, bar: IMG.rockBar, box: IMG.rockBox, colors: ["#9a9a9a", "#cfcfcf", "#6c6c6c"] }
+};
+var BIRD_PROPS = { density: 3, friction: 0.6, restitution: 0.35 };
+var PIG_PROPS = { density: 1, friction: 0.6, restitution: 0.2 };
+var STATIC_PROPS = { density: 1, friction: 0.8, restitution: 0.1 };
+
+// ---------------------------------------------------------------------
+// Game state
+// ---------------------------------------------------------------------
+var world, bird, pig, obstacles;
+var state;          // "ready" | "aiming" | "flying" | "reloading" | "lastcheck" | "won" | "lost"
+var paused = true;  // true while the "How to play" card is open
+var birdsLeft, shotsFired, score, shownScore;
+var pigOnGround;    // set by the contact listener [6]
+var pull = null;    // current pull point while aiming {x, y}
+var shotTime, settleTime, stateTime;
+var trail, particles, popups, impacts, shake, time = 0;
+
+// ---------------------------------------------------------------------
+// Body factory (all sizes given in pixels, converted to meters here)
+// ---------------------------------------------------------------------
+function createBody(x, y, type, shape, props, data) {
+	var bd = new b2BodyDef();
+	bd.type = type;
+	bd.position.Set(x / SCALE, y / SCALE);   // Box2D position = CENTRE of the body
+	var fd = new b2FixtureDef();
+	fd.density = props.density;
+	fd.friction = props.friction;
+	fd.restitution = props.restitution;
+	if (shape.r !== undefined) {
+		fd.shape = new b2CircleShape(shape.r / SCALE);
+	} else {
+		fd.shape = new b2PolygonShape();
+		fd.shape.SetAsBox(shape.w / 2 / SCALE, shape.h / 2 / SCALE);   // half sizes
+	}
+	var body = world.CreateBody(bd);
+	body.CreateFixture(fd);
+	data.w = shape.w; data.h = shape.h; data.r = shape.r;   // pixel size, for drawing
+	body.SetUserData(data);
+	return body;
+}
+var STATIC = b2Body.b2_staticBody, DYNAMIC = b2Body.b2_dynamicBody;
+
+// ---------------------------------------------------------------------
+// [1] [7] Build the whole level
+// ---------------------------------------------------------------------
+function buildLevel() {
+	// [1] world with gravity, "true" lets resting bodies sleep (faster)
+	world = new b2World(new b2Vec2(0, GRAVITY), true);
+
+	// [1] static ground platform along the bottom
+	createBody(W / 2, (GROUND_TOP + H) / 2, STATIC, { w: W * 2, h: H - GROUND_TOP }, STATIC_PROPS, { kind: "ground" });
+
+	// [7] static side walls. They go far above the screen so a high shot
+	// still comes back down inside the playable area.
+	var wallH = H + 1200, wallY = H - wallH / 2;
+	createBody(WALL_W / 2, wallY, STATIC, { w: WALL_W, h: wallH }, STATIC_PROPS, { kind: "wall" });
+	createBody(W - WALL_W / 2, wallY, STATIC, { w: WALL_W, h: wallH }, STATIC_PROPS, { kind: "wall" });
+
+	buildTower();
+
+	// [2] the target: dynamic CIRCLE (the sprite is round), on top of the tower
+	pig = createBody(840, 244, DYNAMIC, { r: PIG_R }, PIG_PROPS, { kind: "pig", img: IMG.pig });
+
+	// [6] collision detection
+	world.SetContactListener(makeContactListener());
+
+	// reset game variables
+	birdsLeft = BIRDS_PER_GAME; shotsFired = 0; score = 0; shownScore = 0;
+	pigOnGround = false; pull = null; shake = 0;
+	trail = []; particles = []; popups = []; impacts = [];
+	bird = null;
+	spawnBird(false);
+	hideOverlays();
+	updateHUD();
+}
+
+// [3] Obstacles: DYNAMIC boxes (polygon shapes) so they can be knocked over.
+function buildTower() {
+	obstacles = [];
+	function add(x, y, w, h, mat, isBar) {
+		var m = MAT[mat];
+		var b = createBody(x, y, DYNAMIC, { w: w, h: h }, m,
+			{ kind: "obstacle", mat: mat, img: isBar ? m.bar : m.box });
+		var d = b.GetUserData();
+		d.x0 = x; d.y0 = y; d.toppled = false;   // start pose, used for scoring
+		obstacles.push(b);
+	}
+	var G = GROUND_TOP;
+	// level 1: three wooden posts + one long wooden plank
+	add(740, G - 55, 16, 110, "wood", true);
+	add(840, G - 55, 16, 110, "wood", true);
+	add(940, G - 55, 16, 110, "wood", true);
+	add(840, G - 118, 232, 16, "wood", true);
+	// level 2: two ice posts + ice plank, an ice block between them
+	add(780, G - 166, 16, 80, "ice", true);
+	add(900, G - 166, 16, 80, "ice", true);
+	add(840, G - 144, 36, 36, "ice", false);
+	add(840, G - 214, 152, 16, "ice", true);
+	// heavy rock blocks guarding the right side, a small wood + ice stack on the left
+	add(1020, G - 22, 44, 44, "rock", false);
+	add(650, G - 20, 40, 40, "wood", false);
+	add(650, G - 56, 32, 32, "ice", false);
+}
+
+// [2] The player: a dynamic CIRCLE body.
+// While it waits in the slingshot we hold it in place every physics step
+// (see holdBird). It stays a dynamic body the whole time.
+function spawnBird(hop) {
+	if (birdsLeft <= 0) return;
+	birdsLeft--;
+	bird = createBody(SLING.x, SLING.y, DYNAMIC, { r: BIRD_R }, BIRD_PROPS, { kind: "bird", img: IMG.bird });
+	bird.SetBullet(true);   // continuous collision: a fast bird cannot tunnel through thin planks
+	setState(hop ? "reloading" : "ready");
+	updateHUD();
+}
+
+function holdBird(x, y) {
+	bird.SetPosition(new b2Vec2(x / SCALE, y / SCALE));
+	bird.SetLinearVelocity(new b2Vec2(0, 0));
+	bird.SetAngularVelocity(0);
+	bird.SetAngle(0);
+}
+
+// ---------------------------------------------------------------------
+// [6] Contact listener
+//   BeginContact: two fixtures start touching -> pig + ground = win
+//   PostSolve: gives the collision impulse -> used for debris, shake, sound
+// ---------------------------------------------------------------------
+function makeContactListener() {
+	var l = new b2ContactListener();
+	var wm = new b2WorldManifold();
+	l.BeginContact = function (contact) {
+		var a = contact.GetFixtureA().GetBody().GetUserData();
+		var b = contact.GetFixtureB().GetBody().GetUserData();
+		if (!a || !b) return;
+		if ((a.kind === "pig" && b.kind === "ground") || (a.kind === "ground" && b.kind === "pig")) {
+			pigOnGround = true;
+		}
+	};
+	l.PostSolve = function (contact, impulse) {
+		var imp = impulse.normalImpulses[0];
+		if (imp < 2.5 || impacts.length > 8) return;   // ignore resting contacts
+		contact.GetWorldManifold(wm);
+		var p = wm.m_points[0];
+		impacts.push({
+			x: p.x * SCALE, y: p.y * SCALE, imp: imp,
+			a: contact.GetFixtureA().GetBody().GetUserData(),
+			b: contact.GetFixtureB().GetBody().GetUserData()
+		});
+	};
+	return l;
+}
+
+// ---------------------------------------------------------------------
+// [5] Mouse / touch input (pointer events cover both)
+// ---------------------------------------------------------------------
+function toCanvas(e) {
+	var r = canvas.getBoundingClientRect();
+	return { x: (e.clientX - r.left) * W / r.width, y: (e.clientY - r.top) * H / r.height };
+}
+function clampPull(m) {
+	var dx = m.x - SLING.x, dy = m.y - SLING.y;
+	var len = Math.hypot(dx, dy);
+	if (len > MAX_PULL) { dx *= MAX_PULL / len; dy *= MAX_PULL / len; }
+	var y = Math.min(SLING.y + dy, GROUND_TOP - BIRD_R);   // never pull into the ground
+	return { x: SLING.x + dx, y: y };
+}
+function launchVelocity(p) {
+	// pulling back makes the bird go the opposite way: v = (sling - pull) * POWER
+	return { x: (SLING.x - p.x) * POWER, y: (SLING.y - p.y) * POWER };
+}
+
+canvas.addEventListener("pointerdown", function (e) {
+	if (paused || state !== "ready") return;
+	var m = toCanvas(e);
+	if (Math.hypot(m.x - SLING.x, m.y - SLING.y) < BIRD_R * 2.5) {
+		try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* not critical */ }
+		pull = clampPull(m);
+		setState("aiming");
+		initAudio();
+		sfxStretch();
+	}
+});
+canvas.addEventListener("pointermove", function (e) {
+	var m = toCanvas(e);
+	if (state === "aiming") {
+		pull = clampPull(m);
+	} else {
+		// cursor feedback: show a "grab" hand above the bird when it can be grabbed
+		var over = state === "ready" && !paused && Math.hypot(m.x - SLING.x, m.y - SLING.y) < BIRD_R * 2.5;
+		canvas.className = over ? "grab" : "";
+	}
+	if (state === "aiming") canvas.className = "grabbing";
+});
+function release() {
+	if (state !== "aiming") return;
+	canvas.className = "";
+	var len = Math.hypot(pull.x - SLING.x, pull.y - SLING.y);
+	if (len < 15) {            // tiny pull: cancel, the bird goes back
+		pull = null;
+		setState("ready");
+		return;
+	}
+	launchBird();
+}
+canvas.addEventListener("pointerup", release);
+canvas.addEventListener("pointercancel", release);
+
+// [5] launch: give the bird its initial speed
+function launchBird() {
+	var v = launchVelocity(pull);
+	holdBird(pull.x, pull.y);
+	bird.SetAwake(true);                         // a sleeping body ignores velocity
+	bird.SetLinearVelocity(new b2Vec2(v.x, v.y)); // m/s
+	bird.SetAngularVelocity(-v.x * 0.3);          // a bit of spin looks natural
+	pull = null;
+	shotsFired++;
+	trail = [];
+	shotTime = 0; settleTime = 0;
+	setState("flying");
+	updateHUD();
+	sfxLaunch();
+}
+
+// ---------------------------------------------------------------------
+// Game flow
+// ---------------------------------------------------------------------
+var HINTS = {
+	ready: "Press on the bird and drag back to aim",
+	aiming: "Release to launch. Pull farther for more power",
+	flying: "Watch it fly...",
+	reloading: "Next bird!",
+	lastcheck: "Last bird... will the tower fall?",
+	won: "Bravo ! The target hit the ground",
+	lost: "Out of birds"
+};
+function setState(s) {
+	state = s;
+	stateTime = 0;
+	document.getElementById("hint").textContent = HINTS[s];
+}
+
+function step() {
+	time += DT; stateTime += DT;
+
+	// keep the waiting bird in the slingshot pouch
+	if (state === "ready" || state === "reloading") holdBird(SLING.x, SLING.y);
+	if (state === "aiming") holdBird(pull.x, pull.y);
+
+	world.Step(DT, 8, 3);   // time step, velocity iterations, position iterations
+	world.ClearForces();
+
+	handleImpacts();
+	checkToppled();
+
+	if (state === "reloading" && stateTime > 0.5) setState("ready");
+
+	if (state === "flying") {
+		shotTime += DT;
+		var p = bird.GetPosition(), v = bird.GetLinearVelocity();
+		// leave a dotted trail behind the bird
+		if (v.Length() > 2 && Math.round(shotTime / DT) % 3 === 0) {
+			trail.push({ x: p.x * SCALE, y: p.y * SCALE, r: trail.length % 4 === 0 ? 4 : 2.5 });
+		}
+		// the shot ends when the bird has (almost) stopped for 0.7 s, or after 8 s
+		if (shotTime > 1 && v.Length() < 0.35) settleTime += DT; else settleTime = 0;
+		if (settleTime > 0.7 || shotTime > 8) endShot();
+	}
+
+	if (state === "lastcheck" && stateTime > 3) {
+		setState("lost");
+		sfxLose();
+		setTimeout(showLose, 400);
+	}
+
+	// [6] the contact listener raised the flag: the target touched the ground
+	if (pigOnGround && state !== "won" && state !== "lost") onWin();
+}
+
+function endShot() {
+	// the used bird disappears in a puff of smoke
+	var p = bird.GetPosition();
+	puff(p.x * SCALE, p.y * SCALE);
+	world.DestroyBody(bird);
+	bird = null;
+	if (birdsLeft > 0) spawnBird(true);
+	else setState("lastcheck");   // give the tower a few seconds to finish falling
+}
+
+function onWin() {
+	setState("won");
+	var p = pig.GetPosition();
+	addScore(5000, p.x * SCALE, p.y * SCALE - 30, "#2fa84f");
+	confetti(p.x * SCALE, p.y * SCALE);
+	var st = document.getElementById("status");
+	st.classList.add("win");
+	document.getElementById("statusText").textContent = "Bravo !";
+	sfxWin();
+	setTimeout(showWin, 1800);
+}
+
+// +500 for every obstacle that got knocked off its start position
+function checkToppled() {
+	if (shotsFired === 0) return;
+	for (var i = 0; i < obstacles.length; i++) {
+		var b = obstacles[i], d = b.GetUserData();
+		if (d.toppled) continue;
+		var p = b.GetPosition();
+		var moved = Math.hypot(p.x * SCALE - d.x0, p.y * SCALE - d.y0);
+		if (moved > 25 || Math.abs(b.GetAngle()) > 0.4) {
+			d.toppled = true;
+			addScore(500, p.x * SCALE, p.y * SCALE - 20, "#fff");
+		}
+	}
+}
+
+function addScore(n, x, y, color) {
+	score += n;
+	popups.push({ x: x, y: y, text: "+" + n, color: color, life: 1.2, max: 1.2 });
+}
+
+// ---------------------------------------------------------------------
+// Effects: debris, puffs, confetti, popups, screen shake
+// ---------------------------------------------------------------------
+var lastImpactSound = 0;
+function handleImpacts() {
+	for (var i = 0; i < impacts.length; i++) {
+		var it = impacts[i];
+		var strength = Math.min(it.imp / 20, 1);
+		[it.a, it.b].forEach(function (d) {
+			if (d && d.kind === "obstacle") debris(it.x, it.y, MAT[d.mat].colors, 3 + Math.round(strength * 10));
+		});
+		if (it.imp > 15) shake = Math.max(shake, Math.min(it.imp / 6, 9));
+		if (time - lastImpactSound > 0.07) {
+			lastImpactSound = time;
+			var mat = (it.a && it.a.mat) || (it.b && it.b.mat) || "wood";
+			sfxHit(strength, mat);
+		}
+	}
+	impacts.length = 0;
+}
+function debris(x, y, colors, n) {
+	for (var i = 0; i < n; i++) {
+		var a = Math.random() * Math.PI * 2, s = 60 + Math.random() * 180;
+		particles.push({
+			x: x, y: y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 80, g: 600,
+			life: 0.5 + Math.random() * 0.5, max: 1, size: 2 + Math.random() * 4,
+			rot: Math.random() * 6, vr: (Math.random() - 0.5) * 12,
+			color: colors[i % colors.length], shape: "rect"
+		});
+	}
+}
+function puff(x, y) {
+	for (var i = 0; i < 14; i++) {
+		var a = Math.random() * Math.PI * 2, s = 20 + Math.random() * 60;
+		particles.push({ x: x, y: y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 20, g: -20,
+			life: 0.7, max: 0.7, size: 8 + Math.random() * 10, color: "rgba(255,255,255,0.9)", shape: "smoke" });
+	}
+	sfxPuff();
+}
+function confetti(x, y) {
+	var cols = ["#ff5a5f", "#ffd23f", "#3bceac", "#4d96ff", "#ff8fd6", "#ffffff"];
+	for (var i = 0; i < 90; i++) {
+		var a = -Math.PI / 2 + (Math.random() - 0.5) * 2.2, s = 200 + Math.random() * 320;
+		particles.push({ x: x, y: y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, g: 420,
+			life: 1.6 + Math.random(), max: 2.6, size: 4 + Math.random() * 4,
+			rot: Math.random() * 6, vr: (Math.random() - 0.5) * 16, color: cols[i % cols.length], shape: "rect" });
+	}
+}
+function updateEffects(dt) {
+	for (var i = particles.length - 1; i >= 0; i--) {
+		var p = particles[i];
+		p.vy += p.g * dt; p.x += p.vx * dt; p.y += p.vy * dt;
+		if (p.vr) p.rot += p.vr * dt;
+		if (p.shape === "rect" && p.y > GROUND_TOP - 2 && p.vy > 0) { p.y = GROUND_TOP - 2; p.vy *= -0.3; p.vx *= 0.6; }
+		p.life -= dt;
+		if (p.life <= 0) particles.splice(i, 1);
+	}
+	for (var j = popups.length - 1; j >= 0; j--) {
+		popups[j].life -= dt; popups[j].y -= 40 * dt;
+		if (popups[j].life <= 0) popups.splice(j, 1);
+	}
+	shake *= Math.pow(0.02, dt);
+	if (shake < 0.2) shake = 0;
+	shownScore += (score - shownScore) * Math.min(1, dt * 8);
+	document.getElementById("score").textContent = Math.round(shownScore);
+}
+
+// ---------------------------------------------------------------------
+// Background, pre-rendered once into off-screen canvases
+// ---------------------------------------------------------------------
+function rng(seed) {   // small deterministic random generator
+	return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+}
+function layer() {
+	var c = document.createElement("canvas");
+	c.width = Math.round(W * RES); c.height = Math.round(H * RES);
+	var g = c.getContext("2d"); g.scale(RES, RES);
+	return { c: c, g: g };
+}
+
+var SKY, LAND;
+function paintSky() {
+	SKY = layer();
+	var g = SKY.g;
+	var grd = g.createLinearGradient(0, 0, 0, GROUND_TOP);
+	grd.addColorStop(0, "#4fa8ec"); grd.addColorStop(0.6, "#a9dcfa"); grd.addColorStop(1, "#ecf8ff");
+	g.fillStyle = grd; g.fillRect(0, 0, W, H);
+	// sun with a soft glow
+	var sun = g.createRadialGradient(420, 100, 10, 420, 100, 170);
+	sun.addColorStop(0, "rgba(255,247,200,0.95)"); sun.addColorStop(0.25, "rgba(255,236,160,0.45)"); sun.addColorStop(1, "rgba(255,236,160,0)");
+	g.fillStyle = sun; g.fillRect(0, 0, W, H);
+	g.fillStyle = "#fff7cf"; g.beginPath(); g.arc(420, 100, 34, 0, Math.PI * 2); g.fill();
+}
+
+function paintLand() {
+	LAND = layer();
+	var g = LAND.g, r = rng(7);
+	// far mountains (hazy blue)
+	g.fillStyle = "#b3d4ea";
+	g.beginPath(); g.moveTo(0, GROUND_TOP);
+	for (var x = 0; x <= W; x += 20) {
+		var y = 300 - 60 * Math.sin(x / 140) - 35 * Math.sin(x / 57 + 1) - r() * 10;
+		g.lineTo(x, y);
+	}
+	g.lineTo(W, GROUND_TOP); g.fill();
+	// mid hills
+	function hills(base, amp, freq, phase, color) {
+		g.fillStyle = color; g.beginPath(); g.moveTo(0, GROUND_TOP);
+		for (var x = 0; x <= W; x += 10) g.lineTo(x, base - amp * Math.sin(x / freq + phase) - amp * 0.4 * Math.sin(x / (freq / 2.3)));
+		g.lineTo(W, GROUND_TOP); g.fill();
+	}
+	hills(420, 26, 130, 0.5, "#9fd98a");
+	// trees on the hills
+	for (var i = 0; i < 16; i++) {
+		var tx = 40 + r() * (W - 80), ty = 418 - 26 * Math.sin(tx / 130 + 0.5) - 10 * Math.sin(tx / 56.5);
+		var s = 0.6 + r() * 0.6;
+		g.fillStyle = "#7b5a3a"; g.fillRect(tx - 2 * s, ty - 4, 4 * s, 18 * s);
+		g.fillStyle = r() > 0.5 ? "#5fb44a" : "#4da23c";
+		g.beginPath(); g.arc(tx, ty - 10 * s, 13 * s, 0, Math.PI * 2); g.fill();
+		g.fillStyle = "rgba(255,255,255,0.15)";
+		g.beginPath(); g.arc(tx - 4 * s, ty - 14 * s, 6 * s, 0, Math.PI * 2); g.fill();
+	}
+	hills(462, 14, 90, 2, "#86cc6c");
+
+	// ground: dirt + grass (drawn where the static ground body is)
+	var dirt = g.createLinearGradient(0, GROUND_TOP, 0, H);
+	dirt.addColorStop(0, "#9a6a3a"); dirt.addColorStop(1, "#5d3a1d");
+	g.fillStyle = dirt; g.fillRect(0, GROUND_TOP, W, H - GROUND_TOP);
+	for (var k = 0; k < 90; k++) {   // pebbles
+		g.fillStyle = r() > 0.5 ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.15)";
+		g.beginPath(); g.ellipse(r() * W, GROUND_TOP + 22 + r() * 50, 2 + r() * 4, 1.5 + r() * 2, 0, 0, Math.PI * 2); g.fill();
+	}
+	g.fillStyle = "#5cb83a"; g.fillRect(0, GROUND_TOP, W, 14);
+	g.fillStyle = "#86dc55"; g.fillRect(0, GROUND_TOP, W, 4);
+	g.fillStyle = "#4ea52f";
+	for (var gx = 0; gx < W; gx += 6) {   // grass blades
+		var h = 5 + r() * 7;
+		g.beginPath(); g.moveTo(gx, GROUND_TOP + 2); g.lineTo(gx + 3, GROUND_TOP - h); g.lineTo(gx + 6, GROUND_TOP + 2); g.fill();
+	}
+	g.fillStyle = "#3f8c27"; g.fillRect(0, GROUND_TOP + 14, W, 3);
+
+	// [7] stone walls on both sides
+	[0, W - WALL_W].forEach(function (wx) {
+		var sg = g.createLinearGradient(wx, 0, wx + WALL_W, 0);
+		sg.addColorStop(0, "#6e7a87"); sg.addColorStop(0.5, "#8f9cab"); sg.addColorStop(1, "#6e7a87");
+		g.fillStyle = sg; g.fillRect(wx, 0, WALL_W, GROUND_TOP);
+		g.strokeStyle = "rgba(0,0,0,0.22)"; g.lineWidth = 1;
+		for (var by = 0, row = 0; by < GROUND_TOP; by += 22, row++) {
+			g.beginPath(); g.moveTo(wx, by); g.lineTo(wx + WALL_W, by); g.stroke();
+			var mx = wx + (row % 2 ? WALL_W * 0.35 : WALL_W * 0.7);
+			g.beginPath(); g.moveTo(mx, by); g.lineTo(mx, by + 22); g.stroke();
+		}
+		g.fillStyle = "rgba(0,0,0,0.18)"; g.fillRect(wx === 0 ? WALL_W - 3 : wx, 0, 3, GROUND_TOP);
+	});
+}
+
+function resize() {
+	var dpr = Math.min(window.devicePixelRatio || 1, 3);
+	var res = canvas.getBoundingClientRect().width * dpr / W;
+	if (!res || Math.abs(res - RES) < 0.01 && SKY) return;
+	RES = res;
+	canvas.width = Math.round(W * RES);
+	canvas.height = Math.round(H * RES);
+	paintSky(); paintLand();   // re-draw the backgrounds at the new resolution
+}
+resize();
+window.addEventListener("resize", resize);
+
+// drifting clouds, drawn every frame
+var clouds = [];
+(function () {
+	var r = rng(42);
+	for (var i = 0; i < 7; i++) clouds.push({ x: r() * W, y: 40 + r() * 170, s: 0.6 + r() * 0.8, v: 6 + r() * 10 });
+})();
+function drawCloud(c) {
+	ctx.save(); ctx.translate(c.x, c.y); ctx.scale(c.s, c.s);
+	ctx.fillStyle = "rgba(255,255,255,0.92)";
+	ctx.beginPath();
+	ctx.arc(0, 0, 26, 0, Math.PI * 2); ctx.arc(30, -12, 32, 0, Math.PI * 2);
+	ctx.arc(62, 0, 24, 0, Math.PI * 2); ctx.arc(30, 8, 26, 0, Math.PI * 2);
+	ctx.fill();
+	ctx.fillStyle = "rgba(170,205,230,0.35)";
+	ctx.beginPath(); ctx.ellipse(32, 18, 50, 8, 0, 0, Math.PI * 2); ctx.fill();
+	ctx.restore();
+}
+
+// ---------------------------------------------------------------------
+// Slingshot (drawn in two halves so the bird sits between them)
+// ---------------------------------------------------------------------
+var FORK_BACK = { x: 198, y: 380 }, FORK_FRONT = { x: 228, y: 382 };
+function woodStroke(points, width) {
+	ctx.lineCap = "round"; ctx.lineJoin = "round";
+	ctx.beginPath(); ctx.moveTo(points[0][0], points[0][1]);
+	for (var i = 1; i < points.length; i++) ctx.lineTo(points[i][0], points[i][1]);
+	ctx.strokeStyle = "#4a2a12"; ctx.lineWidth = width + 4; ctx.stroke();
+	ctx.strokeStyle = "#9a5f2c"; ctx.lineWidth = width; ctx.stroke();
+	ctx.strokeStyle = "rgba(255,220,170,0.35)"; ctx.lineWidth = width / 3; ctx.stroke();
+}
+function pouchPos() {
+	if (state === "aiming" && pull) return pull;
+	if ((state === "ready" || state === "reloading") && bird) return SLING;
+	return null;   // empty slingshot
+}
+function drawSlingBack() {
+	woodStroke([[213, GROUND_TOP + 2], [213, 430], [FORK_BACK.x, FORK_BACK.y]], 12);
+	var p = pouchPos();
+	ctx.strokeStyle = "#3b2314"; ctx.lineWidth = 6; ctx.lineCap = "round";
+	ctx.beginPath(); ctx.moveTo(FORK_BACK.x, FORK_BACK.y + 4);
+	if (p) ctx.lineTo(p.x - BIRD_R * 0.8, p.y + 4);
+	else ctx.quadraticCurveTo(213, 396, FORK_FRONT.x, FORK_FRONT.y + 4);
+	ctx.stroke();
+}
+function drawSlingFront() {
+	var p = pouchPos();
+	if (p) {
+		// pouch behind the bird + front elastic
+		ctx.strokeStyle = "#3b2314"; ctx.lineWidth = 6; ctx.lineCap = "round";
+		ctx.beginPath(); ctx.moveTo(p.x - BIRD_R * 0.8, p.y + 4); ctx.lineTo(FORK_FRONT.x, FORK_FRONT.y + 4); ctx.stroke();
+		ctx.fillStyle = "#5a3520";
+		ctx.beginPath(); ctx.ellipse(p.x - BIRD_R * 0.75, p.y + 4, 6, 11, 0, 0, Math.PI * 2); ctx.fill();
+	}
+	woodStroke([[213, 430], [FORK_FRONT.x, FORK_FRONT.y]], 12);
+}
+
+// waiting birds next to the slingshot (just pictures, not bodies)
+function drawWaitingBirds() {
+	if (!IMG.bird.complete) return;
+	var n = birdsLeft;
+	for (var i = 0; i < n; i++) {
+		var x = 150 - i * 40, bob = Math.sin(time * 4 + i) * 1.5;
+		ctx.drawImage(IMG.bird, x - 16, GROUND_TOP - 32 + bob, 32, 32);
+	}
+}
+
+// ---------------------------------------------------------------------
+// [4] Draw a body: move to its centre, rotate by its angle, draw centred.
+// This makes every sprite follow the body position AND rotation.
+// ---------------------------------------------------------------------
+function drawBody(body) {
+	var d = body.GetUserData();
+	if (!d || !d.img || !d.img.complete) return;   // ground and walls are in the background layer
+	var pos = body.GetPosition();
+	var x = pos.x * SCALE, y = pos.y * SCALE;
+
+	// soft shadow on the ground under circles
+	if (d.r !== undefined) {
+		var hgt = GROUND_TOP - y;
+		if (hgt < 200) {
+			ctx.fillStyle = "rgba(0,0,0," + (0.18 * (1 - hgt / 200)) + ")";
+			ctx.beginPath(); ctx.ellipse(x, GROUND_TOP + 2, d.r * (1 - hgt / 400), 4, 0, 0, Math.PI * 2); ctx.fill();
+		}
+	}
+
+	ctx.save();
+	ctx.translate(x, y);             // meters -> pixels
+	ctx.rotate(body.GetAngle());     // radians
+
+	// small hop animation when a new bird jumps into the slingshot
+	if (d.kind === "bird" && state === "reloading") {
+		var t = Math.min(stateTime / 0.5, 1);
+		ctx.rotate(-body.GetAngle());
+		ctx.translate((1 - t) * -62, -Math.sin(t * Math.PI) * 50 + (1 - t) * (GROUND_TOP - 16 - SLING.y));
+	}
+
+	if (d.r !== undefined) {
+		// circle: the image fills its whole square, so draw it exactly at the body
+		// size (bigger would make the pig look on the ground when its body is not)
+		ctx.drawImage(d.img, -d.r, -d.r, d.r * 2, d.r * 2);
+	} else if (d.h > d.w && d.img.width > d.img.height) {
+		// vertical post using a horizontal bar picture: turn the picture 90°
+		ctx.rotate(Math.PI / 2);
+		ctx.drawImage(d.img, -d.h / 2, -d.w / 2, d.h, d.w);
+	} else {
+		ctx.drawImage(d.img, -d.w / 2, -d.h / 2, d.w, d.h);
+	}
+	ctx.restore();
+}
+
+// dotted preview of the path while aiming (same integration as Box2D)
+function drawTrajectory() {
+	if (state !== "aiming" || !pull) return;
+	var v = launchVelocity(pull);
+	var x = pull.x / SCALE, y = pull.y / SCALE, vx = v.x, vy = v.y;
+	for (var i = 1; i <= 75; i++) {
+		vy += GRAVITY * DT;          // semi-implicit Euler, like Box2D
+		x += vx * DT; y += vy * DT;
+		if (y * SCALE > GROUND_TOP || x * SCALE < WALL_W || x * SCALE > W - WALL_W) break;
+		if (i % 4) continue;
+		var a = 1 - i / 80;
+		ctx.fillStyle = "rgba(255,255,255," + (0.95 * a) + ")";
+		ctx.strokeStyle = "rgba(40,60,90," + (0.35 * a) + ")"; ctx.lineWidth = 1.5;
+		ctx.beginPath(); ctx.arc(x * SCALE, y * SCALE, 4.5 * a + 1.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+	}
+}
+
+function drawTrail() {
+	for (var i = 0; i < trail.length; i++) {
+		ctx.fillStyle = "rgba(255,255,255,0.85)";
+		ctx.beginPath(); ctx.arc(trail[i].x, trail[i].y, trail[i].r, 0, Math.PI * 2); ctx.fill();
+	}
+}
+
+// aim UI: power + angle label, pulsing ring when the bird is ready
+function drawAimUI() {
+	if (state === "ready" && bird) {
+		var pulse = (time * 1.4) % 1;
+		ctx.strokeStyle = "rgba(255,255,255," + (1 - pulse) + ")"; ctx.lineWidth = 3;
+		ctx.beginPath(); ctx.arc(SLING.x, SLING.y, BIRD_R + 6 + pulse * 16, 0, Math.PI * 2); ctx.stroke();
+		if (shotsFired === 0) {
+			// first shot: a ghost arrow shows the drag direction
+			var k = (time * 0.8) % 1, ex = SLING.x - 70 * k, ey = SLING.y + 40 * k;
+			ctx.strokeStyle = "rgba(255,255,255,0.9)"; ctx.lineWidth = 4; ctx.setLineDash([8, 8]);
+			ctx.beginPath(); ctx.moveTo(SLING.x - 26, SLING.y + 14); ctx.lineTo(SLING.x - 90, SLING.y + 52); ctx.stroke();
+			ctx.setLineDash([]);
+			ctx.fillStyle = "rgba(255,255,255,0.95)";
+			ctx.beginPath(); ctx.arc(ex - 26, ey + 14, 9, 0, Math.PI * 2); ctx.fill();
+			label("Drag back & release", SLING.x - 40, SLING.y - 52, "#ff7a1a");
+		}
+	}
+	if (state === "aiming" && pull) {
+		var len = Math.hypot(pull.x - SLING.x, pull.y - SLING.y);
+		var v = launchVelocity(pull);
+		var ang = Math.round(Math.atan2(-v.y, v.x) * 180 / Math.PI);
+		var pct = Math.round(len / MAX_PULL * 100);
+		label("Power " + pct + "%  ·  " + ang + "°", SLING.x, SLING.y - 56, pct > 85 ? "#e04848" : "#1b2a41");
+		// power bar
+		var bx = SLING.x - 50, by = SLING.y - 40;
+		ctx.fillStyle = "rgba(0,0,0,0.25)"; roundRect(bx, by, 100, 8, 4); ctx.fill();
+		var pg = ctx.createLinearGradient(bx, 0, bx + 100, 0);
+		pg.addColorStop(0, "#3bceac"); pg.addColorStop(0.6, "#ffd23f"); pg.addColorStop(1, "#ff5a5f");
+		ctx.fillStyle = pg; roundRect(bx, by, Math.max(8, pct), 8, 4); ctx.fill();
+	}
+}
+function label(text, x, y, color) {
+	ctx.font = "600 15px Fredoka, system-ui, sans-serif";
+	var w = ctx.measureText(text).width + 22;
+	ctx.fillStyle = "rgba(255,255,255,0.95)";
+	roundRect(x - w / 2, y - 14, w, 28, 14); ctx.fill();
+	ctx.fillStyle = color; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+	ctx.fillText(text, x, y + 1);
+	ctx.textAlign = "start"; ctx.textBaseline = "alphabetic";
+}
+function roundRect(x, y, w, h, r) {
+	ctx.beginPath();
+	ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+	ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+
+// arrow at the top when the bird flies above the screen
+function drawOffscreenMarker() {
+	if (!bird || state !== "flying") return;
+	var p = bird.GetPosition(), y = p.y * SCALE;
+	if (y > -BIRD_R) return;
+	var x = Math.max(40, Math.min(W - 40, p.x * SCALE));
+	ctx.fillStyle = "rgba(255,255,255,0.95)";
+	ctx.beginPath(); ctx.moveTo(x, 8); ctx.lineTo(x - 10, 24); ctx.lineTo(x + 10, 24); ctx.fill();
+	label(Math.round(-y / SCALE) + " m", x, 42, "#1b2a41");
+}
+
+function drawEffects() {
+	for (var i = 0; i < particles.length; i++) {
+		var p = particles[i], a = Math.max(0, Math.min(1, p.life / p.max * 1.5));
+		ctx.globalAlpha = a;
+		if (p.shape === "smoke") {
+			ctx.fillStyle = p.color;
+			ctx.beginPath(); ctx.arc(p.x, p.y, p.size * (1.6 - p.life / p.max), 0, Math.PI * 2); ctx.fill();
+		} else {
+			ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+			ctx.fillStyle = p.color; ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+			ctx.restore();
+		}
+	}
+	ctx.globalAlpha = 1;
+	ctx.font = "700 22px Fredoka, system-ui, sans-serif"; ctx.textAlign = "center";
+	for (var j = 0; j < popups.length; j++) {
+		var q = popups[j];
+		ctx.globalAlpha = Math.min(1, q.life / q.max * 2);
+		ctx.lineWidth = 4; ctx.strokeStyle = "rgba(20,30,45,0.6)"; ctx.strokeText(q.text, q.x, q.y);
+		ctx.fillStyle = q.color; ctx.fillText(q.text, q.x, q.y);
+	}
+	ctx.globalAlpha = 1; ctx.textAlign = "start";
+}
+
+// ---------------------------------------------------------------------
+// Render one frame
+// ---------------------------------------------------------------------
+function render(dt) {
+	ctx.setTransform(RES, 0, 0, RES, 0, 0);
+	ctx.drawImage(SKY.c, 0, 0, W, H);
+	for (var i = 0; i < clouds.length; i++) {
+		var c = clouds[i];
+		c.x += c.v * dt;
+		if (c.x > W + 60) c.x = -160;
+		drawCloud(c);
+	}
+	if (shake) ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
+	ctx.drawImage(LAND.c, 0, 0, W, H);
+
+	drawWaitingBirds();
+	drawSlingBack();
+	drawTrail();
+	for (var b = world.GetBodyList(); b; b = b.GetNext()) if (b !== bird) drawBody(b);
+	if (bird) drawBody(bird);   // bird on top of everything else
+	drawSlingFront();
+	drawTrajectory();
+	drawEffects();
+	drawAimUI();
+	drawOffscreenMarker();
+}
+
+// ---------------------------------------------------------------------
+// Game loop: fixed physics step (same speed on 60 Hz and 144 Hz screens)
+// ---------------------------------------------------------------------
+var last = performance.now(), acc = 0;
+function frame(now) {
+	var dt = Math.min(0.1, (now - last) / 1000);
+	last = now;
+	if (!paused) {
+		acc += dt;
+		var n = 0;
+		while (acc >= DT && n < 5) { step(); acc -= DT; n++; }
+		if (n === 5) acc = 0;
+	}
+	updateEffects(paused ? 0 : dt);
+	render(dt);
+	requestAnimationFrame(frame);
+}
+
+// ---------------------------------------------------------------------
+// HUD + overlays
+// ---------------------------------------------------------------------
+function updateHUD() {
+	var box = document.getElementById("birds");
+	box.innerHTML = "";
+	// birds not launched yet = the ones waiting + the one in the slingshot
+	var inSling = bird && (state === "ready" || state === "aiming" || state === "reloading");
+	var remaining = birdsLeft + (inSling ? 1 : 0);
+	for (var i = 0; i < BIRDS_PER_GAME; i++) {
+		var im = document.createElement("img");
+		im.src = "sprites/red.png"; im.alt = "";
+		if (i >= remaining) im.className = "used";
+		box.appendChild(im);
+	}
+}
+function hideOverlays() {
+	["introOverlay", "winOverlay", "loseOverlay"].forEach(function (id) { document.getElementById(id).classList.remove("show"); });
+	var st = document.getElementById("status");
+	st.classList.remove("win");
+	document.getElementById("statusText").textContent = "No targets on the ground yet";
+}
+var STAR = '<svg viewBox="0 0 24 24"><path d="M12 2l3 6.5 7 .8-5.2 4.8 1.5 7L12 17.6 5.7 21.1l1.5-7L2 9.3l7-.8z" fill="FILL" stroke="#c98a00" stroke-width="1.2" stroke-linejoin="round"/></svg>';
+function showWin() {
+	var bonus = birdsLeft * 1000;
+	score += bonus;
+	var stars = Math.min(3, 1 + birdsLeft);
+	var html = "";
+	for (var i = 0; i < 3; i++) html += STAR.replace("FILL", i < stars ? "#ffc93c" : "#e3e8ef");
+	document.getElementById("stars").innerHTML = html;
+	document.getElementById("winText").textContent = "Target down with " + shotsFired + (shotsFired === 1 ? " bird." : " birds.");
+	document.getElementById("winTally").innerHTML =
+		"<div><span>Destruction</span><span>" + (score - 5000 - bonus) + "</span></div>" +
+		"<div><span>Target on the ground</span><span>5000</span></div>" +
+		"<div><span>Birds left (" + birdsLeft + " x 1000)</span><span>" + bonus + "</span></div>" +
+		"<div><span>Total</span><span>" + score + "</span></div>";
+	document.getElementById("winOverlay").classList.add("show");
+}
+function showLose() {
+	document.getElementById("loseTally").innerHTML = "<div><span>Score</span><span>" + score + "</span></div>";
+	document.getElementById("loseOverlay").classList.add("show");
+}
+
+function restart() { buildLevel(); paused = false; }
+function openHelp() { paused = true; document.getElementById("introOverlay").classList.add("show"); }
+function closeHelp() { document.getElementById("introOverlay").classList.remove("show"); paused = false; initAudio(); }
+
+document.getElementById("btnPlay").onclick = closeHelp;
+document.getElementById("btnHelp").onclick = openHelp;
+document.getElementById("btnRestart").onclick = restart;
+document.getElementById("btnAgainWin").onclick = restart;
+document.getElementById("btnAgainLose").onclick = restart;
+document.getElementById("btnSound").onclick = toggleSound;
+window.addEventListener("keydown", function (e) {
+	var k = e.key.toLowerCase();
+	if (k === "r") restart();
+	else if (k === "h") { if (paused) closeHelp(); else openHelp(); }
+	else if (k === "m") toggleSound();
+	else if ((k === "enter" || k === " ") && paused) { e.preventDefault(); closeHelp(); }
+});
+
+// ---------------------------------------------------------------------
+// Sound effects, generated with the Web Audio API (no files needed)
+// ---------------------------------------------------------------------
+var audio = null, muted = false;
+function initAudio() {
+	if (!audio) { try { audio = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { audio = null; } }
+	if (audio && audio.state === "suspended") audio.resume();
+}
+function toggleSound() {
+	muted = !muted;
+	document.getElementById("soundWaves").style.display = muted ? "none" : "";
+}
+function tone(f1, f2, dur, type, vol, delay) {
+	if (!audio || muted) return;
+	var t = audio.currentTime + (delay || 0);
+	var o = audio.createOscillator(), g = audio.createGain();
+	o.type = type; o.frequency.setValueAtTime(f1, t); o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+	g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+	o.connect(g); g.connect(audio.destination); o.start(t); o.stop(t + dur + 0.02);
+}
+function noise(dur, vol, freq) {
+	if (!audio || muted) return;
+	var len = Math.floor(audio.sampleRate * dur), buf = audio.createBuffer(1, len, audio.sampleRate), d = buf.getChannelData(0);
+	for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+	var src = audio.createBufferSource(), f = audio.createBiquadFilter(), g = audio.createGain();
+	src.buffer = buf; f.type = "bandpass"; f.frequency.value = freq; f.Q.value = 0.8; g.gain.value = vol;
+	src.connect(f); f.connect(g); g.connect(audio.destination); src.start();
+}
+function sfxStretch() { tone(180, 320, 0.25, "sawtooth", 0.04); }
+function sfxLaunch() { tone(260, 900, 0.22, "triangle", 0.18); noise(0.25, 0.25, 1600); }
+function sfxHit(s, mat) {
+	var f = mat === "ice" ? 2600 : mat === "rock" ? 400 : 900;
+	noise(0.08 + s * 0.12, 0.1 + s * 0.5, f);
+}
+function sfxPuff() { noise(0.35, 0.15, 500); }
+function sfxWin() { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, f, 0.22, "square", 0.08, i * 0.12); }); }
+function sfxLose() { [392, 330, 262].forEach(function (f, i) { tone(f, f * 0.97, 0.3, "triangle", 0.15, i * 0.2); }); }
+
+// ---------------------------------------------------------------------
+// Start
+// ---------------------------------------------------------------------
+buildLevel();
+document.getElementById("introOverlay").classList.add("show");   // show "How to play" first
+paused = true;
+requestAnimationFrame(frame);
+	</script>
+</body>
+</html>
