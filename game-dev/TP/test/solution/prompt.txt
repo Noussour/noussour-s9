@@ -1,0 +1,32 @@
+AI USAGE - Angry Birds practical midterm
+========================================
+
+Tool: Claude Code (Anthropic)
+
+Models used:
+- Claude Sonnet 5.5 (claude-sonnet-5-5): version 1, the answer to the midterm subject
+  (index.html, main.js)
+- Claude Opus 5.5 (claude-opus-5-5): version 2 and the improvements
+  (game2.js, sound.js, shell.js, changes to index.html and main.js)
+
+
+Prompts used (in order)
+-----------------------
+
+1) Version 1 (midterm subject)
+
+"read the newely added test for game dev i want you to go on and solve it entirely for me"
+
+"continue working"
+
+
+2) Version 2, fullscreen, destroyable objects
+
+"now i want you to improve on it so when clicking 2 an entirely new version of the game is shown with scores nice interface use of 3 birds and a win when the object hits the floor with stars shown based on how many brids where used 0 to 3 stars, and sound effects
+and also make it that when hitting f the canvas is in full screen
+and also make objects destroyale"
+
+
+3) Modern interface, tutorial, sharp rendering
+
+"for the new version make the ui more modern more facinating and concistent, also make it that a tutorial is shown when starting and also that it is not that pixelated as of now"
