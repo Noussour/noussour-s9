@@ -11,6 +11,7 @@ import textwrap
 import re
 import subprocess
 import tempfile
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -76,6 +77,10 @@ def prism_results():
 def fr(x, n=3):
     return f"{x:.{n}f}".replace(".", ",")
 
+
+# Regenerate figures before embedding them so the report follows the PNML model.
+subprocess.run([sys.executable, str(ROOT / "rapport/figures.py"), str(FIG),
+                str(ROOT / "5-prism/resultats.txt")], check=True)
 
 tests, java_summary = java_results()
 smv_ok = nusmv_results("4-nusmv/resultat_correcte.txt")
@@ -227,7 +232,7 @@ section.annex + section.annex {{ margin-top: 6mm; }}
 
 <!-- ===================== Couverture ===================== -->
 <div class="cover">
-  <div class="inst"><div>USTHB<br>Faculté d'Informatique<br>Laboratoire MOVEP</div><div style="text-align:right">TD / TP MFGL<br>Ing 5 Soft.Eng<br>Année 2026-2027</div></div>
+  <div class="inst"><div>USTHB<br>Faculté d'Informatique</div><div style="text-align:right">TD / TP MFGL<br>Ing 5 Soft.Eng<br>Année 2026-2027</div></div>
   <svg class="mark" viewBox="0 0 40 40"><rect width="40" height="40" rx="9" fill="#c96442"/><circle cx="14" cy="20" r="5.5" fill="none" stroke="#faf9f5" stroke-width="2.4"/><rect x="23" y="12" width="4" height="16" fill="#faf9f5"/></svg>
   <div class="course">Méthodes formelles pour le génie logiciel</div>
   <h1>Réservation de places&#8239;: spécifier, vérifier, valider</h1>
@@ -371,10 +376,10 @@ Invariant</dd>
   <h2>Réseau de Petri&#8239;: disponibilité et conflits</h2>
   <p>Le réseau <code>3-petri/reservation.pnml</code> (format PIPE) modélise deux utilisateurs et une place. La place <code>Libres</code> contient un jeton par place disponible, <code>Occupees</code> un jeton par place attribuée. Chaque utilisateur possède un jeton qui circule entre ses quatre états.</p>
   <figure class="w-petri"><div class="frame">{svg("petri.svg")}</div>
-    <figcaption><b>Figure 4.</b> Réseau de Petri, marquage initial (<code>N = 1</code>). Les transitions sont en noir, leurs noms en orange.</figcaption></figure>
+    <figcaption><b>Figure 4.</b> Réseau de Petri, marquage initial (<code>N = 1</code>). Figure générée depuis le fichier PNML à jour. Les transitions sont en noir, leurs noms en orange&#8239;; les arcs terminés par un cercle sont inhibiteurs.</figcaption></figure>
   <ul>
     <li><code>reserver_Ui</code> consomme le jeton de <code>Libres</code> et le place dans <code>Occupees</code>.</li>
-    <li><code>refuser_Ui</code> n'est franchissable que si <code>Occupees</code> contient <code>N</code> jetons (arcs de poids <code>N</code> dans les deux sens). C'est un test à zéro de <code>Libres</code> sans arc inhibiteur.</li>
+    <li><code>refuser_Ui</code> n'est franchissable que si <code>Libres</code> ne contient aucun jeton&#8239;: un arc inhibiteur de poids 1 relie <code>Libres</code> à chaque transition de refus. Le refus ne consomme ni ne produit de jeton dans les places de capacité.</li>
     <li><code>annuler_Ui</code> rend le jeton à <code>Libres</code>&#8239;; <code>abandonner_Ui</code> annule une demande encore en attente.</li>
   </ul>
   <div class="note"><b>Conflit sur la dernière place.</b> Dans le marquage initial, <code>reserver_U1</code> et <code>reserver_U2</code> sont toutes deux franchissables mais se disputent l'unique jeton de <code>Libres</code>&#8239;: le franchissement de l'une désactive l'autre. Le réseau rend ainsi la réservation atomique par construction.</div>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>PW 3 - Isometric map (Adel HADJ ARAB)</title>
+	<style>
+		body { font-family: sans-serif; }
+		canvas { border: 1px solid black; background: #1b2430; }
+	</style>
+</head>
+<body>
+	<h2>PW 3 - Isometric map</h2>
+	<p>Map <code>map.csv</code> (24x24) made in Tiled with orientation <b>isometric</b>, tile size 32x16 on the map (half the real height), from <code>isometric_tileset.png</code> (11x11 tiles of 32x32).
+	Character on the map: <a href="scene.html">scene.html</a>.</p>
+
+	<p>3. Whole map</p>
+	<canvas id="full" width="800" height="440"></canvas>
+
+	<p>4-5. Small canvas, arrow keys scroll the map</p>
+	<canvas id="game" width="400" height="240"></canvas>
+
+	<script src="map.js"></script>
+	<script>
+// 2a. We use the tileset: one image, and each tile is a 32x32 portion of it
+var tileset = new Image();
+tileset.src = "isometric_tileset.png";
+var TILE = 32, TILESET_COLS = 11;
+
+// size of one cell of the isometric grid on screen: width 32, height 16 (half)
+var tileW = 32, tileH = 16;
+var ROWS = mapArray.length, COLS = mapArray[0].length;
+
+// the leftmost cell is (row 0, last column): shift everything right so it starts at x = 0
+var offsetX = (COLS - 1) * tileW / 2;
+
+// Isometric projection: grid cell (i = row, j = column) -> screen pixel
+//   x = (i - j) * tileW / 2
+//   y = (i + j) * tileH / 2
+function drawMap(ctx, camX, camY) {
+	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+	// draw from the back (small i + j) to the front, so front tiles cover back ones
+	for (var i = 0; i < ROWS; i++) {
+		for (var j = 0; j < COLS; j++) {
+			var id = mapArray[i][j];
+			if (id === 0) continue;
+			var sx = ((id - 1) % TILESET_COLS) * TILE;          // portion of the tileset
+			var sy = Math.floor((id - 1) / TILESET_COLS) * TILE;
+			var x = (i - j) * tileW / 2 + offsetX - camX;
+			var y = (i + j) * tileH / 2 - camY;
+			ctx.drawImage(tileset, sx, sy, TILE, TILE, x, y, TILE, TILE);
+		}
+	}
+}
+
+// whole map size in pixels (diamond bounding box)
+var MAP_W = (ROWS + COLS) * tileW / 2;
+var MAP_H = (ROWS + COLS) * tileH / 2 + TILE - tileH;
+
+// 3. Whole map (centred)
+var full = document.getElementById("full").getContext("2d");
+
+// 4-5. Scrolling: the camera moves, the map is drawn shifted by -camX, -camY
+var canvas = document.getElementById("game");
+var ctx = canvas.getContext("2d");
+var camX = (MAP_W - canvas.width) / 2, camY = 0, STEP = 16;
+
+document.addEventListener("keydown", function (e) {
+	if (e.key === "ArrowLeft") camX -= STEP;
+	else if (e.key === "ArrowRight") camX += STEP;
+	else if (e.key === "ArrowUp") camY -= STEP;
+	else if (e.key === "ArrowDown") camY += STEP;
+	else return;
+	e.preventDefault();
+	camX = Math.max(0, Math.min(camX, MAP_W - canvas.width));
+	camY = Math.max(0, Math.min(camY, MAP_H - canvas.height));
+	drawMap(ctx, camX, camY);
+});
+
+tileset.onload = function () {
+	drawMap(full, -(full.canvas.width - MAP_W) / 2, -(full.canvas.height - MAP_H) / 2);
+	drawMap(ctx, camX, camY);
+};
+	</script>
+</body>
+</html>

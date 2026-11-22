@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>PW 1 - Sprites (Adel HADJ ARAB)</title>
+	<style>
+		body { font-family: sans-serif; }
+		canvas { border: 1px solid black; image-rendering: pixelated; }
+		.step { display: inline-block; margin: 0 16px 16px 0; vertical-align: top; }
+	</style>
+</head>
+<body>
+	<h2>PW 1 - Sprites</h2>
+	<p>Spritesheet <code>hero_spritesheet.png</code>: 4 columns (frames) x 4 rows (directions: down, left, right, up), each frame 32x32.</p>
+
+	<div class="step"><p>a. Whole spritesheet</p><canvas id="sheet" width="256" height="256"></canvas></div>
+	<div class="step"><p>b. First frame only</p><canvas id="first" width="128" height="128"></canvas></div>
+	<div class="step"><p>c. Plain loop (wrong: only the last frame stays)</p><canvas id="loop" width="128" height="128"></canvas></div>
+	<div class="step"><p>d. Animation with a game loop (arrows change the row)</p><canvas id="anim" width="128" height="128"></canvas></div>
+
+	<script>
+var FRAME_W = 32, FRAME_H = 32;   // size of one frame in the spritesheet
+var NB_FRAMES = 4;                // frames per row
+var ZOOM = 4;                     // drawn 4x bigger to see the pixels
+
+var image = new Image();
+image.src = "hero_spritesheet.png";
+
+image.onload = function () {
+	stepA();
+	stepB();
+	stepC();
+	requestAnimationFrame(gameLoop); // step d
+};
+
+// a. Display the whole spritesheet: drawImage(image, x, y)
+function stepA() {
+	var ctx = document.getElementById("sheet").getContext("2d");
+	ctx.imageSmoothingEnabled = false;
+	ctx.drawImage(image, 0, 0, image.width * 2, image.height * 2);
+}
+
+// b. Display only the first frame:
+// drawImage(image, i, j, width, height, x, y, width, height)
+// (i, j) = frame position on the spritesheet, (x, y) = position on the canvas
+function stepB() {
+	var ctx = document.getElementById("first").getContext("2d");
+	ctx.imageSmoothingEnabled = false;
+	ctx.drawImage(image, 0, 0, FRAME_W, FRAME_H, 0, 0, FRAME_W * ZOOM, FRAME_H * ZOOM);
+}
+
+// c. A plain for loop draws all the frames instantly, in the same refresh.
+// Without clearRect they overlap; with clearRect only the last frame remains.
+// The loop runs once, so there is no animation.
+function stepC() {
+	var ctx = document.getElementById("loop").getContext("2d");
+	ctx.imageSmoothingEnabled = false;
+	for (var f = 0; f < NB_FRAMES; f++) {
+		ctx.clearRect(0, 0, 128, 128);
+		ctx.drawImage(image, f * FRAME_W, 0, FRAME_W, FRAME_H, 0, 0, FRAME_W * ZOOM, FRAME_H * ZOOM);
+	}
+}
+
+// d. Fix: a game loop called again before every repaint (requestAnimationFrame).
+// We change frame only every FRAME_DELAY ms, otherwise the animation runs at 60 fps (too fast).
+var anim = document.getElementById("anim").getContext("2d");
+anim.imageSmoothingEnabled = false;
+var frame = 0;          // current column
+var row = 0;            // current row = direction
+var lastChange = 0;
+var FRAME_DELAY = 150;  // ms per frame
+
+function gameLoop(time) {
+	// update
+	if (time - lastChange > FRAME_DELAY) {
+		frame = (frame + 1) % NB_FRAMES;
+		lastChange = time;
+	}
+	// draw
+	anim.clearRect(0, 0, 128, 128);
+	anim.drawImage(image, frame * FRAME_W, row * FRAME_H, FRAME_W, FRAME_H, 0, 0, FRAME_W * ZOOM, FRAME_H * ZOOM);
+	// repeat
+	requestAnimationFrame(gameLoop);
+}
+// Same result with: setInterval(function () { ... }, FRAME_DELAY);
+
+// Arrows choose the row: down = 0, left = 1, right = 2, up = 3
+document.addEventListener("keydown", function (event) {
+	var rows = { ArrowDown: 0, ArrowLeft: 1, ArrowRight: 2, ArrowUp: 3 };
+	if (event.key in rows) {
+		row = rows[event.key];
+		event.preventDefault();
+	}
+});
+	</script>
+</body>
+</html>

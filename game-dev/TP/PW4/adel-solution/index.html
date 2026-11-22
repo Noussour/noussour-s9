@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>PW 4 - Box2DWeb for Collisions (Adel HADJ ARAB)</title>
+	<style>
+		body { font-family: sans-serif; }
+		canvas { border: 1px solid black; }
+	</style>
+	<script src="Box2d.min.js"></script>
+</head>
+<body>
+	<h2>PW 4 - Box2DWeb for Collisions</h2>
+	<p>Ball (b2CircleShape) falls on a static platform; more boxes and balls fall on it. The message turns red during a collision. Click to drop a new box.</p>
+	<canvas id="game" width="800" height="500"></canvas>
+
+	<script>
+// Box2D classes
+var b2Vec2 = Box2D.Common.Math.b2Vec2;
+var b2World = Box2D.Dynamics.b2World;
+var b2BodyDef = Box2D.Dynamics.b2BodyDef;
+var b2Body = Box2D.Dynamics.b2Body;
+var b2FixtureDef = Box2D.Dynamics.b2FixtureDef;
+var b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
+var b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
+var b2ContactListener = Box2D.Dynamics.b2ContactListener;
+
+var canvas = document.getElementById("game");
+var ctx = canvas.getContext("2d");
+
+// Box2D works in meters (MTS units): scale = pixels per meter
+var scale = 30;
+
+// 1. World with gravity (x, y) in m/s², and a static platform
+var world = new b2World(new b2Vec2(0, 9.8), true);
+
+var fixDef = new b2FixtureDef();
+fixDef.density = 1;
+fixDef.friction = 0.5;
+fixDef.restitution = 0.4;   // bounce: 0 = none, 1 = full
+
+// static platform: centre (400, 450) px, size 600 x 30 px
+var PLATFORM = { x: 400, y: 450, w: 600, h: 30 };
+var groundDef = new b2BodyDef();
+groundDef.type = b2Body.b2_staticBody;
+groundDef.position.Set(PLATFORM.x / scale, PLATFORM.y / scale);   // position = centre, in meters
+fixDef.shape = new b2PolygonShape();
+fixDef.shape.SetAsBox(PLATFORM.w / 2 / scale, PLATFORM.h / 2 / scale); // half-width, half-height
+var groundBody = world.CreateBody(groundDef);
+groundBody.CreateFixture(fixDef);
+groundBody.SetUserData({ kind: "platform", color: "#3b7d3b" });
+
+// helpers to create dynamic bodies
+function addCircle(x, y, radius, fill, stroke) {
+	var def = new b2BodyDef();
+	def.type = b2Body.b2_dynamicBody;
+	def.position.Set(x / scale, y / scale);
+	fixDef.shape = new b2CircleShape();
+	fixDef.shape.SetRadius(radius / scale);
+	var body = world.CreateBody(def);
+	body.CreateFixture(fixDef);
+	body.SetUserData({ kind: "circle", r: radius, fill: fill, stroke: stroke });
+	return body;
+}
+function addBox(x, y, w, h, fill) {
+	var def = new b2BodyDef();
+	def.type = b2Body.b2_dynamicBody;
+	def.position.Set(x / scale, y / scale);
+	fixDef.shape = new b2PolygonShape();
+	fixDef.shape.SetAsBox(w / 2 / scale, h / 2 / scale);
+	var body = world.CreateBody(def);
+	body.CreateFixture(fixDef);
+	body.SetUserData({ kind: "box", w: w, h: h, fill: fill });
+	return body;
+}
+
+// 2. The main dynamic body: a circle
+var ball = addCircle(400, 60, 25, "#f2b632", "#9c5b00");
+
+// 5. More bodies, described in an array then parsed
+var others = [
+	{ type: "box", x: 300, y: 0, w: 40, h: 40, fill: "#4a7bd1" },
+	{ type: "box", x: 450, y: -120, w: 60, h: 30, fill: "#c94f7c" },
+	{ type: "circle", x: 360, y: -250, r: 15, fill: "#7fd17f", stroke: "#2d6b2d" },
+	{ type: "box", x: 520, y: -350, w: 30, h: 70, fill: "#8e6bd1" },
+	{ type: "circle", x: 250, y: -450, r: 20, fill: "#e86a4a", stroke: "#8a2e15" }
+];
+others.forEach(function (o) {
+	if (o.type === "box") addBox(o.x, o.y, o.w, o.h, o.fill);
+	else addCircle(o.x, o.y, o.r, o.fill, o.stroke);
+});
+
+// click: drop a new box where the mouse is
+canvas.addEventListener("click", function (e) {
+	var r = canvas.getBoundingClientRect();
+	addBox(e.clientX - r.left, e.clientY - r.top, 30 + Math.random() * 30, 30, "hsl(" + Math.floor(Math.random() * 360) + ",60%,55%)");
+});
+
+// 4. Collision listener: count active contacts
+var contacts = 0;
+var listener = new b2ContactListener();
+listener.BeginContact = function (contact) { contacts++; };
+listener.EndContact = function (contact) { contacts--; };
+world.SetContactListener(listener);
+
+// 3. Draw a canvas shape on each body (Box2D debug shapes cannot be styled)
+function drawBodies() {
+	for (var b = world.GetBodyList(); b; b = b.GetNext()) {
+		var d = b.GetUserData();
+		if (!d) continue;
+		var pos = b.GetPosition();          // centre, in meters
+		var x = pos.x * scale, y = pos.y * scale;   // back to pixels
+		ctx.save();
+		ctx.translate(x, y);
+		ctx.rotate(b.GetAngle());           // follow the body rotation
+		if (d.kind === "circle") {
+			ctx.beginPath();
+			ctx.arc(0, 0, d.r, 0, 2 * Math.PI);
+			ctx.fillStyle = d.fill; ctx.fill();
+			ctx.lineWidth = 3; ctx.strokeStyle = d.stroke; ctx.stroke();
+			ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(d.r, 0); ctx.stroke(); // shows rotation
+		} else {
+			var w = d.kind === "platform" ? PLATFORM.w : d.w;
+			var h = d.kind === "platform" ? PLATFORM.h : d.h;
+			ctx.fillStyle = d.fill || d.color;
+			ctx.fillRect(-w / 2, -h / 2, w, h);   // centre reference, like Box2D
+		}
+		ctx.restore();
+	}
+}
+
+// 4. Message: red during a collision, black otherwise
+function drawMessage() {
+	ctx.font = "22px sans-serif";
+	ctx.fillStyle = contacts > 0 ? "red" : "black";
+	ctx.fillText(contacts > 0 ? "Collision! (" + contacts + " contacts)" : "No collision", 20, 35);
+}
+
+// game loop: step the physics, then draw
+function gameLoop() {
+	world.Step(1 / 60, 10, 10);   // time step, velocity iterations, position iterations
+	world.ClearForces();
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	drawBodies();
+	drawMessage();
+	requestAnimationFrame(gameLoop);
+}
+requestAnimationFrame(gameLoop);
+	</script>
+</body>
+</html>

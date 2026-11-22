@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>PW 3 - Isometric scene (Adel HADJ ARAB)</title>
+	<style>
+		body { font-family: sans-serif; }
+		canvas { border: 1px solid black; background: #1b2430; }
+	</style>
+</head>
+<body>
+	<h2>PW 3 - Isometric character on the map</h2>
+	<p>Arrow keys move the character on the grid: Left = down-left, Right = up-right, Up = up-left, Down = down-right.
+	The spritesheet row changes with the direction, the camera follows, water and bushes block the way.</p>
+	<canvas id="game" width="480" height="300"></canvas>
+	<p><a href="index.html">Back to the map steps</a></p>
+
+	<script src="map.js"></script>
+	<script>
+var canvas = document.getElementById("game");
+var ctx = canvas.getContext("2d");
+
+// ---- map (same as index.html) ----
+var tileset = new Image(); tileset.src = "isometric_tileset.png";
+var TILE = 32, TILESET_COLS = 11, tileW = 32, tileH = 16;
+var ROWS = mapArray.length, COLS = mapArray[0].length;
+var offsetX = (COLS - 1) * tileW / 2;
+var MAP_W = (ROWS + COLS) * tileW / 2, MAP_H = (ROWS + COLS) * tileH / 2 + TILE;
+
+function isSolid(id) {
+	return id >= 89 || (id >= 30 && id <= 37);   // water tiles and bushes
+}
+
+// ---- character: Character0_Run.png = 4 rows (directions) x 4 frames of 32x32 ----
+var hero = new Image(); hero.src = "Character0_Run.png";
+var FRAME = 32;
+var DIR = { downLeft: 0, upLeft: 1, downRight: 2, upRight: 3 };   // row of each direction
+
+// position on the grid in cells (decimal values = between two cells)
+var player = { i: 11.5, j: 11.5, dir: DIR.downRight, frame: 0, speed: 0.05 };
+var keys = {};
+var lastFrame = 0;
+
+document.addEventListener("keydown", function (e) {
+	if (e.key.indexOf("Arrow") === 0) { keys[e.key] = true; e.preventDefault(); }
+});
+document.addEventListener("keyup", function (e) { keys[e.key] = false; });
+
+// grid -> screen (map pixels): the centre of the top face of cell (i, j)
+function toScreen(i, j) {
+	return { x: (i - j) * tileW / 2 + offsetX + tileW / 2, y: (i + j) * tileH / 2 };
+}
+
+function walkable(i, j) {
+	var r = Math.floor(i), c = Math.floor(j);
+	return r >= 0 && r < ROWS && c >= 0 && c < COLS && !isSolid(mapArray[r][c]);
+}
+
+function update(time) {
+	var di = 0, dj = 0;
+	// moving along a grid axis looks diagonal on screen
+	if (keys.ArrowLeft)  { dj =  player.speed; player.dir = DIR.downLeft; }
+	if (keys.ArrowRight) { dj = -player.speed; player.dir = DIR.upRight; }
+	if (keys.ArrowUp)    { di = -player.speed; player.dir = DIR.upLeft; }
+	if (keys.ArrowDown)  { di =  player.speed; player.dir = DIR.downRight; }
+	var moving = di !== 0 || dj !== 0;
+	if (walkable(player.i + di, player.j)) player.i += di;
+	if (walkable(player.i, player.j + dj)) player.j += dj;
+
+	if (!moving) player.frame = 0;
+	else if (time - lastFrame > 100) { player.frame = (player.frame + 1) % 4; lastFrame = time; }
+}
+
+function draw() {
+	var p = toScreen(player.i, player.j);
+	// camera centred on the character, kept inside the map
+	var camX = Math.max(0, Math.min(p.x - canvas.width / 2, MAP_W - canvas.width));
+	var camY = Math.max(0, Math.min(p.y - canvas.height / 2, MAP_H - canvas.height));
+
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	for (var i = 0; i < ROWS; i++)
+		for (var j = 0; j < COLS; j++) {
+			var id = mapArray[i][j];
+			if (id === 0) continue;
+			ctx.drawImage(tileset, ((id - 1) % TILESET_COLS) * TILE, Math.floor((id - 1) / TILESET_COLS) * TILE, TILE, TILE,
+			              (i - j) * tileW / 2 + offsetX - camX, (i + j) * tileH / 2 - camY, TILE, TILE);
+		}
+	// feet of the character on the point p: frame drawn above it
+	ctx.drawImage(hero, player.frame * FRAME, player.dir * FRAME, FRAME, FRAME,
+	              Math.round(p.x - FRAME / 2 - camX), Math.round(p.y - FRAME + 4 - camY), FRAME, FRAME);
+}
+
+function gameLoop(time) {
+	update(time);
+	draw();
+	requestAnimationFrame(gameLoop);
+}
+
+var loaded = 0;
+tileset.onload = hero.onload = function () { if (++loaded === 2) requestAnimationFrame(gameLoop); };
+	</script>
+</body>
+</html>
