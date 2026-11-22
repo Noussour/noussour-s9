@@ -1,4 +1,4 @@
-// map.csv exported from Tiled, copied here so the page also works from file:// (fetch is blocked there).
+// map.csv (script-generated, Tiled CSV format), copied here so the page also works from file:// (fetch is blocked there).
 // Tiled CSV ids: tileset index + 1 (firstgid = 1), 0 = empty.
 var MAP_CSV = `
 4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4

@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Angry Birds - Box2DWeb</title>
+
+    <style>
+      body {
+        background-color: #fff;
+      }
+      /* light blue sky behind everything that is drawn on the canvas */
+      #canvas {
+        background-color: #e6f4ff;
+        border: 1px solid #999;
+      }
+    </style>
+
+    <!-- local copy of the Box2DWeb library (same file as in Chapter3-Demo) -->
+    <script type="text/javascript" src="Box2d.min.js"></script>
+  </head>
+
+  <!-- init() is defined in main.js and is called once the page is loaded -->
+  <body onload="init()">
+    <canvas id="canvas" width="800" height="560"></canvas>
+    <script type="text/javascript" src="main.js"></script>
+  </body>
+</html>
