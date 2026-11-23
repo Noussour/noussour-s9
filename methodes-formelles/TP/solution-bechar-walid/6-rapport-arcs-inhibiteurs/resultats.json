@@ -1,0 +1,228 @@
+{
+ "R1_2u_1p": {
+  "states": 7,
+  "edges": 6,
+  "transitions": 4,
+  "dead": 2,
+  "dead_with_waiting": 2,
+  "bound": 1,
+  "invariant": true,
+  "surreservation": false,
+  "dead_markings": [
+   "Confirmee_U1=1, Attente_U2=1",
+   "Attente_U1=1, Confirmee_U2=1"
+  ]
+ },
+ "R1_2u_2p": {
+  "states": 8,
+  "edges": 8,
+  "transitions": 4,
+  "dead": 1,
+  "dead_with_waiting": 0,
+  "bound": 2,
+  "invariant": true,
+  "surreservation": false,
+  "dead_markings": [
+   "Confirmee_U1=1, Confirmee_U2=1"
+  ]
+ },
+ "R1_3u_1p": {
+  "states": 13,
+  "edges": 12,
+  "transitions": 6,
+  "dead": 6,
+  "dead_with_waiting": 6,
+  "bound": 1,
+  "invariant": true,
+  "surreservation": false,
+  "dead_markings": [
+   "Confirmee_U1=1, Attente_U2=1, Idle_U3=1",
+   "Confirmee_U1=1, Idle_U2=1, Attente_U3=1",
+   "Attente_U1=1, Confirmee_U2=1, Idle_U3=1",
+   "Idle_U1=1, Confirmee_U2=1, Attente_U3=1",
+   "Attente_U1=1, Idle_U2=1, Confirmee_U3=1",
+   "Idle_U1=1, Attente_U2=1, Confirmee_U3=1"
+  ]
+ },
+ "R1_3u_2p": {
+  "states": 19,
+  "edges": 21,
+  "transitions": 6,
+  "dead": 3,
+  "dead_with_waiting": 3,
+  "bound": 2,
+  "invariant": true,
+  "surreservation": false,
+  "dead_markings": [
+   "Confirmee_U1=1, Confirmee_U2=1, Attente_U3=1",
+   "Confirmee_U1=1, Attente_U2=1, Confirmee_U3=1",
+   "Attente_U1=1, Confirmee_U2=1, Confirmee_U3=1"
+  ]
+ },
+ "R2_2u_1p": {
+  "states": 8,
+  "edges": 10,
+  "transitions": 4,
+  "dead": 2,
+  "dead_with_waiting": 2,
+  "bound": 1,
+  "invariant": true,
+  "surreservation": false,
+  "dead_markings": [
+   "Confirmee_U1=1, Attente_U2=1",
+   "Attente_U1=1, Confirmee_U2=1"
+  ]
+ },
+ "R2_2u_2p": {
+  "states": 9,
+  "edges": 12,
+  "transitions": 4,
+  "dead": 1,
+  "dead_with_waiting": 0,
+  "bound": 2,
+  "invariant": true,
+  "surreservation": false,
+  "dead_markings": [
+   "Confirmee_U1=1, Confirmee_U2=1"
+  ]
+ },
+ "R2_3u_1p": {
+  "states": 20,
+  "edges": 36,
+  "transitions": 6,
+  "dead": 3,
+  "dead_with_waiting": 3,
+  "bound": 1,
+  "invariant": true,
+  "surreservation": false,
+  "dead_markings": [
+   "Confirmee_U1=1, Attente_U2=1, Attente_U3=1",
+   "Attente_U1=1, Confirmee_U2=1, Attente_U3=1",
+   "Attente_U1=1, Attente_U2=1, Confirmee_U3=1"
+  ]
+ },
+ "R2_3u_2p": {
+  "states": 26,
+  "edges": 51,
+  "transitions": 6,
+  "dead": 3,
+  "dead_with_waiting": 3,
+  "bound": 2,
+  "invariant": true,
+  "surreservation": false,
+  "dead_markings": [
+   "Confirmee_U1=1, Confirmee_U2=1, Attente_U3=1",
+   "Confirmee_U1=1, Attente_U2=1, Confirmee_U3=1",
+   "Attente_U1=1, Confirmee_U2=1, Confirmee_U3=1"
+  ]
+ },
+ "R3_2u_1p": {
+  "states": 15,
+  "edges": 20,
+  "transitions": 6,
+  "dead": 1,
+  "dead_with_waiting": 0,
+  "bound": 1,
+  "invariant": true,
+  "surreservation": false,
+  "dead_markings": [
+   "Libres=1, Annulee_U1=1, Annulee_U2=1"
+  ]
+ },
+ "R3_2u_2p": {
+  "states": 16,
+  "edges": 24,
+  "transitions": 6,
+  "dead": 1,
+  "dead_with_waiting": 0,
+  "bound": 2,
+  "invariant": true,
+  "surreservation": false,
+  "dead_markings": [
+   "Libres=2, Annulee_U1=1, Annulee_U2=1"
+  ]
+ },
+ "R3_3u_1p": {
+  "states": 54,
+  "edges": 99,
+  "transitions": 9,
+  "dead": 1,
+  "dead_with_waiting": 0,
+  "bound": 1,
+  "invariant": true,
+  "surreservation": false,
+  "dead_markings": [
+   "Libres=1, Annulee_U1=1, Annulee_U2=1, Annulee_U3=1"
+  ]
+ },
+ "R3_3u_2p": {
+  "states": 63,
+  "edges": 138,
+  "transitions": 9,
+  "dead": 1,
+  "dead_with_waiting": 0,
+  "bound": 2,
+  "invariant": true,
+  "surreservation": false,
+  "dead_markings": [
+   "Libres=2, Annulee_U1=1, Annulee_U2=1, Annulee_U3=1"
+  ]
+ },
+ "R3_perte_2u_1p": {
+  "states": 12,
+  "edges": 16,
+  "transitions": 6,
+  "dead": 2,
+  "dead_with_waiting": 2,
+  "bound": 1,
+  "invariant": false,
+  "surreservation": false,
+  "dead_markings": [
+   "Annulee_U1=1, Attente_U2=1",
+   "Attente_U1=1, Annulee_U2=1"
+  ]
+ },
+ "R3_perte_2u_2p": {
+  "states": 16,
+  "edges": 24,
+  "transitions": 6,
+  "dead": 1,
+  "dead_with_waiting": 0,
+  "bound": 2,
+  "invariant": false,
+  "surreservation": false,
+  "dead_markings": [
+   "Annulee_U1=1, Annulee_U2=1"
+  ]
+ },
+ "R3_perte_3u_1p": {
+  "states": 32,
+  "edges": 60,
+  "transitions": 9,
+  "dead": 3,
+  "dead_with_waiting": 3,
+  "bound": 1,
+  "invariant": false,
+  "surreservation": false,
+  "dead_markings": [
+   "Annulee_U1=1, Attente_U2=1, Attente_U3=1",
+   "Attente_U1=1, Annulee_U2=1, Attente_U3=1",
+   "Attente_U1=1, Attente_U2=1, Annulee_U3=1"
+  ]
+ },
+ "R3_perte_3u_2p": {
+  "states": 56,
+  "edges": 120,
+  "transitions": 9,
+  "dead": 3,
+  "dead_with_waiting": 3,
+  "bound": 2,
+  "invariant": false,
+  "surreservation": false,
+  "dead_markings": [
+   "Annulee_U1=1, Annulee_U2=1, Attente_U3=1",
+   "Annulee_U1=1, Attente_U2=1, Annulee_U3=1",
+   "Attente_U1=1, Annulee_U2=1, Annulee_U3=1"
+  ]
+ }
+}
