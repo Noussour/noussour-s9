@@ -1,0 +1,165 @@
+{
+  "r1": {
+    "places": 7,
+    "transitions": 4,
+    "arcs": {
+      "normal": 10,
+      "inhibitor": 2,
+      "total": 12
+    },
+    "etats": 7,
+    "arcs_graphe": 6,
+    "etats_morts": 2,
+    "max_reservees": 1,
+    "max_attente": 1,
+    "inv_place": true,
+    "inv_utilisateur": true,
+    "morts": [
+      "U1 place réservée, U2 en attente, Disponible = 0",
+      "U1 en attente, U2 place réservée, Disponible = 0"
+    ],
+    "morts_ids": [
+      5,
+      6
+    ]
+  },
+  "r2": {
+    "places": 7,
+    "transitions": 4,
+    "arcs": {
+      "normal": 10,
+      "inhibitor": 0,
+      "total": 10
+    },
+    "etats": 8,
+    "arcs_graphe": 10,
+    "etats_morts": 2,
+    "max_reservees": 1,
+    "max_attente": 2,
+    "inv_place": true,
+    "inv_utilisateur": true,
+    "morts": [
+      "U1 place réservée, U2 en attente, Disponible = 0",
+      "U1 en attente, U2 place réservée, Disponible = 0"
+    ],
+    "morts_ids": [
+      6,
+      7
+    ]
+  },
+  "r3": {
+    "places": 9,
+    "transitions": 6,
+    "arcs": {
+      "normal": 16,
+      "inhibitor": 0,
+      "total": 16
+    },
+    "etats": 15,
+    "arcs_graphe": 20,
+    "etats_morts": 1,
+    "max_reservees": 1,
+    "max_attente": 2,
+    "inv_place": true,
+    "inv_place_annulee": false,
+    "inv_utilisateur": true,
+    "morts": [
+      "U1 a annulé, U2 a annulé, Disponible = 1"
+    ],
+    "morts_ids": [
+      14
+    ]
+  },
+  "r3_perte": {
+    "places": 9,
+    "transitions": 6,
+    "arcs": {
+      "normal": 14,
+      "inhibitor": 0,
+      "total": 14
+    },
+    "etats": 12,
+    "arcs_graphe": 16,
+    "etats_morts": 2,
+    "max_reservees": 1,
+    "max_attente": 2,
+    "inv_place": false,
+    "inv_place_annulee": true,
+    "inv_utilisateur": true,
+    "morts": [
+      "U1 a annulé, U2 en attente, Disponible = 0",
+      "U1 en attente, U2 a annulé, Disponible = 0"
+    ],
+    "morts_ids": [
+      10,
+      11
+    ]
+  },
+  "passage_echelle": [
+    {
+      "n": 2,
+      "k": 1,
+      "r1": 7,
+      "r1_morts": 2,
+      "r1_ok": true,
+      "r2": 8,
+      "r2_morts": 2,
+      "r2_ok": true,
+      "r3": 15,
+      "r3_morts": 1,
+      "r3_ok": true
+    },
+    {
+      "n": 3,
+      "k": 1,
+      "r1": 13,
+      "r1_morts": 6,
+      "r1_ok": true,
+      "r2": 20,
+      "r2_morts": 3,
+      "r2_ok": true,
+      "r3": 54,
+      "r3_morts": 1,
+      "r3_ok": true
+    },
+    {
+      "n": 3,
+      "k": 2,
+      "r1": 19,
+      "r1_morts": 3,
+      "r1_ok": true,
+      "r2": 26,
+      "r2_morts": 3,
+      "r2_ok": true,
+      "r3": 63,
+      "r3_morts": 1,
+      "r3_ok": true
+    },
+    {
+      "n": 4,
+      "k": 1,
+      "r1": 21,
+      "r1_morts": 12,
+      "r1_ok": true,
+      "r2": 48,
+      "r2_morts": 4,
+      "r2_ok": true,
+      "r3": 189,
+      "r3_morts": 1,
+      "r3_ok": true
+    },
+    {
+      "n": 4,
+      "k": 2,
+      "r1": 39,
+      "r1_morts": 12,
+      "r1_ok": true,
+      "r2": 72,
+      "r2_morts": 6,
+      "r2_ok": true,
+      "r3": 243,
+      "r3_morts": 1,
+      "r3_ok": true
+    }
+  ]
+}
