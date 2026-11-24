@@ -34,5 +34,18 @@
     "source_url": "https://drive.google.com/file/d/1eDuuUoHNey9UokR1LVwAaAjRLksolvmT/view?usp=classroom_web&authuser=0",
     "source_text_file": "../Chapitre-04/texte-source.json",
     "source_text_sha256": "f3aeade3e41b4d12a56ee88812afd63d3f53de1f58f52e1f51236ce5170afaf7"
+  },
+  {
+    "chapter": 5,
+    "title": "Réseaux de Petri",
+    "page_count": 62,
+    "transcript": "../Chapitre-05/cours.md",
+    "source_url": "https://classroom.google.com/c/ODg4NjEyMTk1OTQx",
+    "source_document": "Chapitre 05 Réseaux de Petri.pdf",
+    "captured_on": "2026-11-24",
+    "source_text_file": "../Chapitre-05/texte-source.json",
+    "source_text_sha256": "c591876cd1ed5e04c27216a02df73e69e62490fb49f7f9e5e3efd053514e0a1c",
+    "figures": 62,
+    "capture_pdf": "../Chapitre-05/diapositives-captures.pdf"
   }
 ]
