@@ -26,20 +26,21 @@ Each module folder follows the same layout:
 
 ## Résumés de révision
 
-| Module | Résumé PDF |
-| --- | --- |
-| Développement mobile | [resumer.pdf](dev-mobile/RESUME/resumer.pdf) |
-| DevOps et Cloud Computing | [resumer.pdf](devops/RESUME/resumer.pdf) |
-| Logiciels embarqués | [resumer.pdf](embedded/RESUME/resumer.pdf) |
-| Conception de jeux vidéo | [resumer.pdf](game-dev/RESUME/resumer.pdf) |
-| Internet of Things | [resumer.pdf](iot/RESUME/resumer.pdf) |
-| Méthodes formelles pour GL | [resumer.pdf](methodes-formelles/RESUME/resumer.pdf) |
+| Module | Cours | TD et TP |
+| --- | --- | --- |
+| Développement mobile | [resumer.pdf](dev-mobile/RESUME/resumer.pdf) | [resumer-tp.pdf](dev-mobile/RESUME/resumer-tp.pdf) |
+| DevOps et Cloud Computing | [resumer.pdf](devops/RESUME/resumer.pdf) | [resumer-tp.pdf](devops/RESUME/resumer-tp.pdf) |
+| Logiciels embarqués | [resumer.pdf](embedded/RESUME/resumer.pdf) | [resumer-tp.pdf](embedded/RESUME/resumer-tp.pdf) |
+| Conception de jeux vidéo | [resumer.pdf](game-dev/RESUME/resumer.pdf) | [resumer-tp.pdf](game-dev/RESUME/resumer-tp.pdf) |
+| Internet of Things | [resumer.pdf](iot/RESUME/resumer.pdf) | [resumer-tp.pdf](iot/RESUME/resumer-tp.pdf) |
+| Méthodes formelles pour GL | [resumer.pdf](methodes-formelles/RESUME/resumer.pdf) | [resumer-tp.pdf](methodes-formelles/RESUME/resumer-tp.pdf) |
 
-Les résumés individuels sont rangés dans le dossier `RESUME` de chaque module.
+Les résumés individuels sont rangés dans le dossier `RESUME` de chaque module : un résumé des cours et un résumé séparé des TD et TP, avec des schémas explicatifs dans `RESUME/figures/`.
 Sécurité Logicielle reste en attente des supports de cours.
 
-Chaque dossier contient aussi la version Markdown modifiable et la liste des
-sources. Pour régénérer les PDF séparés : `python scripts/generer-resumes.py`
+Chaque dossier contient aussi les versions Markdown modifiables et les listes des
+sources (`sources.json`, `sources-tp.json`). Pour redessiner les schémas puis régénérer
+les PDF : `python scripts/figures-resumes.py` puis `python scripts/generer-resumes.py`
 (Python, ReportLab, PyMuPDF et polices DejaVu ou Arial/Consolas nécessaires).
 
 Pour actualiser certains modules avec une nouvelle date :

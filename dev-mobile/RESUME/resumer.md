@@ -1,6 +1,6 @@
-# Développement mobile — Résumé de révision
+# Développement mobile — Résumé des cours
 
-Synthèse des documents locaux disponibles au 7 novembre 2026. Enseignante du chapitre 2 : Dr Kouchi. Le chapitre 1 n'est fourni que par un lien Prezi non accessible lors de la préparation : son contenu n'est donc pas reconstitué. Le résumé couvre le chapitre 2, le TD1 et les TP1 à TP3.
+Mise à jour du 24 novembre 2026. Définitions, raisonnements et exemples des cours (approches de développement, plateforme, résolution et densité, composants, Intent, XML et layouts). Les exercices, commandes et comptes rendus pratiques sont réunis dans [le résumé TD/TP](resumer-tp.md).
 
 ## Chapitre 2 — Appareils mobiles et architecture matérielle
 
@@ -75,156 +75,279 @@ Ces classes sont des références de ressources ; un PPI physique calculé n'est
 
 La largeur occupe 120 px à 160 dpi, 240 px à 320 dpi et 360 px à 480 dpi. Le texte est en sp pour respecter les préférences de taille de police.
 
-## TD1 — Méthode de résolution des exercices
+## Chapitre 1 — Applications mobiles : contexte et contraintes
 
-### Procédure
+### Repères historiques
 
-1. Identifier les données : résolution, diagonale, dimensions physiques ou densité.
-2. Garder la même orientation pour largeur et hauteur dans toutes les unités.
-3. Calculer la densité manquante, puis convertir chaque dimension.
-4. Vérifier les unités et arrondir seulement à la fin.
-5. Distinguer une densité exacte calculée d'une classe Android approximative.
+| Date (selon le support) | Événement |
+| --- | --- |
+| 1992 | IBM Simon, considéré comme le premier smartphone : calendrier, carnet d'adresses, calculatrice, bloc-notes |
+| 2000 | assistants personnels et BlackBerry : messagerie et productivité mobiles ; petits jeux sur téléphones basiques (Snake sur Nokia) |
+| 2003 | création d'Android par Andy Rubin, d'abord pour des appareils photo, puis réorienté vers les smartphones ; rachat par Google en 2005 |
+| 2007 | iPhone d'Apple : ergonomie tactile et web mobile |
+| 2010 | App Store et Google Play : installation facile d'applications |
+| 2015 puis 2023 | réalité augmentée, puis applications fondées sur l'intelligence artificielle |
 
-### Exemples calculés
+Précision : le support date les boutiques d'applications de 2010. L'App Store d'Apple ouvre en 2008 et Android Market, devenu Google Play, la même année ; le nom « Google Play » date de 2012. L'IBM Simon est présenté en 1992 et commercialisé plus tard.
 
-| Énoncé | Calcul | Résultat |
+### Systèmes d'exploitation mobiles
+
+Un système d'exploitation mobile gère la connectivité sans fil, les types d'interface, la navigation internet, les appels et l'énergie. Les applications se distribuent par des **magasins** (App Store, Google Play, Windows Phone Store).
+
+| Système | Éditeur et nature | Langage natif |
 | --- | --- | --- |
-| 200 px à 320 dpi | 200 × 160 / 320 | 100 dp |
-| 120 dp à 240 dpi | 120 × 240 / 160 | 180 px |
-| 480 × 800 px et 600 × 1000 dp | 480 × 160 / 600, confirmé par l'autre dimension | 128 dpi |
-| dp = 4 × px | 4 = 160 / dpi | 40 dpi, cas théorique |
-| 720 × 1280 px et 360 × 640 dp | 720 × 160 / 360 | 320 dpi |
-| 1280 × 720 px, diagonale 4 pouces | sqrt(1280² + 720²) / 4 | Environ 367,15 PPI |
+| iOS | Apple ; écosystème fermé, interface fluide | Objective-C, puis Swift (2014) |
+| Android | Google ; open source, fondé sur le noyau Linux ; très fragmenté et personnalisable | Java et C++ ; Kotlin promu à partir de 2017 |
+| Windows Phone | Microsoft ; interface proche de Windows 8 ; faible diffusion | — |
 
-Pour le dernier exemple, les dimensions logiques obtenues en assimilant dpi et PPI sont environ **557,81 × 313,77 dp**. Le corrigé local indique une diagonale de 1452,67 px, mais le calcul donne environ **1468,60 px** ; les résultats qui en dépendent ont été rectifiés ici.
+Android domine avec environ 75 à 80 % des parts de marché mondial, iOS environ 20 à 25 %. **React Native** est cité comme framework multiplateforme à code unique.
 
-Pour une icône de 0,5 pouce dans le modèle de l'exercice : taille_px = 0,5 × dpi. On obtient 60, 80, 120, 160, 240 et 320 px dans l'ordre ldpi à xxxhdpi, soit 80 dp dans ce modèle de référence.
+### Définition et contraintes
 
-Si les dimensions physiques horizontale et verticale sont données séparément, vérifier la cohérence des rapports pixels/pouces sur les deux axes. Un simple quotient de diagonales peut masquer des données incompatibles. Le corrigé du TD contient aussi une variante d'énoncé et des inversions d'orientation : toujours repartir de la question originale.
+Une **application mobile** est un programme conçu pour un dispositif mobile, adapté à son environnement technique et ergonomique. Trois familles de contraintes :
 
-## TP1 — Projet Android et cycle de vie
+| Famille | Contenu |
+| --- | --- |
+| Dispositif | consommation d'énergie, capacité de calcul, bande passante, stockage, hétérogénéité des systèmes |
+| Marché | réduire le **Time to Market** (TTM) : durée entre la conception d'un produit et sa mise sur le marché |
+| Technique | le choix de la plateforme dépend des caractéristiques du projet |
 
-### Organisation du projet
+Autres questions à se poser : quel public cible ? à quoi sert l'application ? sur quel appareil et quel système ? a-t-elle besoin de fonctions natives (GPS, caméra, capteurs) ?
 
-Le TP crée un projet **Empty Views Activity**, en Java ou Kotlin, avec une interface XML. Gradle construit le projet et résout ses dépendances ; le SDK fournit les outils et API Android ciblés.
+## Chapitre 1 — Choisir une approche de développement
+
+![Les approches de développement mobile : performance et réutilisation du code](figures/mobile-approches.png)
+
+| Approche | Principe | Avantages | Inconvénients |
+| --- | --- | --- | --- |
+| Web mobile | site HTML, CSS, JavaScript lu dans le navigateur | portée universelle, adapté aux écrans mobiles, référencement (SEO), aucune installation | ergonomie limitée, résolution parfois mauvaise, pas de boutique |
+| Native | langage propre à chaque système, accès complet au matériel (GPS, caméra, contacts, mémoire) | performance et fluidité optimales, accès total aux ressources | une version par système : coût de développement et de maintenance plus élevé |
+| Hybride (cross-platform) | environ 80 % de technologies web et 20 % de fonctions natives dans une coque ; Apache Cordova, VoltBuilder | un code source, installable par les boutiques, plusieurs systèmes | performance et qualité limitées pour les projets complexes |
+| Native générée (cross-platform) | un code source compilé en code natif : Xamarin, React Native, Flutter | performance proche du natif, un seul code | connaissance approfondie du framework, adaptation aux SDK natifs, maintenance plus complexe |
+
+Une application native Android ne fonctionne pas sur iPhone, et inversement. Le cross-platform réduit les coûts en évitant de recruter des spécialistes de chaque système.
+
+### Comment décider
+
+1. **Besoins du projet** : type d'application (commerce, réseau social, banque, IoT), systèmes visés, fonctions natives nécessaires (GPS, caméra, Bluetooth, notifications, NFC, capteurs), performance attendue.
+2. **Contraintes** : budget et délais, compétences de l'équipe, maintenance, performance, expérience utilisateur, sécurité, facilité d'accès aux API natives.
+
+Une application de réservation avec formulaires et comptes, sans fonction matérielle exigeante, peut se contenter d'une approche web ou hybride ; un jeu ou une application qui exploite fortement la caméra et les capteurs justifie du natif.
+
+**Pourquoi le TTM est-il décisif ?** Il permet de réagir au marché avant que les besoins ou les tendances changent, d'obtenir vite des retours utilisateurs, d'améliorer le produit plus tôt et de faire face à la concurrence.
+
+**Pourquoi la qualité de conception d'iOS est-elle souvent perçue comme meilleure ?** Apple contrôle le matériel et le système (peu de configurations à gérer) ; ses recommandations donnent une interface cohérente (navigation, icônes, interactions) ; il y a moins de fragmentation que sous Android, qui tourne sur de très nombreux modèles, tailles d'écran et versions. L'optimisation est donc plus simple sur iOS.
+
+## Chapitre 1 — La plateforme Android et ses outils
 
 | Élément | Rôle |
 | --- | --- |
-| AndroidManifest.xml | Déclarations de l'application et de ses composants, dont les activités |
-| MainActivity.java | Comportement de l'activité |
-| res/layout | Description XML des vues |
-| res/drawable | Images et ressources graphiques |
-| res/mipmap | Icônes de lancement |
-| res/values | Chaînes, couleurs, styles et autres valeurs |
-| res/xml | Configurations XML selon leur usage |
+| Applications | couche visible par l'utilisateur, fonctions de base |
+| Framework et services | services auxquels les applications font appel pour atteindre les couches inférieures |
+| Machine virtuelle | Dalvik puis ART : exécutent les applications indépendamment du matériel |
+| IDE | Android Studio (officiel), IntelliJ IDEA, Eclipse (ancien), NetBeans avec plugin ; Flutter |
+| Langages | Java (historique), Kotlin, C/C++ en natif ; Kotlin devient officiel en 2017 |
+| SDK Manager | télécharge plateformes, outils (tools, platform-tools), versions d'API |
+| AVD Manager | gère les émulateurs (Android Virtual Device) |
+| ADB | Android Debug Bridge : outil en ligne de commande qui relie l'IDE et l'appareil |
 
-`setContentView(R.layout.activity_main)` associe l'activité à son interface. L'intent-filter avec MAIN et LAUNCHER désigne l'activité de lancement. Les ressources audio ne sont pas toutes à placer dans drawable : des fichiers bruts peuvent relever de res/raw. Référence : [Android — organisation des ressources](https://developer.android.com/guide/topics/resources/providing-resources).
+| Critère | Dalvik | ART (Android Runtime) |
+| --- | --- | --- |
+| Compilation | **JIT** (Just-In-Time) : à l'exécution | **AOT** (Ahead-Of-Time) : à l'installation |
+| Conséquence | démarrage et exécution plus lents | meilleure expérience globale ; standard actuel |
 
-### Cycle de vie à mémoriser
+## Chapitre 3 — Les quatre composants fondamentaux d'une application Android
+
+Une application Android est un assemblage de **composants** liés par le fichier de configuration `AndroidManifest.xml`. Tout composant doit y être déclaré pour pouvoir fonctionner ; c'est le premier fichier lu au démarrage de l'application.
+
+![Les quatre composants Android et leur déclaration](figures/mobile-composants.png)
+
+| Composant | Rôle | Classe de base | Balise du manifeste | Interface ? | Exemple |
+| --- | --- | --- | --- | --- | --- |
+| Activity | un écran avec interface | `AppCompatActivity` | `<activity>` | oui | afficher une liste de contacts |
+| Service | traitement de fond | `Service` | `<service>` | non | télécharger un fichier |
+| ContentProvider | partage de données entre applications | `ContentProvider` | `<provider>` | non | accéder aux contacts du système |
+| BroadcastReceiver | réception d'événements | `BroadcastReceiver` | `<receiver>` | non | détecter une batterie faible |
+
+### Activity et sa pile
+
+Une activité représente un écran ; elle relie l'interface (layouts et vues) à la logique, et porte le **contexte**, lien avec le système et les autres activités. Une seule activité est au premier plan. Les activités s'empilent dans la **pile (back stack)** : la nouvelle se place au sommet, et l'ancienne ne réapparaît que lorsque celles qui la recouvrent sont terminées.
+
+| État | Visibilité | Remarque |
+| --- | --- | --- |
+| Active (Resumed) | totalement visible, au sommet, détient le focus | l'utilisateur interagit |
+| Suspendue (Paused) | partiellement visible (SMS reçu), sans focus | reste en mémoire ; peut être tuée si la mémoire manque |
+| Arrêtée (Stopped) | complètement cachée | état conservé, mais peut être détruite |
+
+![Cycle de vie d'une activité](figures/mobile-cycle-vie.png)
+
+| Callback | Moment | À y faire |
+| --- | --- | --- |
+| `onCreate()` | création ; reçoit un `Bundle` | `setContentView`, initialiser vues et variables |
+| `onStart()` | l'activité devient visible (appelée aussi après `onRestart()`) | |
+| `onResume()` | l'utilisateur peut interagir | démarrer threads, animations, écouteurs |
+| `onPause()` | perte partielle du focus | sauvegarder (`onSaveInstanceState`) |
+| `onStop()` | plus visible | arrêter les traitements inutiles |
+| `onRestart()` | retour depuis l'état arrêté | |
+| `onDestroy()` | destruction | fermer base, threads, fichiers |
+
+### Service
+
+Un service s'exécute en arrière-plan **sans interface**, pour de longues tâches (musique, téléchargement, réseau).
+
+| Critère | Started Service (local) | Bound Service (distant) |
+| --- | --- | --- |
+| Démarrage | `startService()` | `bindService()` |
+| Objectif | exécuter une tâche | permettre l'interaction avec un client |
+| Communication | pas nécessairement d'interface | interface `IBinder`, `onBind()` puis `ServiceConnection` |
+| Durée de vie | continue après la fermeture de l'activité, jusqu'à `stopSelf()` ou `stopService()` | tant que des clients sont liés (`unbindService()`) |
+| Exemple | lecture audio lancée par l'utilisateur | météo fournie par une autre application |
+
+Cycle du service démarré : `startService()`, `onCreate()`, `onStartCommand()`, service en fonctionnement, `stopSelf()` ou `stopService()`, `onDestroy()`. Cycle du service lié : `bindService()`, `onCreate()`, `onBind()`, client lié, `unbindService()`, `onUnbind()`, `onDestroy()`. Un service **hybride** peut être démarré et lié (suivi GPS : `startService()` lance le suivi, `bindService()` lit la position). Sur les versions récentes d'Android, les tâches longues (GPS, audio) exigent souvent un **Foreground Service** avec notification, et le respect des restrictions du système. Dans le code, un travail long se fait dans un thread, pas dans le thread principal. `START_STICKY` demande au système de relancer le service s'il est tué.
+
+### ContentProvider
+
+Il partage des données de façon contrôlée entre applications. Le client passe par un **ContentResolver**, qui envoie une **URI** au fournisseur et reçoit un **Cursor**.
 
 ```text
-Premier affichage : onCreate → onStart → onResume
-Perte du premier plan : onPause
-Activité devenue invisible : onStop
-Retour après arrêt : onRestart → onStart → onResume
-Destruction normale de l'instance : onDestroy
+content://com.example.provider/contacts/42
+schéma     autorité                chemin    identifiant
 ```
 
-`onCreate` initialise l'activité ; `onStart` correspond à sa visibilité ; `onResume` à son interaction au premier plan. `onPause` et `onStop` permettent d'adapter les traitements au changement d'état. `onDestroy` n'est pas garanti si le processus est tué : ce n'est pas un point fiable unique pour enregistrer des données importantes. Une notification n'entraîne pas systématiquement onPause ; le comportement dépend de l'interaction et de la visibilité. Référence : [Android — cycle de vie](https://developer.android.com/guide/components/activities/activity-lifecycle).
-
-Le TP observe ces transitions via `Log.d` et Logcat. Un émulateur exige une configuration compatible ; un téléphone réel avec débogage USB autorisé constitue une autre voie d'exécution. Les observations d'un appareil ne remplacent pas les règles générales du cycle de vie.
-
-## TP2 — Interface XML et calcul du double
-
-### Éléments d'interface
-
-Le TP construit une application qui lit un nombre et affiche son double. Le layout XML décrit les vues ; l'activité Java définit le comportement.
-
-| Élément | Fonction dans le TP |
+| Méthode du ContentResolver | Équivalent |
 | --- | --- |
-| LinearLayout / LinearLayoutCompat | Organiser les enfants verticalement ou horizontalement |
-| TextView | Afficher titre, libellé ou résultat |
-| EditText | Recueillir la saisie |
-| Button | Déclencher le calcul |
-| Identifiant XML | Relier une vue à `R.id...` dans Java |
-| colors.xml | Centraliser une couleur réutilisable par `@color/result` |
+| `query()` | lecture (SELECT) |
+| `insert()` | insertion |
+| `update()` | mise à jour |
+| `delete()` | suppression |
 
-`match_parent` occupe l'espace offert par le parent ; `wrap_content` dimensionne selon le contenu. Garder dp pour les dimensions et sp pour le texte. Le champ `inputType="numberDecimal"` oriente la saisie, mais ne remplace pas toutes les validations de la valeur.
+### BroadcastReceiver
 
-### Du clic au résultat
+Il reçoit des événements du système (`BOOT_COMPLETED`, `BATTERY_LOW`, mode avion, SMS reçu, changement de connectivité) ou de l'application. Chaque message est un `Intent` ; le code se place dans `onReceive(Context, Intent)`.
 
-Après `setContentView`, `findViewById` récupère les vues du layout. Le TP associe le clic à `public void computeDouble(View view)` via `android:onClick="computeDouble"`.
+| Enregistrement | Où | Effet |
+| --- | --- | --- |
+| Statique | `AndroidManifest.xml` | reçoit même si l'application est fermée |
+| Dynamique | code (`registerReceiver` dans `onResume`, `unregisterReceiver` dans `onPause`) | actif tant que l'activité est en vie |
 
-```text
-Clic → lire getText().toString().trim()
-     → refuser une chaîne vide
-     → convertir en double
-     → calculer 2 × valeur
-     → afficher avec TextView.setText
+## Chapitre 4 — Intent, Bundle et interfaces XML
+
+### Intent
+
+Un **Intent** est un objet qui décrit une action à réaliser : démarrer une activité, démarrer un service, envoyer une demande à une autre application, transmettre des données sous forme d'extras. Il ne montre pas l'écran lui-même.
+
+![Intent explicite et intent implicite](figures/mobile-intent.png)
+
+| Critère | Explicite | Implicite |
+| --- | --- | --- |
+| Destination | un composant nommé | une action décrite, Android choisit l'application |
+| Usage | navigation interne | action externe ou inter-applications |
+| Exemple | `MainActivity` vers `DetailsActivity` | ouvrir une URL dans le navigateur |
+| Précaution | l'activité doit être déclarée dans le manifeste | vérifier `resolveActivity()` avant de lancer |
+
+```kotlin
+val intent = Intent(this, ProfileActivity::class.java)   // explicite
+startActivity(intent)
+
+val web = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.android.com"))   // implicite
+if (web.resolveActivity(packageManager) != null) startActivity(web)
 ```
 
-Un `Toast` informe l'utilisateur d'une saisie manquante. Le code fourni vérifie le vide ; une conversion peut encore lever `NumberFormatException` pour une chaîne invalide. Une application robuste doit aussi vérifier la conversion et les résultats numériques. Cet ajout est un point de vigilance, pas une fonctionnalité déjà présente dans le PDF.
+| Action implicite | Rôle |
+| --- | --- |
+| `ACTION_VIEW` | afficher une ressource (URL vers navigateur, `geo:` vers cartes) |
+| `ACTION_SEND` | partager du texte (`type = "text/plain"`, `EXTRA_TEXT`, `createChooser`) |
+| `ACTION_SENDTO` | écrire à un destinataire (`mailto:`, `smsto:`) |
+| `ACTION_DIAL` | ouvrir le composeur avec un numéro (`tel:`), l'utilisateur valide l'appel |
+| `ACTION_PICK` | choisir un élément (image, contact) |
+| `ACTION_MAIN` | point d'entrée, avec `CATEGORY_LAUNCHER` |
 
-## TP3 — Deux activités, Intent et transmission de données
+Sans application compatible, `startActivity` lève `ActivityNotFoundException`.
 
-### Organisation
+### Extras et Bundle
 
-L'application d'exercice « My Health Coach » contient une activité de saisie et une activité de résultat. La première lit une masse en kg et une taille en cm ; elle calcule un indice puis le transmet à l'autre activité. Le mot « width » du document doit être compris ici comme **weight**, la masse, et non une largeur.
+L'Intent transporte la demande, les **extras** transportent les informations : des paires **clé-valeur**.
 
-```text
-taille_m = taille_cm / 100
-indice = masse_kg / (taille_m × taille_m)
+```kotlin
+// envoi
+intent.putExtra("EXTRA_NOM", "Sana")
+intent.putExtra("EXTRA_AGE", 24)
+// réception, même clé et type compatible
+val nom = intent.getStringExtra("EXTRA_NOM") ?: "Inconnu"
+val age = intent.getIntExtra("EXTRA_AGE", 0)
 ```
 
-Exemple purement numérique : 75 kg et 180 cm donnent 75 / 1,8² ≈ **23,15**. Cet exemple sert à étudier les conversions et le transfert de données dans l'application ; il ne constitue pas une interprétation médicale.
+Un **Bundle** regroupe plusieurs valeurs (`putString`, `putInt`), s'attache avec `putExtras(bundle)` et se lit avec `intent.extras`. Types courants : String, Int, Boolean, Long, Double, Parcelable. On ne transmet pas d'image volumineuse ni de fichier entier : on envoie une **URI**.
 
-### Écouteur et Intent explicite
+Sécurité : toute activité est déclarée dans le manifeste ; `android:exported="true"` seulement si une autre application doit pouvoir l'ouvrir ; vérifier les données reçues (absentes ou invalides) ; ne pas envoyer de données sensibles à une application externe sans précaution.
 
-Le TP2 reliait le clic dans XML ; le TP3 utilise aussi un écouteur Java : `computeButton.setOnClickListener(this::compute)`. Les vues doivent être initialisées avant l'installation de l'écouteur.
+### Layout XML et accès depuis le code
 
-```java
-Intent intent = new Intent(this, ResultActivity.class);
-intent.putExtra("EXTRA_BMI", indice);
-startActivity(intent);
-```
+Les layouts sont dans `res/layout/`, un fichier par activité. Le namespace `xmlns:android="http://schemas.android.com/apk/res/android"` est obligatoire sur la racine.
 
-`Intent` désigne ici explicitement l'activité à ouvrir. L'extra associe une clé à une valeur ; la même clé et un type compatible doivent être utilisés à la réception.
+| Notion | Rôle |
+| --- | --- |
+| `match_parent` | occupe tout l'espace du parent |
+| `wrap_content` | s'adapte au contenu |
+| `dp` | dimensions et marges (indépendant de la densité) |
+| `sp` | taille du texte (suit les préférences de police) |
+| `android:id="@+id/btnValider"` | `@+id/` crée un identifiant |
+| `setContentView(R.layout.x)` | charge le layout dans l'activité |
+| `findViewById<T>(R.id.x)` | retrouve une vue par son identifiant |
+| View Binding | classe générée (`ActivityMainBinding`) : accès direct, sans `findViewById`, sans crash sur identifiant erroné |
 
-```java
-double indice = getIntent().getDoubleExtra("EXTRA_BMI", 0.0);
-```
+`View` désigne un composant (TextView, EditText, Button, ImageView, CheckBox, RadioButton, Switch, ProgressBar, Spinner) ; `ViewGroup` un conteneur (LinearLayout, ConstraintLayout, FrameLayout, ScrollView, RecyclerView). TextView affiche un texte non éditable (`text`, `textSize` en sp, `textColor`, `gravity`) ; EditText permet la saisie (`hint`, `inputType`, `maxLines`) ; un clic se traite avec `setOnClickListener { ... }`.
 
-Le TP lit cet extra dans `onStart`, après l'initialisation des TextView dans `onCreate`, puis formate l'affichage à deux décimales. La valeur par défaut 0,0 ne démontre pas qu'un extra était présent : il faut prévoir le comportement si la donnée manque.
+Bonnes pratiques : textes dans `res/values/strings.xml`, dp pour les dimensions, sp pour les textes, identifiants explicites (`btnValider`, `txtTitre`, `editNom`), ConstraintLayout pour éviter les imbrications. XML décrit l'interface, Kotlin gère la logique.
 
-### Validation, suppression et navigation
+**Application multi-écrans** : XML (interface) + Kotlin (logique) + Intent (navigation) + Bundle ou extras (données).
 
-Le bouton Delete vide les champs avec `setText("")`. Avant de calculer, vérifier des chaînes non vides, une conversion correcte et des valeurs strictement positives, notamment la taille pour éviter une division par zéro.
+## Chapitre 5 — Les layouts, conteneurs d'interface
 
-Le bouton Back du PDF démarre une nouvelle MainActivity. Cela peut empiler une autre instance ; pour simplement revenir à l'activité de saisie déjà présente sous l'activité résultat, `finish()` correspond au comportement de fermeture de l'écran courant.
+Un **layout** organise, positionne et dimensionne les composants graphiques d'une interface, et les adapte à l'espace disponible.
 
-Le sujet annonce un affichage d'interprétation, mais le code visible de ResultActivity met seulement à jour le texte numérique : `interpretationText` est initialisé sans règle d'interprétation dans l'extrait fourni. Il ne faut pas présenter cette fonctionnalité comme déjà implémentée.
+![Les six layouts principaux](figures/mobile-layouts.png)
 
-## Révision active et sources
+### Attributs communs
 
-### Questions avec réponses courtes
+| Attribut | Rôle |
+| --- | --- |
+| `layout_width`, `layout_height` | `match_parent`, `wrap_content` ou valeur en `dp` |
+| `margin` | espace **extérieur** autour du composant |
+| `padding` | espace **intérieur** entre le contenu et la bordure |
+| `gravity` | positionne le **contenu** à l'intérieur du composant |
+| `layout_gravity` | positionne le **composant** dans son parent (si le parent le permet) |
+
+### Les layouts
+
+| Layout | Organisation | Attributs clés | Usage |
+| --- | --- | --- | --- |
+| LinearLayout | une direction | `orientation` (vertical, horizontal), `layout_weight` | formulaires simples, boutons |
+| GridLayout | grille de lignes et colonnes (indices depuis 0) | `rowCount`, `columnCount`, `layout_row`, `layout_column`, `layout_rowSpan`, `layout_columnSpan` | calculatrices, claviers |
+| TableLayout | lignes `TableRow` | `stretchColumns`, `shrinkColumns`, `collapseColumns`, `layout_span` | formulaires, tableaux |
+| RelativeLayout | positions relatives au parent ou à un voisin | `layout_alignParentTop`, `layout_centerInParent`, `layout_below`, `layout_toEndOf` | connexion, bouton en bas |
+| FrameLayout | superposition (le dernier déclaré est au-dessus) | `layout_gravity`, `foreground` | texte sur image, indicateur de chargement |
+| ConstraintLayout | contraintes entre côtés (top, bottom, start, end) | `layout_constraintTop_toTopOf`, `..._toBottomOf`, `..._toStartOf` | interfaces complexes et adaptables |
+
+`layout_weight` répartit l'espace restant : avec deux boutons en `0dp` et des poids 1 et 2, le second occupe deux fois plus de largeur. Dans un GridLayout, `layout_columnSpan="2"` étend un bouton sur deux colonnes. Dans un TableLayout, `stretchColumns="1"` étire la deuxième colonne. Dans un RelativeLayout, le composant de référence est déclaré avant celui qui en dépend.
+
+Centrer un bouton avec ConstraintLayout : quatre contraintes, `Top_toTopOf`, `Bottom_toBottomOf`, `Start_toStartOf` et `End_toEndOf`, toutes vers `parent`. Plusieurs LinearLayout imbriqués donnent une hiérarchie profonde ; un ConstraintLayout plat produit souvent la même interface avec un seul conteneur.
+
+**GridLayout ou TableLayout ?** GridLayout place explicitement chaque composant (ligne et colonne) et gère rowSpan et columnSpan ; TableLayout organise des lignes `TableRow` dont les composants se suivent, avec `layout_span`, et convient aux formulaires.
+
+## Révision active — Cours
 
 1. **Pourquoi éviter px pour les dimensions d'une interface ?** La taille apparente varierait trop avec la densité ; utiliser dp.
 2. **Une mémoire dite « ROM » de smartphone est-elle généralement une ROM immuable ?** Non : il s'agit habituellement de stockage flash réinscriptible.
 3. **Que vaut 48 dp à 480 dpi ?** 144 px.
 4. **Une activité peut-elle être invisible sans être détruite ?** Oui, elle peut être arrêtée et reprendre ensuite.
-5. **Pourquoi compléter les logs du TP avec la documentation ?** Certaines transitions dépendent du scénario ; onDestroy n'est notamment pas garanti à la mort du processus.
-6. **Quand utiliser findViewById ?** Après avoir chargé le layout contenant la vue avec setContentView.
-7. **Pourquoi la taille est-elle divisée par 100 dans le TP3 ?** Pour convertir les centimètres en mètres avant le carré.
-8. **Quel lien entre putExtra et getDoubleExtra ?** Ils transmettent puis récupèrent une valeur avec une clé commune et un type compatible.
-9. **Le code du TP3 calcule-t-il l'interprétation annoncée ?** Pas dans l'extrait fourni : seul l'indice numérique est affiché.
-
-### Documents utilisés
-
-- `dev-mobile/COURS/Chapter2-Resolution-Density-Android.pdf` : 35 pages ; matériel p. 3–12, affichage p. 13–33.
-- `dev-mobile/TD/TD1.pdf` et `TD1-sol.pdf` : conversions et exercices ; recalcul des valeurs signalées.
-- `dev-mobile/TP/TP1.pdf` : 6 pages ; structure du projet et cycle de vie.
-- `dev-mobile/TP/TP2.pdf` : 4 pages ; vues XML, clic, saisie et calcul du double.
-- `dev-mobile/TP/TP3.pdf` : 8 pages ; deux activités, conversion d'unités, Intent et extras.
-- `dev-mobile/COURS/LINKS.md` : lien Prezi du chapitre 1 ; chapitre non intégré à cette fiche.
-
-Les références Android servent à préciser les points ambigus du support. Les exemples numériques de cette fiche sont recalculés ; ce document ne prétend pas couvrir le chapitre 1 manquant.
+5. **Quel lien entre putExtra et getDoubleExtra ?** Ils transmettent puis récupèrent une valeur avec une clé commune et un type compatible.
+6. **Quelles approches de développement mobile existe-t-il et quel est leur compromis ?** Web mobile (portée universelle, ergonomie limitée), natif (performance, un code par système), hybride (un code, performance limitée) et natif généré (performance proche du natif, framework à maîtriser).
+7. **Pourquoi ART a-t-il remplacé Dalvik ?** ART compile à l'installation (AOT), alors que Dalvik interprète à l'exécution (JIT) : l'expérience utilisateur est meilleure.
+8. **Quels sont les quatre composants fondamentaux et où se déclarent-ils ?** Activity, Service, ContentProvider, BroadcastReceiver ; tous dans `AndroidManifest.xml`.
+9. **Différence entre un service démarré et un service lié ?** Le premier se lance avec `startService()` et continue seul ; le second se lie avec `bindService()` et s'arrête quand tous les clients se déconnectent.
+10. **Quel enregistrement permet à un BroadcastReceiver de fonctionner application fermée ?** L'enregistrement statique dans le manifeste.
+11. **Intent explicite ou implicite ?** Explicite : la cible est nommée. Implicite : on décrit l'action et Android choisit ; on vérifie `resolveActivity()` avant `startActivity()`.
+12. **Comment passer le nom d'un écran à l'autre ?** `putExtra("cle", valeur)` côté émetteur, `getStringExtra("cle")` côté récepteur, avec la même clé et un type compatible.
+13. **Différence entre `margin` et `padding`, `gravity` et `layout_gravity` ?** Margin : espace extérieur ; padding : espace intérieur. `gravity` place le contenu du composant ; `layout_gravity` place le composant dans son parent.
+14. **Quel layout pour une calculatrice, un formulaire, une image avec texte, une interface adaptable ?** GridLayout, TableLayout, FrameLayout, ConstraintLayout.

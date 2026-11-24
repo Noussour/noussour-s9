@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-24",
+  "module": "embedded",
+  "pending": [],
+  "documents": [
+    {
+      "module": "embedded",
+      "source": "embedded/TP/TP1.pdf",
+      "sha256": "c4109116873a9b7156f57974a1d8c90d121e8720eca66c4d58ba37d0fc3fdd90",
+      "pages": 8
+    },
+    {
+      "module": "embedded",
+      "source": "embedded/TP/TP2.pdf",
+      "sha256": "d58d704f401101aef76f61b84af1a6f477441b141edc86d40ac53b9109ca13e4",
+      "pages": 4
+    },
+    {
+      "module": "embedded",
+      "source": "embedded/TP/TP3_USB_Captures.pdf",
+      "sha256": "06d90eb14209a07be768a4065ca045400f7e16a657863ccc0adadbdc52d47574",
+      "pages": 9
+    }
+  ]
+}

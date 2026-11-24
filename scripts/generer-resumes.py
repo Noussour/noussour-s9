@@ -1,4 +1,5 @@
-"""Generate separate module revision PDFs from local Markdown.
+"""Generate the module revision PDFs from local Markdown: resumer.pdf (courses) and
+resumer-tp.pdf (TD and TP), with the figures stored in RESUME/figures/.
 
 Run from any directory: python scripts/generer-resumes.py
 Requires reportlab, pymupdf and DejaVu or Arial/Consolas fonts.
@@ -22,8 +23,8 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
-    BaseDocTemplate, Frame, PageBreak, PageTemplate, Paragraph, Preformatted,
-    Spacer, Table, TableStyle,
+    BaseDocTemplate, Frame, Image, KeepTogether, PageBreak, PageTemplate, Paragraph,
+    Preformatted, Spacer, Table, TableStyle,
 )
 from reportlab.platypus.tableofcontents import TableOfContents
 
@@ -69,8 +70,11 @@ def inline(value):
         '<font name="ResumeMono" size="8">'+escape(m[1])+'</font>'), value)
     value = re.sub(r'\[([^\]]+)\]\((https?://[^)]+)\)', lambda m: save(
         '<link href="'+escape(m[2],quote=True)+'" color="#087d85">'+escape(m[1])+'</link>'), value)
+    value = re.sub(r'\[([^\]]+)\]\((?!https?://)[^)]+\)', lambda m: save(
+        '<font color="#087d85">'+escape(m[1])+'</font>'), value)
     value = escape(value)
     value = re.sub(r'\*\*([^*]+)\*\*', r'<b>\1</b>', value)
+    value = re.sub(r'(?<![\w*])\*([^*\s][^*]*?)\*(?![\w*])', r'<i>\1</i>', value)
     for i,token in enumerate(tokens):
         value = value.replace(f'ZZTOKEN{i}ZZ',token)
     return value
@@ -93,15 +97,17 @@ STYLES = {
                                textColor=colors.white),
     'code': ParagraphStyle('Code', fontName='ResumeMono', fontSize=7.7, leading=10.4,
                           textColor=NAVY, backColor=PALE, leftIndent=7, rightIndent=7),
+    'caption': ParagraphStyle('Caption', fontName='ResumeSans', fontSize=7.8, leading=10.5,
+                             textColor=GREY, alignment=1, spaceBefore=3, spaceAfter=10),
     'toc': ParagraphStyle('TOC', fontName='ResumeSans', fontSize=9.4, leading=14,
                          textColor=NAVY, rightIndent=24, spaceBefore=10),
 }
 
 
 class ResumeDoc(BaseDocTemplate):
-    def __init__(self,path,label):
+    def __init__(self,path,label,name='resumer'):
         super().__init__(str(path), pagesize=A4, leftMargin=44, rightMargin=44,
-                         topMargin=50, bottomMargin=49, title='resumer — '+label,
+                         topMargin=50, bottomMargin=49, title=name+' — '+label,
                          author='Notes de révision — S9', subject=label)
         self.label = label
         self.counter = 0
@@ -136,7 +142,17 @@ class ResumeDoc(BaseDocTemplate):
             self.notify('TOCEntry',(0,title,self.page,key))
 
 
-def paragraphs(lines,document):
+def figure(alt,source,base,document):
+    path=(base/source).resolve()
+    from reportlab.lib.utils import ImageReader
+    width,height=ImageReader(str(path)).getSize()
+    scale=min(document.width*0.96/width,330/height)
+    image=Image(str(path),width=width*scale,height=height*scale)
+    image.hAlign='CENTER'
+    return KeepTogether([Spacer(1,4),image,Paragraph(inline(alt),STYLES['caption'])])
+
+
+def paragraphs(lines,document,base):
     story=[]
     i=0
     while i<len(lines):
@@ -144,7 +160,10 @@ def paragraphs(lines,document):
         if not line:
             i+=1
             continue
-        if line.startswith('## '):
+        image=re.fullmatch(r'!\[(.*)\]\((.+)\)',line)
+        if image:
+            story.append(figure(image[1],image[2],base,document))
+        elif line.startswith('## '):
             story.append(Paragraph(inline(line[3:]),STYLES['chapter']))
         elif line.startswith('### '):
             story.append(Paragraph(inline(line[4:]),STYLES['section']))
@@ -169,6 +188,13 @@ def paragraphs(lines,document):
             weights=[1]*count
             if count==3:
                 weights=[.85,1.25,1.4]
+            elif count>=4:
+                weights=[]
+                for column in range(count):
+                    cells=[re.sub(r'[`*]','',row[column]) for row in rows]
+                    longest=max(len(word) for cell in cells for word in (cell.split() or ['']))
+                    average=sum(len(cell) for cell in cells)/len(cells)
+                    weights.append(max(7,longest*1.05,min(average,26)))
             table=Table([[Paragraph(inline(c),STYLES['tablehead' if r==0 else 'table'])
                           for c in row] for r,row in enumerate(rows)],
                         colWidths=[document.width*w/sum(weights) for w in weights],
@@ -195,9 +221,16 @@ def paragraphs(lines,document):
     return story
 
 
-def build_module(module,label,revision_date=None):
+KINDS = {
+    'cours': ('resumer.md', 'resumer.pdf', 'resumer', '', 'Définitions · Comparaisons · Méthodes · Révision active'),
+    'tp': ('resumer-tp.md', 'resumer-tp.pdf', 'resumer-tp', ' · TD et TP', 'Méthodes · Pas à pas · Pièges · Révision active'),
+}
+
+
+def build_module(module,label,revision_date=None,kind='cours'):
+    source_name,pdf_name,title,suffix,tagline=KINDS[kind]
     path=ROOT/module/'RESUME'
-    source=(path/'resumer.md').read_text(encoding='utf-8')
+    source=(path/source_name).read_text(encoding='utf-8')
     if revision_date is None:
         manifest=path/'sources.json'
         revision_date=(json.loads(manifest.read_text(encoding='utf-8'))['date']
@@ -209,11 +242,11 @@ def build_module(module,label,revision_date=None):
     lines=source.splitlines()
     start=next(i for i,line in enumerate(lines) if line.startswith('## '))
     intro=[line for line in lines[1:start] if line.strip()]
-    document=ResumeDoc(path/'resumer.pdf',label)
-    story=[Spacer(1,60),Paragraph('resumer',STYLES['title']),
-           Paragraph(escape(label),STYLES['subtitle']),
+    document=ResumeDoc(path/pdf_name,label+suffix,title)
+    story=[Spacer(1,60),Paragraph(title,STYLES['title']),
+           Paragraph(escape(label)+(' — TD et TP' if kind=='tp' else ''),STYLES['subtitle']),
            Paragraph('USTHB · Ingénieur 5 · Software Engineering · S9',STYLES['body']),
-           Paragraph('Définitions · Comparaisons · Méthodes · Révision active',STYLES['body']),
+           Paragraph(tagline,STYLES['body']),
            Spacer(1,25)]
     story.extend(Paragraph(inline(line),STYLES['body']) for line in intro)
     story.extend([Spacer(1,20),Paragraph(edition_label,STYLES['body']),
@@ -222,54 +255,63 @@ def build_module(module,label,revision_date=None):
     toc.levelStyles=[STYLES['toc']]
     toc.dotsMinLevel=0
     story.extend([toc,PageBreak()])
-    story.extend(paragraphs(lines[start:],document))
+    story.extend(paragraphs(lines[start:],document,path))
     document.multiBuild(story)
-    return path/'resumer.pdf'
+    return path/pdf_name
+
+
+INVENTORY_SUFFIXES = ['.pdf','.txt','.md']
+SKIPPED_PREFIXES = ('resumer','solution-','fiche-revision','README','LINKS')
+EXTRA_SOURCES = {
+    'cours': {'methodes-formelles': ['methodes-formelles/COURS/resumer.md']},
+    'tp': {'game-dev': ['game-dev/TP/test/Test/test.pdf']},
+}
+
+
+def inventory_entry(module,path):
+    entry={'module':module,'source':path.relative_to(ROOT).as_posix(),
+           'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+    if path.suffix=='.pdf':
+        with pymupdf.open(path) as pdf:
+            entry['pages']=len(pdf)
+    return entry
+
+
+def inventory(module,folders,kind):
+    entries=[]
+    for folder in folders:
+        candidates=sorted((ROOT/module/folder).glob('*'))
+        if folder=='COURS':
+            candidates+=sorted((ROOT/module/folder).glob('Chapitre-*/cours.md'))
+        for path in candidates:
+            if not path.is_file() or path.suffix.lower() not in INVENTORY_SUFFIXES:
+                continue
+            if path.name.startswith(SKIPPED_PREFIXES) or (module=='methodes-formelles' and folder=='COURS' and path.parent.name=='Transcriptions-completes'):
+                continue
+            entries.append(inventory_entry(module,path))
+    for relative in EXTRA_SOURCES[kind].get(module,[]):
+        entries.append(inventory_entry(module,ROOT/relative))
+    return entries
 
 
 def sources_manifest(selected_modules=None,revision_date=None):
-    inventory=[]
-    for module,label in MODULES:
-        for folder in ['COURS','TD','TP']:
-            candidates=sorted((ROOT/module/folder).glob('*'))
-            if module=='methodes-formelles' and folder=='COURS':
-                candidates=sorted((ROOT/module/folder).glob('Chapitre-*/cours.md'))
-            for path in candidates:
-                if not path.is_file() or path.suffix.lower() not in ['.pdf','.txt','.md']:
-                    continue
-                if path.name.startswith(('resumer','solution-','fiche-revision','README','LINKS')):
-                    continue
-                entry={'module':module,'source':path.relative_to(ROOT).as_posix(),
-                       'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
-                if path.suffix=='.pdf':
-                    with pymupdf.open(path) as pdf:
-                        entry['pages']=len(pdf)
-                inventory.append(entry)
-    for relative in ['methodes-formelles/COURS/resumer.md']:
-        path=ROOT/relative
-        entry={'module':'methodes-formelles','source':relative,
-               'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
-        if path.suffix=='.pdf':
-            with pymupdf.open(path) as pdf:
-                entry['pages']=len(pdf)
-        inventory.append(entry)
     for module,label in MODULES:
         if selected_modules is not None and module not in selected_modules:
             continue
-        pending = ['chapitre 1 : support Prezi en ligne (COURS/LINKS.md)'] if module=='dev-mobile' else []
-        destination=ROOT/module/'RESUME/sources.json'
-        manifest_date=revision_date
-        if manifest_date is None:
-            manifest_date=(json.loads(destination.read_text(encoding='utf-8'))['date']
-                           if destination.exists() else date.today().isoformat())
-        destination.write_text(json.dumps({'date':manifest_date,
-            'module':module, 'pending':pending,
-            'documents':[entry for entry in inventory if entry['module']==module]},
-            ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+        for kind,folders,name in (('cours',['COURS'],'sources.json'),('tp',['TD','TP'],'sources-tp.json')):
+            destination=ROOT/module/'RESUME'/name
+            manifest_date=revision_date
+            if manifest_date is None:
+                manifest_date=(json.loads(destination.read_text(encoding='utf-8'))['date']
+                               if destination.exists() else date.today().isoformat())
+            destination.write_text(json.dumps({'date':manifest_date,
+                'module':module,'pending':[],
+                'documents':inventory(module,folders,kind)},
+                ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 
 
 def main():
-    parser=argparse.ArgumentParser(description='Generate separate module summaries.')
+    parser=argparse.ArgumentParser(description='Generate the module summaries (courses and TD/TP).')
     parser.add_argument('--modules',nargs='+',choices=[m for m,_ in MODULES],
                         default=[m for m,_ in MODULES])
     parser.add_argument('--date',type=date.fromisoformat,help='Revision date, YYYY-MM-DD')
@@ -279,11 +321,12 @@ def main():
     for module,label in MODULES:
         if module not in args.modules:
             continue
-        path=build_module(module,label,revision_date)
-        with pymupdf.open(path) as pdf:
-            print(module,len(pdf),'pages')
+        for kind in KINDS:
+            path=build_module(module,label,revision_date,kind)
+            with pymupdf.open(path) as pdf:
+                print(module,kind,len(pdf),'pages',path.stat().st_size//1024,'KB')
     sources_manifest(args.modules,revision_date)
-    print('Generated separate summaries in each module RESUME folder.')
+    print('Generated the course and TD/TP summaries in each module RESUME folder.')
 
 
 if __name__=='__main__':

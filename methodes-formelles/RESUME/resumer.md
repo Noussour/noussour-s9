@@ -1,8 +1,6 @@
-# Résumé des quatre chapitres — Méthodes formelles pour le génie logiciel
+# Méthodes formelles — Résumé des cours
 
-Dr MEKAHLIA Fatma Zohra · USTHB · 5e année Software Engineering
-
-Supports consultés dans Classroom le 3 novembre 2026 : chapitre 1, 52 diapositives ; chapitre 2, 32 ; chapitre 3, 29 ; chapitre 4, 42. Ce résumé reformule les supports ; les transcriptions page par page et les captures des formules sont rangées dans les dossiers Chapitre-01 à Chapitre-04.
+Mise à jour du 24 novembre 2026. Définitions, raisonnements et exemples des cours. Les exercices, commandes et comptes rendus pratiques sont réunis dans [le résumé TD/TP](resumer-tp.md).
 
 ## Chapitre 1 — Introduction aux méthodes formelles
 
@@ -307,20 +305,162 @@ La seconde relation suppose qu'une réservation confirmée consomme exactement u
 
 **À retenir :** définir le périmètre du modèle, les états initiaux, les transitions/gardes, les traces autorisées et la propriété recherchée ; vérifier tous les états atteignables pertinents.
 
+## Chapitre 5 — Réseaux de Petri : syntaxe et franchissement
+
+### 1. Origine et intérêt
+
+Le réseau de Petri (RdP) a été créé en 1962 par C. A. Petri pour modéliser la **composition et la communication entre processus**. Il ne décrit pas seulement les états successifs : il représente aussi les **ressources disponibles**, les **conditions** d'exécution et les **interactions** entre activités.
+
+| Concept | Signification |
+| --- | --- |
+| Parallélisme | plusieurs activités s'exécutent indépendamment, sans attendre la fin des autres |
+| Synchronisation | plusieurs activités doivent se coordonner pour qu'une opération ait lieu |
+| Choix non déterministe | plusieurs transitions possibles depuis un même état, sans que le modèle impose laquelle |
+| Partage de ressources | plusieurs processus utilisent une même ressource en quantité limitée |
+| Communication | échange d'informations entre processus |
+| Causalité | un événement rend possibles d'autres événements |
+
+Avantages : représentation graphique intuitive ; vérification de propriétés structurelles et comportementales (absence de blocage, retour à l'état initial, disponibilité permanente) ; appui sur la théorie des graphes, la théorie des langages et l'**algèbre linéaire**.
+
+### 2. Définition formelle
+
+Un RdP classique est un **graphe biparti orienté** défini par le quadruplet `RN = (P, T, Pre, Post)` :
+
+- `P` : ensemble fini de **places** (cercles) ;
+- `T` : ensemble fini de **transitions** (rectangles ou barres), disjoint de `P` ;
+- `Pre` : arcs entrants (place vers transition), les **préconditions** ;
+- `Post` : arcs sortants (transition vers place), les **postconditions**.
+
+Un arc relie toujours une place à une transition ou une transition à une place, jamais deux éléments de même nature. Un arc sans indication a le poids 1 ; un poids supérieur doit être écrit sur l'arc.
+
+| Élément | Représentation | Rôle dans le système de réservation |
+| --- | --- | --- |
+| Place | cercle | condition ou ressource : `PlacesDisponibles`, `DemandesEnAttente`, `ReservationsConfirmees`, `DemandesRejetees` |
+| Transition | rectangle | événement : `SoumettreDemande`, `ConfirmerReservation`, `RejeterDemande`, `AnnulerReservation` |
+| Arc | flèche | condition nécessaire (entrant) ou résultat produit (sortant) |
+| Jeton | point dans une place | une unité de ressource ou de condition disponible |
+| Marquage | `M(p)` = nombre de jetons de `p` | photographie du système à un instant |
+
+Dans ce modèle un jeton représente une **unité** de réservation, pas un utilisateur précis. Le marquage s'écrit comme un vecteur dont l'ordre des composantes est fixé : avec trois places disponibles et deux demandes en attente, `M0 = (3, 2, 0)` pour `(PlacesDisponibles, DemandesEnAttente, ReservationsConfirmees)`.
+
+### 3. Règle de franchissement
+
+Une transition `t` est **franchissable** (ou sensibilisée) dans `M` si chaque place d'entrée contient assez de jetons :
+
+```text
+M(p) >= Pre(p, t)   pour toute place p
+```
+
+Le franchissement fait deux choses : il retire les jetons des places d'entrée et en dépose dans les places de sortie.
+
+```text
+M'(p) = M(p) - Pre(p, t) + Post(p, t)        noté  M [t> M'
+```
+
+![Franchissement de ConfirmerReservation : avant et après](figures/petri-franchissement.png)
+
+Exemple : avec `M0 = (1, 1, 0)`, `ConfirmerReservation` consomme un jeton de `PlacesDisponibles` et un de `DemandesEnAttente`, et produit un jeton dans `ReservationsConfirmees` : on obtient `M1 = (0, 0, 1)`. S'il n'y a **aucune place disponible**, la transition n'est pas franchissable : le réseau lui-même empêche de consommer une ressource inexistante.
+
+**Un RdP n'oblige jamais à franchir.** Une transition franchissable *peut* l'être ; ce n'est pas un ordre. Quand plusieurs transitions sont franchissables, le choix est non déterministe.
+
+### 4. Matrices d'incidence, séquences et équation d'état
+
+Avec `n` places et `m` transitions, `Pre` et `Post` sont des matrices `n × m` (incidence avant et arrière). La **matrice d'incidence** est :
+
+```text
+C = Post - Pre
+```
+
+Exemple du cours (4 places, 3 transitions) : `t1` déplace un jeton de `p1` vers `p2` ; `t2` consomme `p2` et `p4` pour produire `p1` et `p3` ; `t3` consomme `p2` et `p3` et produit `p2` et `p4`.
+
+| Place | t1 | t2 | t3 |
+| --- | --- | --- | --- |
+| p1 | -1 | +1 | 0 |
+| p2 | +1 | -1 | 0 |
+| p3 | 0 | +1 | -1 |
+| p4 | 0 | -1 | +1 |
+
+Une **séquence de franchissement** `σ = t1 t2 … tp` vérifie `M0 [t1> M1, M1 [t2> M2, …`, notée `M0 [σ> Mp`. Son **vecteur caractéristique** `S` est le vecteur colonne (une composante par transition) qui compte combien de fois chaque transition est franchie dans `σ`. Si la séquence est réalisable :
+
+```text
+M' = M0 + C · S
+```
+
+Pour `σ = t1 t2 t1`, donc `S = (2, 1, 0)`, et `M0 = (1, 0, 0, 1)` :
+
+```text
+C · S = 2·(-1, 1, 0, 0) + 1·(1, -1, 1, -1) + 0·(0, 0, -1, 1) = (-1, 1, 1, -1)
+M'    = (1, 0, 0, 1) + (-1, 1, 1, -1) = (0, 1, 1, 0)
+```
+
+On retrouve le marquage obtenu en franchissant `t1`, puis `t2`, puis `t1`. **Attention :** l'équation d'état ne vérifie pas qu'une séquence est franchissable ; elle donne seulement le marquage *si* elle l'est. Un marquage `M` est **accessible** s'il existe `σ` avec `M0 [σ> M` ; l'ensemble des marquages accessibles se note `M0 [>`.
+
+### 5. Graphe de marquages
+
+Le **graphe de marquages** (ou d'accessibilité) a pour sommets les marquages accessibles depuis `M0` et pour arcs les franchissements, étiquetés par la transition tirée. Il répond à : quels états sont possibles ? une situation incorrecte est-elle atteignable ? le système peut-il se bloquer ? une ressource peut-elle être consommée deux fois ?
+
+![Réseau d'exemple et son graphe de marquages](figures/petri-graphe-marquages.png)
+
+Dans l'exemple, `M0 = (1,0,0,1)` donne quatre marquages : `t1` mène à `(0,1,0,1)`, puis `t2` à `(1,0,1,0)`, `t1` à `(0,1,1,0)` et `t3` revient à `(0,1,0,1)`.
+
+### 6. Propriétés à vérifier
+
+| Propriété | Définition | Intérêt |
+| --- | --- | --- |
+| Accessibilité | `M` est accessible s'il existe `σ` tel que `M0 [σ> M` | savoir si une situation incorrecte peut se produire |
+| Bornitude | réseau **k-borné** : `M(p) <= k` dans tout marquage accessible | une quantité de ressources ne croît pas indéfiniment |
+| Sûreté | réseau 1-borné : au plus un jeton par place | représenter l'exclusion mutuelle (un seul détenteur du verrou) |
+| Conservation | une somme pondérée de jetons reste constante | `PlacesDisponibles + ReservationsConfirmees = capacité` |
+| Vivacité | de tout marquage accessible, chaque transition peut redevenir franchissable | aucune action n'est définitivement perdue |
+| Blocage (deadlock) | marquage où aucune transition n'est franchissable | détecter un problème de synchronisation |
+| Réversibilité | de tout marquage accessible, on peut revenir à `M0` | le système peut se réinitialiser |
+
+Vérification de l'exemple : réseau **sûr** (1-borné), **sans blocage**, **vivant** (chaque transition redevient franchissable), mais **non réversible** car `M0` n'est plus jamais atteint ; la somme `M(p3) + M(p4) = 1` est conservée.
+
+### 7. Extensions des réseaux de Petri
+
+Un RdP classique teste la **présence** de jetons mais pas leur **absence** (le *test à zéro*). Pour rejeter une demande quand il ne reste aucune place, il faut une extension.
+
+**Arc inhibiteur.** Flèche terminée par un petit **cercle**. La transition n'est franchissable que si la place source contient **moins de jetons que le seuil** (généralement 1, c'est-à-dire qu'elle est vide). L'arc inhibiteur ne consomme aucun jeton : il teste seulement une condition.
+
+![Arc inhibiteur : confirmer si une place est libre, rejeter sinon](figures/petri-arc-inhibiteur.png)
+
+| Critère | RdP classique | RdP avec arcs inhibiteurs |
+| --- | --- | --- |
+| Vérifier la présence de jetons | oui | oui |
+| Vérifier l'absence de jetons | pas directement | oui |
+| Tester si une place est vide | pas directement | oui |
+| Modéliser une condition négative | plus complexe | plus simple |
+| Exprimer une condition de blocage | mécanismes supplémentaires | directement |
+
+Le RdP classique suffit à **prouver l'absence de double réservation** (propriété de sûreté). L'arc inhibiteur n'est utile que pour le **test explicite** de disponibilité nulle (refus).
+
+| Besoin | Limite du RdP classique | Extension |
+| --- | --- | --- |
+| Rejeter si aucune place n'est disponible | impossible de tester l'absence de jetons | **arcs inhibiteurs** |
+| Identifier utilisateurs et réservations | les jetons sont indistinguables | **réseaux colorés** (jetons porteurs de données : identifiants, types, valeurs) |
+| Délai maximal de paiement | pas de notion de délai | **réseaux temporels** (délais, durées, échéances, temporisations) |
+| Étudier délais et échecs | pas de durées probabilistes | **réseaux stochastiques** (temps moyen de traitement, probabilité d'abandon ou de surcharge) |
+| Séparer réservation, paiement et gestion des places | modèle vite illisible | **réseaux hiérarchiques** (décomposition en sous-réseaux) |
+
+Exemple temporel : une place est réservée provisoirement dix minutes ; sans confirmation, la réservation expire et la place est libérée.
+
+**À retenir :** un RdP est un graphe biparti de places et transitions ; le marquage donne l'état ; une transition se franchit si toutes ses places d'entrée sont assez marquées ; `C = Post - Pre` et `M' = M0 + C·S` donnent l'évolution ; le graphe de marquages sert à tester accessibilité, bornitude, blocage et vivacité ; l'arc inhibiteur apporte le test à zéro.
+
 ## Synthèse générale et méthode de révision
 
-Les quatre chapitres suivent une même progression : **définir ce qui est correct → choisir un formalisme → exprimer une propriété → vérifier cette propriété**.
+Les cinq chapitres suivent une même progression : **définir ce qui est correct → choisir un formalisme → exprimer une propriété → vérifier cette propriété**.
 
 Pour un exercice :
 
 1. Déterminer les données, les états et les hypothèses du système.
 2. Écrire ce qui doit être vrai : précondition, postcondition, invariant, propriété de sûreté ou de progression.
-3. Choisir la technique : preuve de programme, automate, système de transitions ou autre famille adaptée.
+3. Choisir la technique : preuve de programme, automate, système de transitions, réseau de Petri ou autre famille adaptée.
 4. Examiner toutes les branches/transitions concernées, pas seulement un scénario favorable.
 5. Présenter les étapes de raisonnement ou un contre-exemple concret.
 6. Dire précisément ce qui est garanti : sur quel modèle, sous quelles hypothèses, et avec ou sans terminaison.
 
-Erreurs fréquentes à éviter : confondre test et preuve ; vérifier le modèle sans justifier son lien avec le programme ; inverser une implication dans la règle de conséquence ; calculer les préconditions d'une séquence dans l'ordre direct ; confondre état et événement ; confondre non-déterminisme et hasard ; supposer qu'un invariant de sûreté garantit la progression.
+Erreurs fréquentes à éviter : confondre test et preuve ; vérifier le modèle sans justifier son lien avec le programme ; inverser une implication dans la règle de conséquence ; calculer les préconditions d'une séquence dans l'ordre direct ; confondre état et événement ; confondre non-déterminisme et hasard ; supposer qu'un invariant de sûreté garantit la progression ; confondre transition *franchissable* (elle peut être tirée) et transition *franchie* ; croire que l'équation d'état `M' = M0 + C·S` prouve qu'une séquence est réalisable.
 
 ## Notes de lecture du support
 
@@ -332,47 +472,7 @@ Erreurs fréquentes à éviter : confondre test et preuve ; vérifier le modèle
 
 Ces remarques sont des notes pédagogiques séparées. La transcription conserve le texte original pour permettre la comparaison.
 
-
-## TD/TP — Relier les quatre chapitres au système de réservation
-
-Le sujet pratique associe contrats, programme Java, automate, concurrence,
-réseau de Petri, logique temporelle et modèle probabiliste. Le corrigé complet
-se trouve dans `methodes-formelles/TP/solution-mimobn.pdf` ; cette section en
-rappelle les liens avec le cours.
-
-| Question | Modèle ou raisonnement | Propriété recherchée |
-| --- | --- | --- |
-| Peut-on réserver ? | Préconditions et postconditions | Demande valide ; place attribuée seulement si disponible |
-| Combien de places restent ? | Invariant de conservation | libres + confirmations actives = capacité |
-| Quels changements sont permis ? | Automate de demande | Attente, confirmation, refus, annulation |
-| Deux clients visent la dernière place | Opération atomique et ressource partagée | Pas de double attribution |
-| Une demande peut-elle attendre toujours ? | Vivacité et équité | Toute attente finit par être traitée ou annulée |
-| Confirmation avant D ? | DTMC et propriété bornée | Probabilité calculée sous des hypothèses explicites |
-
-Un invariant de compteur ne suffit pas à exclure tous les défauts : deux threads
-peuvent lire 1 puis écrire tous deux 0, alors que chacun a confirmé la même place.
-Il faut vérifier aussi l'unicité des propriétaires et rendre atomique le contrôle
-suivi de l'attribution. Un réseau de Petri représente cette ressource par un jeton.
-
-Dans le modèle temporel, `G` signifie toujours, `F` finalement et `X` au pas
-suivant. `G(attente → F traitee)` exprime une progression sur les traces retenues ;
-il faut annoncer les hypothèses d'équité. Une preuve de sûreté ne fournit pas
-automatiquement cette progression.
-
-Dans le modèle probabiliste pédagogique, chaque pas en attente confirme avec
-p=0,70, échoue définitivement avec f=0,05, ou reste en attente avec r=0,25.
-La probabilité de confirmation au plus tard au pas D est :
-
-```text
-P_D = p × (1 − r^D) / (1 − r), pour r différent de 1
-P_0 = 0
-P_5 = 0,932421875 = 93,2421875 %
-```
-
-Ces valeurs sont des hypothèses d'exercice, pas des mesures. La vérification
-automatique des modèles finis et les tests du Java ont des portées différentes.
-
-## Révision active — Questions et réponses
+## Révision active — Cours
 
 1. **Correction partielle ou totale ?** La totale ajoute la terminaison.
 2. **Pour x := x+2 et Q : x=10, quelle précondition ?** x=8 dans le domaine mathématique considéré.
@@ -381,8 +481,9 @@ automatique des modèles finis et les tests du Java ont des portées différente
 5. **Le non-déterminisme signifie-t-il équiprobabilité ?** Non, aucune probabilité n'est imposée.
 6. **Que prouve un contre-exemple ?** Qu'une propriété est violée dans le modèle, sous les hypothèses de vérification.
 7. **Une demande refusée viole-t-elle forcément la vivacité ?** Non : elle a reçu une issue, même sans confirmation.
-
-Sources complémentaires locales : `methodes-formelles/TP/TD-TP-MFGL.pdf`
-(1 page) et son corrigé détaillé Java/modèles. La synthèse des quatre chapitres
-ci-dessus reprend le résumé déjà conservé dans `COURS/resumer.md` ; ce fichier
-original et son PDF restent inchangés.
+8. **Quand une transition est-elle franchissable ?** Quand chaque place d'entrée contient au moins `Pre(p, t)` jetons ; avec un arc inhibiteur, la place concernée doit en plus contenir moins de jetons que le seuil.
+9. **Comment calcule-t-on le nouveau marquage ?** `M' = M - Pre(., t) + Post(., t)`, ou pour une séquence `M' = M0 + C·S` avec `C = Post - Pre`.
+10. **Que mesure la bornitude, que garantit la sûreté ?** La bornitude limite le nombre de jetons par place ; la sûreté est la 1-bornitude (exclusion mutuelle possible).
+11. **Un réseau sans blocage est-il vivant ?** Non : il peut ne jamais être bloqué tout en perdant définitivement une transition.
+12. **À quoi sert un arc inhibiteur, et que ne fait-il pas ?** Il teste l'absence de jetons (test à zéro) ; il ne consomme aucun jeton.
+13. **Que faut-il pour distinguer les utilisateurs dans un réseau ?** Des jetons porteurs de données : les réseaux colorés.

@@ -1,6 +1,6 @@
-# Conception de jeux vidéo — Résumé de révision
+# Conception de jeux vidéo — Résumé des cours
 
-Synthèse des chapitres 1 et 2 et des documents pratiques disponibles au 4 novembre 2026. Enseignante : Dr Delloul. Les rappels techniques ci-dessous servent à comprendre les travaux demandés ; ils ne constituent pas le développement du projet à remettre.
+Mise à jour du 24 novembre 2026. Définitions, raisonnements et exemples des cours. Les exercices, commandes et comptes rendus pratiques sont réunis dans [le résumé TD/TP](resumer-tp.md).
 
 ## Chapitre 1 — Game design et expérience du joueur
 
@@ -84,6 +84,9 @@ Avec une frame toutes les 100 ms, l'animation avance à 10 frames/s ; ce rythme 
 
 ### Dessiner un fragment dans Canvas
 
+
+![Découpage d'une feuille de sprites avec drawImage](figures/game-spritesheet.png)
+
 ```javascript
 ctx.drawImage(image,
   sourceX, sourceY, frameWidth, frameHeight,
@@ -114,6 +117,9 @@ Exemple du cours : objet en (96,64), caméra en (64,32), donc affichage en (32,3
 Pour une tile de largeur tw et hauteur th, la cellule (colonne, ligne) a pour origine orthogonale (colonne × tw, ligne × th). Dessiner seulement les cellules qui rencontrent le viewport réduit le travail de rendu ; les bords partiellement visibles doivent rester inclus.
 
 ### Projection isométrique
+
+
+![Projection isométrique : de la grille (i, j) à l'écran](figures/game-isometrique.png)
 
 Des tiles en losange donnent une impression de profondeur dans un rendu 2D. Pour les indices de grille (i,j) et une tile de largeur w, hauteur h :
 
@@ -161,6 +167,9 @@ La phase large réduit beaucoup de tests en pratique, mais le pire cas reste O(n
 
 ## Chapitre 3 — Box2DWeb
 
+
+![Hiérarchie Box2DWeb et cycle d'une étape de simulation](figures/game-box2d.png)
+
 Hiérarchie : **World → Body → Fixture → Shape**.
 
 | Élément | Rôle |
@@ -183,57 +192,14 @@ fixDef.shape = shape;
 world.CreateBody(groundDef).CreateFixture(fixDef);
 ```
 
-Points pièges : Box2D travaille en unités **MTS** (mètres, tonnes, secondes) ; `scale` = pixels par mètre, choisi par le programmeur. La position désigne le **centre** du corps. `SetAsBox` prend les **demi**-dimensions. Une boucle de jeu reste nécessaire pour animer ; `b2DebugDraw` dessine les corps sur le canvas.
+Points pièges : Box2D travaille en unités **MKS** (mètres, kilogrammes, secondes) ; `scale` = pixels par mètre, choisi par le programmeur. La position désigne le **centre** du corps. `SetAsBox` prend les **demi**-dimensions. Une boucle de jeu reste nécessaire pour animer ; `b2DebugDraw` dessine les corps sur le canvas.
 
 Un `b2ContactListener` déclenche du code sur `BeginContact`, `EndContact`, `PreSolve`, `PostSolve` (score, son, changement de couleur), puis s'enregistre par `world.SetContactListener(listener)`. Exemples dans `COURS/Chapter3-Demo/`.
 
-## Pratique — Canvas, animation et travaux demandés
-
-### Fonctions à comprendre
-
-| API / opération | Utilité |
-| --- | --- |
-| canvas.getContext('2d') | Obtenir le contexte de dessin |
-| fillRect / strokeRect | Rectangle rempli / contour |
-| beginPath, arc, fill | Construire et remplir une forme circulaire |
-| clearRect | Effacer une zone |
-| drawImage | Dessiner une image ou un fragment |
-| save / restore | Sauvegarder puis restaurer les paramètres graphiques |
-| translate / rotate / scale | Transformer le repère de dessin |
-| keydown / keyup | Suivre les actions clavier |
-| requestAnimationFrame | Planifier un dessin avant un prochain rafraîchissement |
-
-`save/restore` conserve l'état graphique, pas une copie des pixels du canvas. Le support mentionne `ctx.clear()` : pour effacer le canvas 2D dans ce contexte, retenir `clearRect(0,0,canvas.width,canvas.height)`.
-
-### Boucle technique
-
-```text
-Lire les entrées → mettre à jour l'état → effacer → dessiner → recommencer
-```
-
-Une boucle for qui dessine toutes les frames immédiatement ne crée pas une animation visible dans le temps : elles se superposent, ou seule la dernière reste après effacement. La planification des rendus et le calcul du temps écoulé sont nécessaires.
-
-**PW1** : créer plusieurs frames dans Piskel, exporter une sprite sheet, afficher la feuille puis une frame, et animer avec une boucle de rendu. **PW2** : produire des tiles, construire une carte avec Tiled, exporter en CSV, afficher une portion, ajouter le scrolling puis le déplacement clavier du personnage. **PW3** : construire une carte **isométrique** dans Tiled (orientation isométrique, hauteur de tile sur la carte égale à la moitié de sa hauteur réelle), l'afficher avec le tileset ou les tiles séparées à partir de `isometric_map.html` (carte en matrice 2D), réduire le canvas, ajouter le scrolling et animer le personnage isométrique de `Character0_Run.png` dans plusieurs directions (fichiers dans `TP/TP3/`).
-
-Les conventions d'identifiants exportés et d'indexation doivent être vérifiées avant de relier CSV et tileset. Un identifiant de tile n'est pas directement une coordonnée en pixels.
-
-## Projet — Périmètre, révision active et sources
-
-### Ce que demande le document de projet
-
-Le projet prévoit une équipe de **2 à 4 étudiants**, un concept original, un GDD décrivant le jeu complet et **un seul niveau complet et jouable** à implémenter. Les formats proposés sont 2D, 2.5D ou 3D.
-
-Le document demande GDD, code, rapport technique et démonstration ; sa présentation initiale mentionne aussi un poster. Le rapport explique outils, fonctionnalités, concepts techniques, difficultés et répartition du travail. Les ressources externes doivent être citées ; les prompts doivent être inclus si du code généré par IA est employé.
-
-Dates inscrites dans le sujet : groupes le 08/11/2026, GDD le 22/11/2026, produit final en janvier sans date précise. Ce sont les indications du fichier local, à faire confirmer en cas de mise à jour de l'enseignante.
-
-### Questions avec réponses courtes
+## Révision active — Cours
 
 1. **Gameplay loop ou game loop ?** Motivation et progression pour la première ; mise à jour et rendu pour la seconde.
 2. **Combien de frames dans une ligne de 320 px avec des frames de 32 px ?** 10.
 3. **Pourquoi séparer grille visuelle et logique ?** Changer une texture ne doit pas modifier involontairement les règles du monde.
 4. **Pourquoi soustraire la caméra ?** Pour convertir une position du monde dans le repère de l'écran.
-5. **Un GDD suffit-il à livrer le projet ?** Non : un niveau jouable, le code et les autres livrables demandés restent nécessaires.
 6. **Que mesure le playtesting ?** La qualité de l'expérience et sa compréhension, en complément de la recherche de bugs.
-
-Sources : `COURS/Chapter1-Game-Design-Development.pdf` (31 pages), `COURS/Chapter2-Sprites-Tiles.pdf` (40 pages), `TP/TP0-Basics.pdf` (3 pages), `TP/TP1.pdf` (2 pages), `TP/TP2.pdf` (3 pages), `TP/TP3.pdf` et `TP/Project.pdf` (2 pages), ainsi que `COURS/Chapter3-Physics-Collisions.pdf` (61 pages). Les exemples et formules suivent ces supports, avec les précisions de lecture signalées.

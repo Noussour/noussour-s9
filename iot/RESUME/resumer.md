@@ -1,6 +1,6 @@
-# Internet of Things — Résumé de révision
+# Internet of Things — Résumé des cours
 
-Synthèse du chapitre 1 et des TD1 et TD2 disponibles au 7 novembre 2026. Enseignante : Ameur Imane. Le cours annonce des protocoles approfondis au chapitre 2, mais aucun fichier de ce chapitre n'est actuellement présent ; la fiche reste centrée sur l'introduction et les exercices fournis.
+Mise à jour du 24 novembre 2026. Définitions, raisonnements et exemples des cours. Les exercices, commandes et comptes rendus pratiques sont réunis dans [le résumé TD/TP](resumer-tp.md).
 
 ## Chapitre 1 — Définition, objets et chaîne de valeur
 
@@ -157,6 +157,9 @@ La fiabilité et la confidentialité doivent être examinées à chaque niveau :
 
 ### Blocs matériels
 
+
+![Chaîne d'un nœud IoT, du capteur au cloud](figures/iot-noeud.png)
+
 | Bloc | Rôle | Exemples |
 | --- | --- | --- |
 | Capteurs | Mesurer l'environnement | Température, humidité, lumière, mouvement |
@@ -205,116 +208,137 @@ Interfaces : **GPIO** (entrée/sortie numérique), **ADC** (tension → nombre),
 
 Exemple fil rouge : capteur d'humidité du sol + ESP32 ; si humidité < 30 % alors relais → pompe ON, sinon OFF ; mesures envoyées par MQTT vers un tableau de bord. Le simulateur Wokwi permet de tester ESP32, Arduino et STM32 sans matériel.
 
-## TD1 — Méthodes de réponse et fiche de calcul
+## Chapitre 3 — Architecture d'un système IoT
 
-### Démarche pour un cas concret
+### Pourquoi une architecture
 
-1. Définir l'objet et le service attendu.
-2. Identifier capteurs, actionneurs, calcul, communication et énergie.
-3. Dessiner le parcours de la donnée et le retour de commande.
-4. Justifier technologie et emplacement de traitement avec une contrainte dominante.
-5. Expliquer sécurité, panne et évolution du nombre d'objets.
+L'architecture décrit **comment la solution est conçue et comment les composants coopèrent**, comme le plan d'un bâtiment : le chemin complet de la donnée (le capteur mesure, le réseau transporte, le système collecte et traite, puis une action ou une information est produite). Elle est indispensable à cause de contraintes fortes : très grand nombre d'objets, sécurité, matériel contraint, volumes de données, analyse, équipements anciens (*legacy*).
 
-Une ampoule mesurant sa consommation possède une fonction de mesure électrique ; l'éclairage commandé est l'action. Une flotte de vélos alimentant plusieurs applications illustre l'écosystème IoT ; un distributeur envoyant une alerte au fournisseur illustre M2M et peut aussi appartenir à une plateforme IoT.
-
-### Autonomie théorique de la station météo
-
-```text
-Capacité = 3 000 mAh
-Courant moyen = 0,15 mA
-Autonomie = capacité / courant = 20 000 h
-Autonomie_années = 20 000 / 8 760 ≈ 2,28 ans
-```
-
-Le calcul suppose le courant moyen représentatif et toute la capacité utilisable. Vieillissement, température, autodécharge et pertes réduisent souvent l'autonomie réelle. Il faut distinguer courant actif, courant de veille et moyenne sur le cycle.
-
-### Questions avec réponses courtes
-
-1. **IoT impose-t-il du cloud ?** Non, des décisions peuvent être locales.
-2. **Le sink est-il un capteur particulier de température ?** Non, c'est un rôle de collecte dans le réseau.
-3. **Pourquoi MQTT et Wi-Fi ne sont-ils pas deux alternatives du même niveau ?** Le premier est applicatif, le second concerne l'accès réseau.
-4. **Quelle contrainte pour un airbag ?** Temps réel dur dans le scénario étudié.
-5. **Quel V concerne des mesures peu fiables ?** Veracity.
-6. **Que faut-il justifier pour choisir LoRaWAN ?** Besoin de portée et d'autonomie, avec un débit compatible.
-7. **Pourquoi la batterie seule ne donne-t-elle pas l'autonomie ?** Il faut connaître le courant moyen et les conditions d'utilisation.
-
-## TD2 — Composants, acquisition et énergie
-
-### Identifier les blocs d'un système
-
-Pour ESP32 + DHT22 + LED + Wi-Fi : le DHT22 mesure température et humidité (entrée), l'ESP32 traite, la LED matérialise une sortie et le Wi-Fi assure la communication. L'alimentation fournit l'énergie à l'ensemble. Le schéma fonctionnel devient : capteur → MCU → décision → LED, avec échanges réseau vers le service.
-
-| Composant | Grandeur / événement | Nature de l'information utile |
-| --- | --- | --- |
-| DHT22 | Température et humidité | Mesures codées numériquement |
-| LDR | Éclairement | Variation de résistance, convertie en tension dans un montage analogique |
-| PIR | Mouvement détecté par variation infrarouge | Signal de détection généralement numérique sur le module étudié |
-| HC-SR04 | Distance | Durée d'une impulsion numérique à mesurer, pas directement un nombre de mètres |
-| MQ-2 | Réponse à certains gaz / fumée | Sortie analogique, et éventuellement sortie à seuil sur un module équipé |
-
-Le type de module et son interface doivent être identifiés avant de programmer l'acquisition. Un capteur de mouvement ne garantit pas la détection d'une présence immobile.
-
-### Courant moyen sur un cycle
-
-Le TD précise que les phases ne se recouvrent pas. Dans chaque minute : 10 mA pendant 2 s, 20 mA pendant 3 s, puis 0,1 mA pendant 55 s.
-
-```text
-I_moyen = somme(I_i × t_i) / T
-        = (10 × 2 + 20 × 3 + 0,1 × 55) / 60
-        = 1,425 mA
-Autonomie = 3000 / 1,425 ≈ 2105,26 h ≈ 87,72 jours
-```
-
-Ce résultat théorique suppose les courants représentatifs, les phases exclusives et la capacité utilisable. Si plusieurs composants consomment simultanément, il faut calculer le courant total de chaque phase avant de pondérer. Réduire la consommation de veille, le temps actif et les transmissions peut améliorer l'autonomie.
-
-### ADC 12 bits et tension d'entrée
-
-Un potentiomètre produit une tension analogique variable ; l'ADC la code numériquement. Pour 12 bits : **4096 codes, de 0 à 4095**. Dans l'hypothèse idéale 0–3,3 V de l'énoncé :
-
-```text
-Code ≈ Vin / 3,3 × 4095
-Vin = 1,65 V → 2047,5 → environ 2048 après arrondi
-```
-
-Cette approximation du TD n'est pas une calibration d'un ESP32 réel. Plage, atténuation, référence et erreurs de conversion doivent être considérées lors d'une mesure effective.
-
-## TD2 — Réseaux, serrure, parking et actionneurs
-
-### Topologies et panne
-
-A : les capteurs parlent directement à une passerelle → **étoile**. B : des voisins relaient → organisation multi-saut, **maillage dans le scénario du TD**. C : deux appareils communiquent directement → **point à point**.
-
-Le maillage peut offrir des chemins alternatifs si sa connectivité le permet ; avoir des relais ne garantit pas à lui seul une redondance. Une passerelle unique en panne interrompt le service central associé, même si certains capteurs continuent de mesurer localement.
-
-### Serrure connectée
-
-Le lecteur RFID lit un identifiant, le MCU applique une règle d'autorisation puis pilote le verrou via un driver adapté. Le logiciel doit gérer lecture, autorisation, commande et cas de refus. Une liste d'identifiants illustre la logique du TD ; lire un identifiant ne constitue pas à lui seul une authentification forte contre la copie.
-
-Le driver ou relais commute la charge selon ses caractéristiques électriques. Son rôle ne tient pas seulement à une différence de tension : courant nécessaire et protection de la commande comptent aussi.
-
-### Parking de 20 places
-
-Architecture : détection par place → microcontrôleur / collecte → réseau adapté → serveur → tableau de bord. Un choix de capteur doit permettre de détecter un véhicule stationné, par exemple selon distance ou présence magnétique ; la réponse « capteur de mouvement » seule est insuffisante pour une voiture immobile.
-
-Le tableau de bord doit distinguer **libre, occupé et inconnu / capteur en défaut**. Ne pas transformer automatiquement une absence de mesure en place libre. La portée Wi-Fi dépend du site réel ; sommeil et transmissions sur changement d'état sont des pistes de réduction énergétique.
-
-### Choisir le composant de commande
-
-| Besoin | Composant / principe |
+| Notion | Définition |
 | --- | --- |
-| Ouvrir une arrivée d'eau | Électrovanne et commande électrique adaptée |
-| Régler la vitesse d'un moteur DC | Driver moteur commandé en PWM |
-| Commander une pompe ON/OFF | Relais ou dispositif de commutation adapté à la charge |
-| Positionner un bras à un angle | Actionneur de position, par exemple servomoteur, avec commande adaptée |
-| Faire varier la luminosité d'une LED | PWM et circuit de LED adapté |
+| Vertical | un secteur d'application avec ses objets, logiciels et protocoles propres : maison, ville, santé, automobile, énergie, industrie |
+| Cadre horizontal | plateforme commune de services partagés (gestion des appareils, communication, sécurité, échange de données, API) ; exemple : le service commun **oneM2M** |
 
-Le corrigé écrit « DWM » pour la vitesse moteur : lire **PWM** dans ce contexte. Un relais commute une alimentation ; il n'est pas lui-même une vanne ni un dispositif de positionnement.
+Le marché est fragmenté : chaque vertical a ses technologies, sans interopérabilité, d'où la recherche d'une architecture standard.
 
-### Questions de révision du TD2
+### Architecture en couches
 
-1. **Le HC-SR04 fournit-il directement une distance numérique en mètres ?** Non : le logiciel exploite la durée d'impulsion de la mesure.
-2. **Pourquoi pondérer les courants par leur durée ?** Les phases n'occupent pas la même part du cycle.
-3. **Que signifie absence de mesure d'une place de parking ?** État inconnu à traiter, pas preuve de disponibilité.
-4. **PWM est-il un moteur ?** Non : c'est un principe de commande ; un driver et la charge restent nécessaires.
+Une architecture en couches apporte : **séparation** (chaque couche a un rôle précis), **modularité** (on remplace une couche sans tout refaire), **interopérabilité** (interfaces standard) et **évolutivité**. Il n'existe pas d'architecture IoT unique : les modèles à 3 et 5 couches sont les références.
 
-Sources : `COURS/Chapter1-Introduction-IoT.pdf` (86 pages : définitions p. 5–29, caractéristiques p. 30–35, M2M p. 36–41, applications p. 42–55, technologies p. 56–72, défis p. 73–85), `COURS/Chapter2-Components-Sensors.pdf` (43 pages : nœud IoT, capteurs, actionneurs, microcontrôleurs, connectivité), `TD/TD1.pdf` (2 pages) et `TD/TD2-sol.pdf` (4 pages, huit exercices corrigés). Les projections de marché et débits publicitaires ne sont pas repris comme faits de révision.
+![Architectures IoT à 3 et à 5 couches, avec le flux de données](figures/iot-couches.png)
+
+| Couche (5 couches) | Rôle | Exemple (bâtiment intelligent) | Équivalent à 3 couches |
+| --- | --- | --- | --- |
+| Perception | mesurer, agir, identifier | capteurs de température, présence, CO₂ ; actionneur de climatisation | Perception |
+| Transport | transmettre et router | Wi-Fi local, MQTT vers le serveur, passerelle | Réseau |
+| Traitement (middleware) | stocker, analyser | base de données, analyse de la consommation, règles | Application (en partie) |
+| Application | rendre le service | tableau de bord web, alertes mobiles | Application |
+| Métier (Business) | décider et créer de la valeur | réduire la facture d'énergie | Application (en partie) |
+
+| Critère | 3 couches | 5 couches |
+| --- | --- | --- |
+| Couches | Perception, Réseau, Application | + Traitement et Métier |
+| Précision | vue simple | vue détaillée |
+| Traitement des données | non explicite | couche dédiée |
+| Usage | introduction, petits projets | projets industriels et Big Data |
+
+Limites du modèle à 3 couches : sans stockage ni analyse explicites, et l'application mélange traitement et interface. Les **commandes suivent le chemin inverse**, de l'application vers les actionneurs. Un courtier MQTT se place en couche réseau ou application, selon son rôle.
+
+### Cloud, fog et edge
+
+![Le continuum edge, fog et cloud](figures/iot-edge-fog-cloud.png)
+
+| Critère | Edge | Fog | Cloud |
+| --- | --- | --- | --- |
+| Distance | très proche | proche | éloigné |
+| Latence | très faible | faible | élevée |
+| Puissance | limitée | moyenne | très élevée |
+| Exemple | caméra qui détecte | passerelle de bâtiment | entraînement d'un modèle d'IA |
+
+Une architecture **tout cloud** apporte puissance élastique, gestion centralisée et analyse globale, mais souffre de latence, de consommation de bande passante, de dépendance à la connexion et de coût : insuffisante pour le temps réel ou le fonctionnement hors ligne. **Règle : traiter localement ce qui est urgent, envoyer au cloud ce qui est global.**
+
+## Chapitre 3 — Connectivité et protocoles
+
+### Connectivité et défis
+
+La **connectivité IoT** regroupe toutes les technologies par lesquelles les objets échangent des données avec les autres capteurs, applications et plateformes cloud. Chaque réseau a sa portée, sa consommation, sa sécurité et ses limites. Défis : ressources limitées (mémoire, processeur, batterie), réseaux à pertes et faible débit, très grand nombre d'objets, hétérogénéité des constructeurs et des normes, sécurité et vie privée. Le compromis porte sur **portée, débit et consommation**.
+
+### Classification des protocoles
+
+Les protocoles IoT adaptent les couches classiques pour réduire l'en-tête de plusieurs centaines d'octets à quelques octets.
+
+| Couche | Rôle | Exemples |
+| --- | --- | --- |
+| Physique / liaison | accès au support radio | BLE, Zigbee, LoRa, Wi-Fi |
+| Réseau | adressage et routage | IPv6, 6LoWPAN, RPL |
+| Transport | acheminement | UDP, TCP, DTLS, TLS |
+| Application | échange de messages | MQTT, CoAP, AMQP, HTTP |
+
+| Protocole | Objectif principal |
+| --- | --- |
+| MQTT | messagerie légère entre objets et serveurs (publication et abonnement via un courtier) |
+| CoAP | communication pour objets contraints, au-dessus d'UDP |
+| HTTP/HTTPS | échanges avec des services web |
+| BLE | courte portée, basse consommation |
+| Zigbee | basse consommation entre plusieurs appareils |
+| LoRaWAN | longue portée, basse consommation |
+| Wi-Fi | débit relativement élevé |
+
+### Cinq familles de connectivité
+
+![Les cinq familles de connectivité IoT : portée, débit et consommation](figures/iot-connectivite.png)
+
+| Famille | Technologies | Convient à |
+| --- | --- | --- |
+| Cellulaire | 2G à 5G, NB-IoT, LTE-M, LTE Cat-1 | déploiements à grande échelle, grande couverture |
+| Courte portée | Wi-Fi, BLE, Zigbee, Thread, NFC, RFID | maison connectée, objets portés |
+| LPWAN | LoRaWAN, Sigfox, Wi-SUN | longue portée, très basse consommation, faible débit |
+| Satellite | NB-IoT/NR par satellite, LoRaWAN par satellite | zones isolées ou maritimes |
+| Filaire | Ethernet, RS-485 | industrie stable |
+
+| Type | Portée | Débit | Consommation |
+| --- | --- | --- | --- |
+| Cellulaire | haute | haute | haute |
+| Satellite | haute | haute | haute |
+| Wi-Fi | faible | haut | faible |
+| Bluetooth | faible | haut | faible |
+| Ethernet | faible | haut | faible |
+| LPWAN | haute | **faible** | faible |
+
+Aucune technologie ne maximise à la fois portée, débit et économie d'énergie : c'est le compromis fondamental.
+
+### Choisir la bonne connectivité
+
+Il n'existe pas d'algorithme universel. Facteurs à examiner :
+
+| Facteur | Critères et exemples |
+| --- | --- |
+| Portée | courte (< 30 à 50 m en intérieur) : BLE, Zigbee, Z-Wave, Thread ; moyenne (50 à 500 m) : Wi-Fi, Ethernet, TSCH industriel, LTE/5G privé ; longue (dizaines de km) : LoRaWAN, Wi-SUN FAN, cellulaire IoT ; mondiale : satellite |
+| Débit et latence | petites charges rares : LoRaWAN, BLE ; petites mais fréquentes : Zigbee, Thread ; volumes moyens : Wi-Fi, LTE-M, Cat-1 ; flux continus : Ethernet, Wi-Fi, 4G/5G. Latence très faible : Ethernet, 5G privé ; élevée (> 1 s) : LoRaWAN ; très élevée : satellite |
+| Énergie | objets sur batterie pendant des années : LPWAN, NB-IoT, LTE-M |
+| Coût | **CAPEX** (modules, passerelles, installation) et **OPEX** (trafic, licences, maintenance) ; LoRaWAN privé : CAPEX élevé, OPEX faible ; satellite : OPEX le plus élevé |
+| Sécurité et fiabilité | SIM ou eSIM pour le cellulaire ; pour plus de 99,9 % de disponibilité, une connectivité **hybride** (cellulaire plus Ethernet ou Wi-Fi) |
+| Autres | environnement, densité d'objets, mobilité, réglementation |
+
+| Cas d'usage | Connectivité | Protocole |
+| --- | --- | --- |
+| Maison connectée | Zigbee, Thread, Wi-Fi | MQTT, Matter |
+| Agriculture, compteurs | LoRaWAN, NB-IoT | MQTT, CoAP |
+| Industrie 4.0 | 5G, Ethernet | OPC UA, MQTT, DDS |
+| Santé, objets portés | BLE | GATT, MQTT via passerelle |
+
+### Cinq défis de déploiement
+
+1. **Compatibilité matérielle.** 2. **Gestion d'un très grand parc d'appareils.** 3. **Compromis débit contre durée de la batterie.** 4. **Couverture multirégion**, spectre et normes variables. 5. **Dépendance au fournisseur** (*vendor lock-in*) et fragmentation. Tendances : IA et 5G, 5G privé, edge computing et IA en périphérie, optimisation de bande passante par IA, maintenance prédictive.
+
+**À retenir :** le succès d'un projet IoT repose sur le meilleur compromis entre **portée radio, débit, consommation et sécurité**.
+
+## Révision active — Cours
+
+1. **Pourquoi le modèle à 5 couches est-il plus précis que celui à 3 couches ?** Il isole le traitement (stockage, analyse) et la couche métier (décision, valeur), que le modèle à 3 couches mélange dans l'application.
+2. **Qu'est-ce qu'un vertical, qu'est-ce qu'un cadre horizontal ?** Un vertical est un secteur d'application (santé, énergie, ville) ; un cadre horizontal (oneM2M) fournit des services communs à tous les verticaux.
+3. **Où traiter une alerte urgente, où entraîner un modèle d'IA ?** L'alerte à l'edge ou au fog (latence, fonctionnement hors ligne) ; l'entraînement au cloud (puissance, historique).
+4. **Citer les cinq familles de connectivité.** Cellulaire, courte portée, LPWAN, satellite, filaire.
+5. **Pourquoi aucune technologie n'est-elle parfaite ?** Portée, débit et consommation se contredisent : le LPWAN a portée et économie mais un faible débit, le Wi-Fi a du débit mais une faible portée.
+6. **Différence entre CAPEX et OPEX ?** CAPEX : investissement initial (modules, passerelles, installation) ; OPEX : coûts d'exploitation (trafic, licences, maintenance).
+7. **Quels sont les cinq défis de déploiement ?** Compatibilité matérielle, gestion d'un grand parc, compromis débit et batterie, couverture multirégion et réglementations, dépendance au fournisseur.

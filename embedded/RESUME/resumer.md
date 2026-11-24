@@ -1,6 +1,6 @@
-# Développement de logiciels embarqués — Résumé de révision
+# Logiciels embarqués — Résumé des cours
 
-Synthèse des cours 1 à 3, du complément STM32 et du TP1 disponibles au 7 novembre 2026. Enseignant : Dr ABADA Lyes. Les supports des cours 2 et 3 conservent « Chapter 1 » dans leurs en-têtes : on suit ici les intitulés COURSE 1, COURSE 2 et COURSE 3 pour organiser les révisions.
+Mise à jour du 24 novembre 2026. Définitions, raisonnements et exemples des cours. Les exercices, commandes et comptes rendus pratiques sont réunis dans [le résumé TD/TP](resumer-tp.md).
 
 ## Cours 1 — Systèmes embarqués, architecture et contraintes
 
@@ -243,6 +243,9 @@ Un GPIO ne fournit qu'un courant et une tension limités. Pour un moteur ou une 
 
 ### PWM et rapport cyclique
 
+
+![PWM : rapport cyclique et valeur moyenne](figures/embedded-pwm.png)
+
 Une PWM commute rapidement entre LOW et HIGH. Son rapport cyclique décrit la fraction de la période passée au niveau haut.
 
 ```text
@@ -297,63 +300,7 @@ L'**hystérésis** emploie deux seuils :
 
 La mémoire de l'état est essentielle ; l'état initial doit être défini. Le système évite ainsi de basculer à chaque petite variation autour d'un unique seuil. L'anti-rebond stabilise l'interprétation d'un contact ; l'hystérésis stabilise une décision à seuil : les deux répondent à des situations différentes.
 
-## TP1 — STM32, LED, ST-LINK et breadboard
-
-### Chaîne d'outils et téléversement
-
-Le TP présente l'IDE Arduino avec le support des cartes STM32, STM32CubeProgrammer et une sonde ST-LINK V2. La carte et le mode de téléversement doivent correspondre au matériel employé. La liaison SWD repose notamment sur SWDIO, SWCLK, une masse commune et les connexions d'alimentation/référence prévues par le montage.
-
-Il faut distinguer programmation du microcontrôleur, alimentation de la carte et liaison série. Le moniteur série doit utiliser le débit configuré par le programme, ici **115200** ; un câble USB ne garantit pas à lui seul que la sortie série choisie est correctement configurée.
-
-### LED active à LOW
-
-Dans la carte décrite par le TP, la LED intégrée sur **PC13** s'allume avec LOW et s'éteint avec HIGH. Il s'agit d'une propriété de ce câblage, pas d'une règle universelle des STM32.
-
-| Montage | Chemin du courant quand la LED est allumée | Niveau actif |
-| --- | --- | --- |
-| Sinking | Alimentation → résistance → LED → GPIO | LOW |
-| Sourcing | GPIO → LED → résistance → GND | HIGH |
-
-Dans les deux cas, la résistance série limite le courant. Le niveau logique nécessaire dépend du montage ; il faut respecter les caractéristiques électriques de la broche et de la LED.
-
-### Programme et période de clignotement
-
-`setup()` initialise la broche en OUTPUT et la communication série ; `loop()` répète les actions. LOW pendant 500 ms puis HIGH pendant 500 ms donnent une période totale de **1 s**, soit **1 Hz** pour le cycle complet. Le TP utilise une attente bloquante ; le cours 3 montre comment l'éviter lorsqu'il faut aussi effectuer d'autres tâches.
-
-Une attente `while (!Serial)` peut empêcher d'atteindre `loop()` si la liaison attendue n'est pas disponible. Si la LED ne démarre pas, vérifier cette attente, la sélection de carte, la broche et le téléversement avant de conclure à un défaut de LED.
-
-### Breadboard
-
-Les groupes de contacts internes assurent les connexions sans soudure. Le séparateur central isole les deux côtés ; les rails d'alimentation sont distincts des groupes de signaux et peuvent être coupés au milieu selon le modèle. Vérifier les continuités réelles plutôt que supposer que toute une ligne est reliée.
-
-## TP2 — Bouton, pull-up/pull-down et anti-rebond
-
-### Résistance de tirage
-
-| Montage | Câblage | État actif |
-| --- | --- | --- |
-| Pull-up (`INPUT_PULLUP`) | Résistance vers VCC, bouton vers GND | LOW |
-| Pull-down (`INPUT_PULLDOWN`) | Résistance vers GND, bouton vers VCC | HIGH |
-
-Les broches du STM32F411 disposent de résistances internes dans les deux sens. Le bouton intégré de la carte est relié à GND : il fonctionne en pull-up mais pas en pull-down.
-
-### Détection de front et anti-rebond
-
-Le programme bascule la LED PC13 sur un **front** : passage HIGH → LOW en pull-up (LOW → HIGH en pull-down), en comparant l'état courant à `lastButtonState`. Un `delay(200)` absorbe le rebond mécanique du contact.
-
-```cpp
-bool current = digitalRead(BUTTON_PIN);
-if (lastButtonState == HIGH && current == LOW) {
-  ledState = !ledState;
-  digitalWrite(LED_PIN, ledState);   // LOW = LED allumée
-}
-lastButtonState = current;
-delay(200);
-```
-
-Sans bouton externe, un fil relié à A0 simule l'appui : vers GND en pull-up, vers 3,3 V en pull-down. Les exemples de code fournis par l'enseignant sont rangés dans `TP/code/` (LED, bouton, saisie série, lecture analogique, PWM pour ESC).
-
-## Révision active et sources
+## Révision active — Cours
 
 1. **Pourquoi un résultat exact peut-il rester incorrect ?** Il arrive après l'échéance d'un système temps réel.
 2. **Qui mesure, qui agit ?** Le capteur mesure ; l'actionneur produit l'effet physique.
@@ -367,6 +314,3 @@ Sans bouton externe, un fil relié à A0 simule l'appui : vers GND en pull-up, v
 10. **Combien de codes pour 12 bits ?** 4096, numérotés 0 à 4095.
 11. **Pourquoi ajouter 1 à PSC et ARR ?** Le diviseur et le comptage représentés incluent zéro dans le mode étudié.
 12. **Pourquoi utiliser deux seuils pour le ventilateur ?** Conserver l'état dans une bande intermédiaire et éviter les commutations répétées.
-13. **Deux attentes de 500 ms donnent quelle fréquence de clignotement ?** Un cycle de 1 s, donc 1 Hz.
-
-Sources : `COURS/Course1-Introduction-Embedded-Systems.pdf` (49 pages), `COURS/Course2-ARM-Architecture.pdf` (46 pages), `COURS/Course2-STM32-Extension-Setup.pdf` (2 pages), `COURS/Course3-Embedded-IO.pdf` (55 pages : GPIO p. 9–24, acquisition p. 25–31, actionneurs/PWM p. 32–36, timers p. 37–45, contrôle p. 46–55) , `TP/TP1.pdf` (8 pages) et `TP/TP2.pdf` (4 pages). Les formules présentes dans les schémas des pages 40–41 ont été consultées visuellement. Linux embarqué détaillé, synchronisation avancée et méthodes de conception restent des thèmes annoncés sans support dédié présent.

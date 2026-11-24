@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-11",
+  "date": "2026-11-24",
   "module": "iot",
   "pending": [],
   "documents": [
@@ -17,21 +17,15 @@
     },
     {
       "module": "iot",
+      "source": "iot/COURS/Chapter3-Architecture.pdf",
+      "sha256": "32a6abb305e127ff55b5f8a3bc1543b2eac9826ad71070369145299dfee05475",
+      "pages": 69
+    },
+    {
+      "module": "iot",
       "source": "iot/COURS/Presentation-Guidelines.pdf",
       "sha256": "20d250db979ac56ec1beea32e7ddd33fc13f730a94936fe7ef3cf63131c24874",
       "pages": 1
-    },
-    {
-      "module": "iot",
-      "source": "iot/TD/TD1.pdf",
-      "sha256": "9ceaf1f4b2eb973adecedb519f9d49e5abb78c1380f52a08a78df3df1bd8f0cb",
-      "pages": 2
-    },
-    {
-      "module": "iot",
-      "source": "iot/TD/TD2-sol.pdf",
-      "sha256": "62e77d03b1c8c9e86827bdc31249362d3d1919b43d44f1bdacadfb1f4d181ddc",
-      "pages": 2
     }
   ]
 }

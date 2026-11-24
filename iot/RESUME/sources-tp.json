@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-24",
+  "module": "iot",
+  "pending": [],
+  "documents": [
+    {
+      "module": "iot",
+      "source": "iot/TD/TD1.pdf",
+      "sha256": "9ceaf1f4b2eb973adecedb519f9d49e5abb78c1380f52a08a78df3df1bd8f0cb",
+      "pages": 2
+    },
+    {
+      "module": "iot",
+      "source": "iot/TD/TD2-sol.pdf",
+      "sha256": "5a353fb458a6f637d62d6b771d539437f8fdd99492451e051f950af84479e0cd",
+      "pages": 4
+    },
+    {
+      "module": "iot",
+      "source": "iot/TD/TD2.pdf",
+      "sha256": "62e77d03b1c8c9e86827bdc31249362d3d1919b43d44f1bdacadfb1f4d181ddc",
+      "pages": 2
+    },
+    {
+      "module": "iot",
+      "source": "iot/TD/TD3_IoT.pdf",
+      "sha256": "ddee34c1b34f8f5aacaba75f6d529ea6ee1ea0cadb393f6d92f3ddd4d1b7fb3a",
+      "pages": 5
+    }
+  ]
+}

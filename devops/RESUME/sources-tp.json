@@ -1,0 +1,48 @@
+{
+  "date": "2026-11-24",
+  "module": "devops",
+  "pending": [],
+  "documents": [
+    {
+      "module": "devops",
+      "source": "devops/TD/homework-cloud-solution.txt",
+      "sha256": "4b89bf67e5bcdc461ab3dba529cf1b5e9ae7611090978ec439c4c3d4078aeb9c"
+    },
+    {
+      "module": "devops",
+      "source": "devops/TD/TD1-sol.pdf",
+      "sha256": "abe7386692c26d8c503fc22e24f0967c40b60d9b4928c387da31a8c16640f990",
+      "pages": 3
+    },
+    {
+      "module": "devops",
+      "source": "devops/TP/TP1-support-network-modes.pdf",
+      "sha256": "9c6438d362384e0f764dcd75deb9e55233c433488454d57fbbdfc84d59157ce9",
+      "pages": 21
+    },
+    {
+      "module": "devops",
+      "source": "devops/TP/TP1.pdf",
+      "sha256": "81594a6613fb7523e0ef46bb8eb7d35f97b1bfa59d6337768e7b947069976ad8",
+      "pages": 6
+    },
+    {
+      "module": "devops",
+      "source": "devops/TP/TP2.pdf",
+      "sha256": "c1b5a7a94dc45cc2111387b8b30e43b09db05ff99e937ff33bf8f3bb4631e456",
+      "pages": 4
+    },
+    {
+      "module": "devops",
+      "source": "devops/TP/TP3.pdf",
+      "sha256": "ec80c8d0a3d47081b80247f3ea42df4571070526f17287dc7e485506cd78d8f9",
+      "pages": 4
+    },
+    {
+      "module": "devops",
+      "source": "devops/TP/TP5_Git.pdf",
+      "sha256": "07504a88789ae8fac64ac64c70f3a5b30f6e80aa71b1ec6cddfd8fdc556a21d8",
+      "pages": 6
+    }
+  ]
+}
