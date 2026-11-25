@@ -327,337 +327,225 @@
       </priority>
     </transition>
     <arc id="arc0" source="Libre" target="ConfirmerA">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="450" y="70" curvePoint="false" />
       <arcpath id="001" x="260" y="245" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc1" source="AttenteA" target="ConfirmerA">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="140" y="140" curvePoint="false" />
       <arcpath id="001" x="260" y="245" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc2" source="ConfirmerA" target="ConfA">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="260" y="245" curvePoint="false" />
       <arcpath id="001" x="140" y="350" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc3" source="ConfirmerA" target="Occupee">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="260" y="245" curvePoint="false" />
       <arcpath id="001" x="450" y="390" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc4" source="AttenteA" target="RefuserA">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="140" y="140" curvePoint="false" />
       <arcpath id="001" x="40" y="245" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc5" source="Occupee" target="RefuserA">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="450" y="390" curvePoint="false" />
       <arcpath id="001" x="40" y="245" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc6" source="RefuserA" target="RefusA">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="40" y="245" curvePoint="false" />
       <arcpath id="001" x="40" y="350" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc7" source="RefuserA" target="Occupee">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="40" y="245" curvePoint="false" />
       <arcpath id="001" x="450" y="390" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc8" source="ConfA" target="AnnulerA">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="140" y="350" curvePoint="false" />
       <arcpath id="001" x="260" y="460" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc9" source="Occupee" target="AnnulerA">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="450" y="390" curvePoint="false" />
       <arcpath id="001" x="260" y="460" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc10" source="AnnulerA" target="AnnuleeA">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="260" y="460" curvePoint="false" />
       <arcpath id="001" x="140" y="570" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc11" source="AnnulerA" target="Libre">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="260" y="460" curvePoint="false" />
       <arcpath id="001" x="450" y="70" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc12" source="AttenteA" target="AnnulerAttenteA">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="140" y="140" curvePoint="false" />
       <arcpath id="001" x="40" y="460" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc13" source="AnnulerAttenteA" target="AnnuleeA">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="40" y="460" curvePoint="false" />
       <arcpath id="001" x="140" y="570" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc14" source="Libre" target="ConfirmerB">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="450" y="70" curvePoint="false" />
       <arcpath id="001" x="640" y="245" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc15" source="AttenteB" target="ConfirmerB">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="760" y="140" curvePoint="false" />
       <arcpath id="001" x="640" y="245" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc16" source="ConfirmerB" target="ConfB">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="640" y="245" curvePoint="false" />
       <arcpath id="001" x="760" y="350" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc17" source="ConfirmerB" target="Occupee">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="640" y="245" curvePoint="false" />
       <arcpath id="001" x="450" y="390" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc18" source="AttenteB" target="RefuserB">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="760" y="140" curvePoint="false" />
       <arcpath id="001" x="860" y="245" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc19" source="Occupee" target="RefuserB">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="450" y="390" curvePoint="false" />
       <arcpath id="001" x="860" y="245" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc20" source="RefuserB" target="RefusB">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="860" y="245" curvePoint="false" />
       <arcpath id="001" x="860" y="350" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc21" source="RefuserB" target="Occupee">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="860" y="245" curvePoint="false" />
       <arcpath id="001" x="450" y="390" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc22" source="ConfB" target="AnnulerB">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="760" y="350" curvePoint="false" />
       <arcpath id="001" x="640" y="460" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc23" source="Occupee" target="AnnulerB">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="450" y="390" curvePoint="false" />
       <arcpath id="001" x="640" y="460" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc24" source="AnnulerB" target="AnnuleeB">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="640" y="460" curvePoint="false" />
       <arcpath id="001" x="760" y="570" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc25" source="AnnulerB" target="Libre">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="640" y="460" curvePoint="false" />
       <arcpath id="001" x="450" y="70" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc26" source="AttenteB" target="AnnulerAttenteB">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="760" y="140" curvePoint="false" />
       <arcpath id="001" x="860" y="460" curvePoint="false" />
       <type value="normal" />
     </arc>
     <arc id="arc27" source="AnnulerAttenteB" target="AnnuleeB">
-      <graphics />
       <inscription>
         <value>Default,1</value>
       </inscription>
-      <tagged>
-        <value>false</value>
-      </tagged>
       <arcpath id="000" x="860" y="460" curvePoint="false" />
       <arcpath id="001" x="760" y="570" curvePoint="false" />
       <type value="normal" />

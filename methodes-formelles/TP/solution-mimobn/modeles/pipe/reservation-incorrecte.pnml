@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pnml>
+  <net id="Reservation" type="P/T net">
+    <token id="Default" enabled="true" red="0" green="0" blue="0"/>
+    <place id="Libre">
+      <graphics><position x="450.0" y="70.0"/></graphics>
+      <name><value>Libre</value></name>
+      <initialMarking><value>Default,1</value></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <place id="Occupee">
+      <graphics><position x="450.0" y="390.0"/></graphics>
+      <name><value>Occupee</value></name>
+      <initialMarking><value>Default,0</value></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <place id="AttenteA">
+      <graphics><position x="140.0" y="140.0"/></graphics>
+      <name><value>AttenteA</value></name>
+      <initialMarking><value>Default,1</value></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <place id="ConfA">
+      <graphics><position x="140.0" y="350.0"/></graphics>
+      <name><value>ConfA</value></name>
+      <initialMarking><value>Default,0</value></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <place id="RefusA">
+      <graphics><position x="40.0" y="350.0"/></graphics>
+      <name><value>RefusA</value></name>
+      <initialMarking><value>Default,0</value></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <place id="AnnuleeA">
+      <graphics><position x="140.0" y="570.0"/></graphics>
+      <name><value>AnnuleeA</value></name>
+      <initialMarking><value>Default,0</value></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <place id="AttenteB">
+      <graphics><position x="760.0" y="140.0"/></graphics>
+      <name><value>AttenteB</value></name>
+      <initialMarking><value>Default,1</value></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <place id="ConfB">
+      <graphics><position x="760.0" y="350.0"/></graphics>
+      <name><value>ConfB</value></name>
+      <initialMarking><value>Default,0</value></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <place id="RefusB">
+      <graphics><position x="860.0" y="350.0"/></graphics>
+      <name><value>RefusB</value></name>
+      <initialMarking><value>Default,0</value></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <place id="AnnuleeB">
+      <graphics><position x="760.0" y="570.0"/></graphics>
+      <name><value>AnnuleeB</value></name>
+      <initialMarking><value>Default,0</value></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <transition id="ConfirmerA">
+      <graphics><position x="260.0" y="245.0"/></graphics>
+      <name><value>ConfirmerA</value></name>
+      <orientation><value>0</value></orientation>
+      <rate><value>1.0</value></rate>
+      <timed><value>false</value></timed>
+      <infiniteServer><value>false</value></infiniteServer>
+      <priority><value>1</value></priority>
+    </transition>
+    <transition id="RefuserA">
+      <graphics><position x="40.0" y="245.0"/></graphics>
+      <name><value>RefuserA</value></name>
+      <orientation><value>0</value></orientation>
+      <rate><value>1.0</value></rate>
+      <timed><value>false</value></timed>
+      <infiniteServer><value>false</value></infiniteServer>
+      <priority><value>1</value></priority>
+    </transition>
+    <transition id="AnnulerA">
+      <graphics><position x="260.0" y="460.0"/></graphics>
+      <name><value>AnnulerA</value></name>
+      <orientation><value>0</value></orientation>
+      <rate><value>1.0</value></rate>
+      <timed><value>false</value></timed>
+      <infiniteServer><value>false</value></infiniteServer>
+      <priority><value>1</value></priority>
+    </transition>
+    <transition id="AnnulerAttenteA">
+      <graphics><position x="40.0" y="460.0"/></graphics>
+      <name><value>AnnulerAttenteA</value></name>
+      <orientation><value>0</value></orientation>
+      <rate><value>1.0</value></rate>
+      <timed><value>false</value></timed>
+      <infiniteServer><value>false</value></infiniteServer>
+      <priority><value>1</value></priority>
+    </transition>
+    <transition id="ConfirmerB">
+      <graphics><position x="640.0" y="245.0"/></graphics>
+      <name><value>ConfirmerB</value></name>
+      <orientation><value>0</value></orientation>
+      <rate><value>1.0</value></rate>
+      <timed><value>false</value></timed>
+      <infiniteServer><value>false</value></infiniteServer>
+      <priority><value>1</value></priority>
+    </transition>
+    <transition id="RefuserB">
+      <graphics><position x="860.0" y="245.0"/></graphics>
+      <name><value>RefuserB</value></name>
+      <orientation><value>0</value></orientation>
+      <rate><value>1.0</value></rate>
+      <timed><value>false</value></timed>
+      <infiniteServer><value>false</value></infiniteServer>
+      <priority><value>1</value></priority>
+    </transition>
+    <transition id="AnnulerB">
+      <graphics><position x="640.0" y="460.0"/></graphics>
+      <name><value>AnnulerB</value></name>
+      <orientation><value>0</value></orientation>
+      <rate><value>1.0</value></rate>
+      <timed><value>false</value></timed>
+      <infiniteServer><value>false</value></infiniteServer>
+      <priority><value>1</value></priority>
+    </transition>
+    <transition id="AnnulerAttenteB">
+      <graphics><position x="860.0" y="460.0"/></graphics>
+      <name><value>AnnulerAttenteB</value></name>
+      <orientation><value>0</value></orientation>
+      <rate><value>1.0</value></rate>
+      <timed><value>false</value></timed>
+      <infiniteServer><value>false</value></infiniteServer>
+      <priority><value>1</value></priority>
+    </transition>
+    <arc id="arc0" source="Libre" target="ConfirmerA">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="450.0" y="70.0" curvePoint="false"/>
+      <arcpath id="001" x="260.0" y="245.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc1" source="AttenteA" target="ConfirmerA">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="140.0" y="140.0" curvePoint="false"/>
+      <arcpath id="001" x="260.0" y="245.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc2" source="ConfirmerA" target="ConfA">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="260.0" y="245.0" curvePoint="false"/>
+      <arcpath id="001" x="140.0" y="350.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc3" source="ConfirmerA" target="Occupee">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="260.0" y="245.0" curvePoint="false"/>
+      <arcpath id="001" x="450.0" y="390.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc4" source="ConfirmerA" target="Libre">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="260.0" y="245.0" curvePoint="false"/>
+      <arcpath id="001" x="450.0" y="70.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc5" source="AttenteA" target="RefuserA">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="140.0" y="140.0" curvePoint="false"/>
+      <arcpath id="001" x="40.0" y="245.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc6" source="Occupee" target="RefuserA">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="450.0" y="390.0" curvePoint="false"/>
+      <arcpath id="001" x="40.0" y="245.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc7" source="RefuserA" target="RefusA">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="40.0" y="245.0" curvePoint="false"/>
+      <arcpath id="001" x="40.0" y="350.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc8" source="RefuserA" target="Occupee">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="40.0" y="245.0" curvePoint="false"/>
+      <arcpath id="001" x="450.0" y="390.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc9" source="ConfA" target="AnnulerA">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="140.0" y="350.0" curvePoint="false"/>
+      <arcpath id="001" x="260.0" y="460.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc10" source="Occupee" target="AnnulerA">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="450.0" y="390.0" curvePoint="false"/>
+      <arcpath id="001" x="260.0" y="460.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc11" source="AnnulerA" target="AnnuleeA">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="260.0" y="460.0" curvePoint="false"/>
+      <arcpath id="001" x="140.0" y="570.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc12" source="AnnulerA" target="Libre">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="260.0" y="460.0" curvePoint="false"/>
+      <arcpath id="001" x="450.0" y="70.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc13" source="AttenteA" target="AnnulerAttenteA">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="140.0" y="140.0" curvePoint="false"/>
+      <arcpath id="001" x="40.0" y="460.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc14" source="AnnulerAttenteA" target="AnnuleeA">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="40.0" y="460.0" curvePoint="false"/>
+      <arcpath id="001" x="140.0" y="570.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc15" source="Libre" target="ConfirmerB">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="450.0" y="70.0" curvePoint="false"/>
+      <arcpath id="001" x="640.0" y="245.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc16" source="AttenteB" target="ConfirmerB">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="760.0" y="140.0" curvePoint="false"/>
+      <arcpath id="001" x="640.0" y="245.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc17" source="ConfirmerB" target="ConfB">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="640.0" y="245.0" curvePoint="false"/>
+      <arcpath id="001" x="760.0" y="350.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc18" source="ConfirmerB" target="Occupee">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="640.0" y="245.0" curvePoint="false"/>
+      <arcpath id="001" x="450.0" y="390.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc19" source="ConfirmerB" target="Libre">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="640.0" y="245.0" curvePoint="false"/>
+      <arcpath id="001" x="450.0" y="70.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc20" source="AttenteB" target="RefuserB">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="760.0" y="140.0" curvePoint="false"/>
+      <arcpath id="001" x="860.0" y="245.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc21" source="Occupee" target="RefuserB">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="450.0" y="390.0" curvePoint="false"/>
+      <arcpath id="001" x="860.0" y="245.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc22" source="RefuserB" target="RefusB">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="860.0" y="245.0" curvePoint="false"/>
+      <arcpath id="001" x="860.0" y="350.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc23" source="RefuserB" target="Occupee">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="860.0" y="245.0" curvePoint="false"/>
+      <arcpath id="001" x="450.0" y="390.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc24" source="ConfB" target="AnnulerB">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="760.0" y="350.0" curvePoint="false"/>
+      <arcpath id="001" x="640.0" y="460.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc25" source="Occupee" target="AnnulerB">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="450.0" y="390.0" curvePoint="false"/>
+      <arcpath id="001" x="640.0" y="460.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc26" source="AnnulerB" target="AnnuleeB">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="640.0" y="460.0" curvePoint="false"/>
+      <arcpath id="001" x="760.0" y="570.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc27" source="AnnulerB" target="Libre">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="640.0" y="460.0" curvePoint="false"/>
+      <arcpath id="001" x="450.0" y="70.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc28" source="AttenteB" target="AnnulerAttenteB">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="760.0" y="140.0" curvePoint="false"/>
+      <arcpath id="001" x="860.0" y="460.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+    <arc id="arc29" source="AnnulerAttenteB" target="AnnuleeB">
+      <inscription><value>Default,1</value></inscription>
+      <arcpath id="000" x="860.0" y="460.0" curvePoint="false"/>
+      <arcpath id="001" x="760.0" y="570.0" curvePoint="false"/>
+      <type value="normal"/>
+    </arc>
+  </net>
+</pnml>

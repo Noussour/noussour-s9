@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<pnml>
+  <net id="r1" type="P/T net">
+    <token id="Default" enabled="true" red="0" green="0" blue="0"/>
+    <place id="Repos_U1">
+      <graphics><position x="90.0" y="40.0"/></graphics>
+      <name><value>Repos_U1</value><graphics><offset x="0.0" y="0.0"/></graphics></name>
+      <initialMarking><value>Default,1</value><graphics><offset x="0.0" y="0.0"/></graphics></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <place id="Demande_U1">
+      <graphics><position x="90.0" y="180.0"/></graphics>
+      <name><value>Demande_U1</value><graphics><offset x="0.0" y="0.0"/></graphics></name>
+      <initialMarking><value>Default,0</value><graphics><offset x="0.0" y="0.0"/></graphics></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <place id="Reservee_U1">
+      <graphics><position x="90.0" y="320.0"/></graphics>
+      <name><value>Reservee_U1</value><graphics><offset x="0.0" y="0.0"/></graphics></name>
+      <initialMarking><value>Default,0</value><graphics><offset x="0.0" y="0.0"/></graphics></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <place id="Repos_U2">
+      <graphics><position x="586.0" y="40.0"/></graphics>
+      <name><value>Repos_U2</value><graphics><offset x="0.0" y="0.0"/></graphics></name>
+      <initialMarking><value>Default,1</value><graphics><offset x="0.0" y="0.0"/></graphics></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <place id="Demande_U2">
+      <graphics><position x="586.0" y="180.0"/></graphics>
+      <name><value>Demande_U2</value><graphics><offset x="0.0" y="0.0"/></graphics></name>
+      <initialMarking><value>Default,0</value><graphics><offset x="0.0" y="0.0"/></graphics></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <place id="Reservee_U2">
+      <graphics><position x="586.0" y="320.0"/></graphics>
+      <name><value>Reservee_U2</value><graphics><offset x="0.0" y="0.0"/></graphics></name>
+      <initialMarking><value>Default,0</value><graphics><offset x="0.0" y="0.0"/></graphics></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <place id="Disponible">
+      <graphics><position x="338.0" y="250.0"/></graphics>
+      <name><value>Disponible</value><graphics><offset x="0.0" y="0.0"/></graphics></name>
+      <initialMarking><value>Default,1</value><graphics><offset x="0.0" y="0.0"/></graphics></initialMarking>
+      <capacity><value>0</value></capacity>
+    </place>
+    <transition id="demander_U1">
+      <graphics><position x="90.0" y="110.0"/></graphics>
+      <name><value>demander_U1</value><graphics><offset x="0.0" y="0.0"/></graphics></name>
+      <orientation><value>90</value></orientation>
+      <rate><value>1.0</value></rate>
+      <timed><value>false</value></timed>
+      <infiniteServer><value>false</value></infiniteServer>
+      <priority><value>1</value></priority>
+    </transition>
+    <transition id="demander_U2">
+      <graphics><position x="586.0" y="110.0"/></graphics>
+      <name><value>demander_U2</value><graphics><offset x="0.0" y="0.0"/></graphics></name>
+      <orientation><value>90</value></orientation>
+      <rate><value>1.0</value></rate>
+      <timed><value>false</value></timed>
+      <infiniteServer><value>false</value></infiniteServer>
+      <priority><value>1</value></priority>
+    </transition>
+    <transition id="accorder_U1">
+      <graphics><position x="90.0" y="250.0"/></graphics>
+      <name><value>accorder_U1</value><graphics><offset x="0.0" y="0.0"/></graphics></name>
+      <orientation><value>90</value></orientation>
+      <rate><value>1.0</value></rate>
+      <timed><value>false</value></timed>
+      <infiniteServer><value>false</value></infiniteServer>
+      <priority><value>1</value></priority>
+    </transition>
+    <transition id="accorder_U2">
+      <graphics><position x="586.0" y="250.0"/></graphics>
+      <name><value>accorder_U2</value><graphics><offset x="0.0" y="0.0"/></graphics></name>
+      <orientation><value>90</value></orientation>
+      <rate><value>1.0</value></rate>
+      <timed><value>false</value></timed>
+      <infiniteServer><value>false</value></infiniteServer>
+      <priority><value>1</value></priority>
+    </transition>
+    <arc id="A0" source="Repos_U1" target="demander_U1">
+      <inscription><value>Default,1</value></inscription>
+      <type value="normal"/>
+    </arc>
+    <arc id="A1" source="demander_U1" target="Demande_U1">
+      <inscription><value>Default,1</value></inscription>
+      <type value="normal"/>
+    </arc>
+    <arc id="A2" source="Demande_U2" target="demander_U1">
+      <inscription><value>Default,1</value></inscription>
+      <type value="inhibitor"/>
+    </arc>
+    <arc id="A3" source="Repos_U2" target="demander_U2">
+      <inscription><value>Default,1</value></inscription>
+      <type value="normal"/>
+    </arc>
+    <arc id="A4" source="demander_U2" target="Demande_U2">
+      <inscription><value>Default,1</value></inscription>
+      <type value="normal"/>
+    </arc>
+    <arc id="A5" source="Demande_U1" target="demander_U2">
+      <inscription><value>Default,1</value></inscription>
+      <type value="inhibitor"/>
+    </arc>
+    <arc id="A6" source="Demande_U1" target="accorder_U1">
+      <inscription><value>Default,1</value></inscription>
+      <type value="normal"/>
+    </arc>
+    <arc id="A7" source="Disponible" target="accorder_U1">
+      <inscription><value>Default,1</value></inscription>
+      <type value="normal"/>
+    </arc>
+    <arc id="A8" source="accorder_U1" target="Reservee_U1">
+      <inscription><value>Default,1</value></inscription>
+      <type value="normal"/>
+    </arc>
+    <arc id="A9" source="Demande_U2" target="accorder_U2">
+      <inscription><value>Default,1</value></inscription>
+      <type value="normal"/>
+    </arc>
+    <arc id="A10" source="Disponible" target="accorder_U2">
+      <inscription><value>Default,1</value></inscription>
+      <type value="normal"/>
+    </arc>
+    <arc id="A11" source="accorder_U2" target="Reservee_U2">
+      <inscription><value>Default,1</value></inscription>
+      <type value="normal"/>
+    </arc>
+  </net>
+</pnml>

@@ -108,9 +108,7 @@ def to_pnml(net: PetriNet) -> str:
         arcs += [(p, t["name"], w, "inhibitor") for p, w in t["inhib"].items()]
         for src, dst, w, kind in arcs:
             out += ['    <arc id="A%d" source="%s" target="%s">' % (n, escape(src), escape(dst)),
-                    '      <graphics/>',
-                    '      <inscription><value>Default,%d</value><graphics/></inscription>' % w,
-                    '      <tagged><value>false</value></tagged>',
+                    '      <inscription><value>Default,%d</value></inscription>' % w,
                     '      <type value="%s"/>' % kind,
                     '    </arc>']
             n += 1

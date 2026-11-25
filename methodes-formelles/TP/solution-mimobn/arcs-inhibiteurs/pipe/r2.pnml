@@ -81,63 +81,43 @@
       <priority><value>1</value></priority>
     </transition>
     <arc id="A0" source="Repos_U1" target="demander_U1">
-      <graphics/>
-      <inscription><value>Default,1</value><graphics/></inscription>
-      <tagged><value>false</value></tagged>
+      <inscription><value>Default,1</value></inscription>
       <type value="normal"/>
     </arc>
     <arc id="A1" source="demander_U1" target="Demande_U1">
-      <graphics/>
-      <inscription><value>Default,1</value><graphics/></inscription>
-      <tagged><value>false</value></tagged>
+      <inscription><value>Default,1</value></inscription>
       <type value="normal"/>
     </arc>
     <arc id="A2" source="Repos_U2" target="demander_U2">
-      <graphics/>
-      <inscription><value>Default,1</value><graphics/></inscription>
-      <tagged><value>false</value></tagged>
+      <inscription><value>Default,1</value></inscription>
       <type value="normal"/>
     </arc>
     <arc id="A3" source="demander_U2" target="Demande_U2">
-      <graphics/>
-      <inscription><value>Default,1</value><graphics/></inscription>
-      <tagged><value>false</value></tagged>
+      <inscription><value>Default,1</value></inscription>
       <type value="normal"/>
     </arc>
     <arc id="A4" source="Demande_U1" target="accorder_U1">
-      <graphics/>
-      <inscription><value>Default,1</value><graphics/></inscription>
-      <tagged><value>false</value></tagged>
+      <inscription><value>Default,1</value></inscription>
       <type value="normal"/>
     </arc>
     <arc id="A5" source="Disponible" target="accorder_U1">
-      <graphics/>
-      <inscription><value>Default,1</value><graphics/></inscription>
-      <tagged><value>false</value></tagged>
+      <inscription><value>Default,1</value></inscription>
       <type value="normal"/>
     </arc>
     <arc id="A6" source="accorder_U1" target="Reservee_U1">
-      <graphics/>
-      <inscription><value>Default,1</value><graphics/></inscription>
-      <tagged><value>false</value></tagged>
+      <inscription><value>Default,1</value></inscription>
       <type value="normal"/>
     </arc>
     <arc id="A7" source="Demande_U2" target="accorder_U2">
-      <graphics/>
-      <inscription><value>Default,1</value><graphics/></inscription>
-      <tagged><value>false</value></tagged>
+      <inscription><value>Default,1</value></inscription>
       <type value="normal"/>
     </arc>
     <arc id="A8" source="Disponible" target="accorder_U2">
-      <graphics/>
-      <inscription><value>Default,1</value><graphics/></inscription>
-      <tagged><value>false</value></tagged>
+      <inscription><value>Default,1</value></inscription>
       <type value="normal"/>
     </arc>
     <arc id="A9" source="accorder_U2" target="Reservee_U2">
-      <graphics/>
-      <inscription><value>Default,1</value><graphics/></inscription>
-      <tagged><value>false</value></tagged>
+      <inscription><value>Default,1</value></inscription>
       <type value="normal"/>
     </arc>
   </net>
