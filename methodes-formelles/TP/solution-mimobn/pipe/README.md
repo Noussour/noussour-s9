@@ -27,3 +27,8 @@ Les deux interprétations sont équivalentes (`Libres + Occupees = 1`).
 
 Historique complet des versions et des problèmes corrigés : [HISTORIQUE.md](HISTORIQUE.md).
 Analyse : `python analyse.py <fichier>.pnml` ; rejeu du scénario : `python analyse.py --scenario <fichier>.pnml`.
+
+**Rapport d'évolution (PDF) :** [rapport-evolution/rapport.pdf](rapport-evolution/rapport.pdf) retrace le passage d'un
+modèle naïf au réseau de Walid puis à la version actuelle. Il donne pour chaque étape le problème rencontré et
+l'analyse des propriétés : bornitude, sûreté, blocages, quasi-vivacité, vivacité, réversibilité, P-invariants,
+conflits et famine. Pour le reconstruire : `python rapport-evolution/construire.py`.

@@ -132,9 +132,10 @@ au plus un confirmé, `Libres + Occupees = 1`. Les deux interprétations (Walid 
 
 ![V6](2/walid/reservation-priorite-3-utilisateurs-demande.png)
 
-**Limite restante.** La priorité reste fixe entre utilisateurs déjà en attente : un utilisateur de faible priorité
-peut attendre longtemps si les autres reviennent sans cesse (famine possible). Une vraie file FIFO demanderait un
-compteur d'ancienneté, que l'on ne peut pas exprimer simplement dans un réseau sauf.
+**Limite restante.** La priorité reste fixe entre utilisateurs déjà en attente, mais l'attente est désormais
+**bornée** : pendant qu'il attend, U1 peut être dépassé au plus 1 fois, U2 jamais et U3 au plus 2 fois. Aucune
+famine par dépassement n'est possible (voir `rapport-evolution/rapport.pdf`, section 9). Une vraie file FIFO
+demanderait un réseau coloré ou un compteur d'ancienneté.
 
 ## Reproduire
 
